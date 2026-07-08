@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Wasser">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M84 80 L116 80 C120 96 120 98 120 112 L120 150 C120 156 116 160 110 160 L90 160 C84 160 80 156 80 150 L80 112 C80 98 80 96 84 80 Z" fill="#FFFDF6"/>
+    <path d="M80 118 L120 118 L120 150 C120 156 116 160 110 160 L90 160 C84 160 80 156 80 150 Z" fill="#2A9D8F"/>
+    <path d="M92 64 L108 64 L108 80 L92 80 Z" fill="#FFFDF6"/>
+    <path d="M90 50 L110 50 L110 64 L90 64 Z" fill="#264653" stroke="none"/>
+    <path d="M90 50 L110 50 L110 64 L90 64 Z"/>
+  </g>
+</svg>

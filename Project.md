@@ -1,1785 +1,356 @@
-Evet. Aşağıdaki planla projeyi başlatabilirsin. Ben bunu “dijital kitap + interaktif dil pratiği platformu” olarak kurguluyorum. Yani sadece PDF gösteren bir uygulama değil; PDF’den içerik çıkaran, görselleri/sesleri yöneten, egzersizleri uygulama içinde çözdüren, öğretmen ve öğrenci takibini yapan bir sistem.
+# SprachApp — Genel Mimari ve Ürün Planı (v2 · GÜNCEL)
 
-⸻
+> **Bu doküman v2'dir.** İlk versiyon (v1) "firmanın lisanslı dijital kitabını uygulamaya taşıyan reader/import platformu" olarak kurgulanmıştı. Telif analizinden (bkz. `sprachapp_pipeline_detayli.md`) sonra ürün yönü değişti: **artık kitabın içeriğini göstermiyoruz; kitabı yalnızca "iskelet/şablon" olarak kullanıp sıfırdan özgün içerik üretiyoruz.** Bu doküman genel mimariyi bu son duruma göre günceller.
+>
+> İlgili dokümanlar:
+> - `sprachapp_pipeline_detayli.md` — içerik pipeline'ının implementasyon-hazır detayı (Extract/Structure/Generate)
+> - `gorsel_prompt_yonetimi.md` — GPT görsel üretimi için prompt kataloğu ve stil rehberi
+> - `tools/elevenlabs_tts.py` — tüm diyalogların Almanca seslendirme script'i
 
-Proje Adı
+---
 
-EduLanguage Interactive Reader
+## 0. Tek Cümlelik Ürün Tanımı
 
-Geçici Türkçe adı:
+**SprachApp**, Schritte Plus Neu 1 (A1) kitabının *öğretim mekaniğini* referans alıp; metinleri Claude, görselleri GPT (gpt-image-1), sesleri ElevenLabs ile **%100 özgün üreten**, öğrenci/öğretmen/admin rolleriyle çalışan, görsel-yoğun bir A1 Almanca öğrenme uygulamasıdır.
 
-Dil Okulu İnteraktif Kitap ve Pratik Uygulaması
+Kullanıcıya gösterilen hiçbir metin/görsel/ses telifli kaynaktan **kopyalanmaz**; hepsi üretilir.
 
-⸻
+---
 
-1. Projenin ana hedefi
+## 1. v1 → v2: Ne Değişti?
 
-Firma mevcut dijital kitaplarını ve materyallerini uygulama içine taşıtmak istiyor.
+| Konu | v1 (eski) | v2 (güncel) |
+|---|---|---|
+| İçerik kaynağı | Kitaptan birebir import (PDF sayfa görüntüsü + kırpılan görseller) | Kitaptan **sadece iskelet**; içerik AI ile sıfırdan üretilir |
+| Kullanıcıya gösterilen | Kitabın orijinal sayfaları/görselleri | Özgün üretilmiş içerik + üretilmiş görsel + üretilmiş ses |
+| Telif riski | Yüksek (birebir çıkarım) | Kontrol altında (staging/prod izolasyonu, fikir telifsiz) |
+| PDF viewer / sayfa render | Ürünün merkezinde | **Kaldırıldı** (telifli sayfa göstermek ihlal) — sadece pipeline'da iç kullanım |
+| Canvas/annotation import (Fabric.js) | Ürün modülü | **Kaldırıldı** (lisanslı reader'a bağlıydı) |
+| Görsel kaynağı | Sayfadan kırpma | **GPT ile üretim** (`gorsel_prompt_yonetimi.md`) |
+| Ses kaynağı | Firmadan mp3 | **ElevenLabs ile üretim** (`tools/elevenlabs_tts.py`) |
+| Egzersiz mekanikleri | 8-10 tip (esnek) | Odak **5 mekanik**: matching, fill_blank, listening, quiz, speaking |
+| Platform/LMS katmanı (roller, sınıf, ödev, ilerleme) | Var | **Korunuyor** (bu doküman) |
 
-Uygulamada öğrenci:
+**Korunanlar (v1'den taşınan sağlam kısımlar):** organizasyon/rol modeli, exercise engine + validator mimarisi, sınıf/ödev/attempt/ilerleme şeması, admin/teacher/student panelleri.
 
-Kitabı görecek
-Sayfaları açacak
-Görselleri ve sesleri kullanacak
-Egzersizleri çözecek
-Cevap kontrolü alacak
-İlerlemesini görecek
+---
 
-Öğretmen:
+## 2. Telif Stratejisi (kırmızı çizgi — mimariye gömülü)
 
-Sınıf oluşturacak
-Öğrenci ekleyecek
-Ödev verecek
-Kim ne yaptı görecek
-Hangi öğrencinin nerede zorlandığını takip edecek
+**Sorun:** Kaynak (Hueber, Schritte Plus Neu 1) telifli. Birebir çıkarıp yayınlamak ihlaldir.
 
-Admin:
+**Çözüm — "iskelet çıkar, içerik üret":**
 
-Kitap yükleyecek
-PDF import edecek
-Sayfaları görsele çevirecek
-Görsel/ses ekleyecek
-Egzersizleri tanımlayacak
-Cevap anahtarlarını girecek
-İçerik yayınlayacak
+| Katman | Ne yapar | Telif | Nerede |
+|---|---|---|---|
+| Extract | Ham metin/bbox/görsel çıkarır | Riskli | `staging` şeması (prod'a asla) |
+| Structure | Mekanik tipi + gramer/kelime etiketi + parametre | Güvenli (fikir) | `staging.skeletons` (metin taşımaz) |
+| Generate | Sıfırdan özgün cümle/diyalog/görsel/ses | Özgün | `prod.*` |
 
-⸻
+**Kod-seviyesi kural:** `prod` şemasına yazan hiçbir fonksiyon `staging.raw_blocks.raw_text` okuyamaz. CI'da statik kontrol: `raw_text` → `prod` importunu grep ile engelle.
 
-2. Mevcut sistemden anladığımız yapı
+**İki istisna telifsiz:** (1) kelime listeleri (Lernwortschatz — fikir), (2) gramer konu adları (Plural, Akkusativ). Bunlar doğrudan kullanılabilir.
 
-Senin bulduğun reader sistemi şu mantıkla çalışıyor:
+Detay: `sprachapp_pipeline_detayli.md` §1.
 
-viewer.html
-↓
-PDF dosyasını çağırıyor
-↓
-PDF byte-range / chunk ile veya direkt indirilebiliyor
-↓
-Sayfa üstü canvas verilerini ayrı endpoint’ten alıyor
-↓
-Canvas verileri Fabric.js objelerine benziyor
+---
 
-Bizim tespit ettiğimiz iki kaynak var:
+## 3. Genel Mimari
 
-1. PDF dosyası:
-   9783191810801.pdf
-2. Canvas / annotation datası:
-   9783191810801_canvas_14_
+```
+┌──────────────────────── İÇERİK ÜRETİM HATTI (offline, build-time) ────────────────────────┐
+│                                                                                            │
+│  [PDF]──Extract──▶ staging.raw_blocks ──Structure──▶ staging.skeletons ──Generate──┐       │
+│  (telifli, izole)                        (metinsiz iskelet)                          │       │
+│                                                                                     ▼       │
+│   Claude API ──▶ metin/diyalog/egzersiz ─┐                                   prod.content_  │
+│   GPT gpt-image-1 ──▶ görsel (PNG) ──WebP─┼──▶ Kalite kapısı (2. LLM) ──────▶  items +      │
+│   ElevenLabs ──▶ ses (mp3) ──────────────┘   + Busra QA (reviewed=true)      media_assets   │
+│                                                                                            │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+                                             │
+                                             ▼
+┌──────────────────────────────── RUNTIME (uygulama) ───────────────────────────────────────┐
+│                                                                                            │
+│  PostgreSQL ──▶ NestJS API ──▶ CDN (Cloudflare R2 + Images: AVIF/WebP)                      │
+│                     │                                                                       │
+│        ┌────────────┼────────────┐                                                         │
+│        ▼            ▼            ▼                                                          │
+│   Student App   Teacher Panel  Admin Panel        speaking mekaniği = runtime Claude çağrısı │
+│  (Expo RN)      (Next.js)      (Next.js)                                                    │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+```
 
-PDF’i direkt indirmeyi başardın:
+İki net dünya var:
+- **Build-time (offline pipeline):** İçerik + görsel + ses üretilir, kalite kapısından geçer, prod'a yazılır. Ağır ve pahalı işler burada bir kez yapılır.
+- **Runtime (uygulama):** Sadece hazır `prod` içeriğini servis eder. Tek AI runtime maliyeti: `speaking` (konuşma partneri).
 
-9783191810801.pdf → yaklaşık 30.5 MB
+---
 
-Bu çok iyi. Çünkü artık viewer’a bağlı kalmadan PDF’i işleyebiliriz.
+## 4. İçerik Üretim Pipeline'ı (özet)
 
-⸻
+Tam detay `sprachapp_pipeline_detayli.md`'de. Özet:
 
-3. Ürün yaklaşımı
+1. **Extract (Katman 1):** `pdfplumber` ile sayfa→blok; kitap/Lektion/Schritt etiketi; görsel sayfaları raster; ses referansları. → `staging.raw_blocks`.
+2. **Structure (Katman 2):** Kural+LLM hibrit sınıflandırma → 5 mekanikten biri + gramer/kelime alanı + parametre. → `staging.skeletons` (telifsiz).
+3. **Generate (Katman 3):** Mekanik başına generator → Claude ile özgün içerik → JSON şema doğrula → kalite kapısı (2. Claude çağrısı) → `prod.content_items`.
 
-Bu projeyi 3 katmanlı yapacağız.
+**7 Lektion (A1):** 1 Tanışma · 2 Familie · 3 Einkaufen · 4 Wohnung · 5 Tagesabläufe · 6 Freizeit · 7 Kinder und Schule.
+**Pilot:** Lektion 3 (Einkaufen) — 4 mekaniğin hepsini test eder.
 
-Katman 1 — Dijital Kitap Katmanı
+---
 
-PDF sayfaları uygulamada gösterilecek.
+## 5. Görsel Üretim Pipeline'ı (GPT)
 
-Öğrenci:
+- **Araç:** GPT görsel üretimi (`gpt-image-1` / ChatGPT). İlk fazda **manuel** (Emre promptları yapıştırır), sonra API ile batch.
+- **Tutarlılık:** Tüm uygulama tek bir görsel dilinde olmalı → `gorsel_prompt_yonetimi.md` içinde **master stil promptu** + **karakter kanonu** tanımlı; her prompt bu stili miras alır.
+- **Adlandırma:** `l{lektion}_{tip}_{slug}.webp` (ör. `l3_vocab_apfel.webp`, `l3_scene_supermarkt.webp`). Kural dokümanda.
+- **Format:** GPT büyük PNG üretir → **WebP/AVIF**'e dönüştürülür. Önerilen yöntem: master PNG'yi R2'ye at, **Cloudflare Images** ile cihaza göre AVIF/WebP + boyut on-the-fly servis et (manuel dönüştürmeye gerek kalmaz). Yerel/manuel dönüştürme için `sharp`/`cwebp` script'i dokümanda. Detay §11 ve `gorsel_prompt_yonetimi.md`.
 
-Kitap seçer
-Ünite seçer
-Sayfayı açar
-Zoom yapar
-Sayfalar arasında gezer
+---
 
-Backend tarafında PDF’den sayfa görselleri üretilecek:
+## 6. Ses Üretim Pipeline'ı (ElevenLabs)
 
-9783191810801.pdf
-↓
-page-001.png
-page-002.png
-page-003.png
-...
+- **Araç:** ElevenLabs `eleven_multilingual_v2` (Almanca uzun-form için ideal).
+- **Ruh:** Almanca **anadil**, A1 öğrenciye uygun **yavaş ve akıcı** (`speed ≈ 0.85`, yüksek `stability`), net telaffuz.
+- **Çok sesli:** Her karaktere/konuşmacıya sabit bir ses (voice) atanır → diyaloglar tutarlı.
+- **Script:** `tools/elevenlabs_tts.py` tüm `prod.content_items` diyaloglarını batch seslendirir, mp3 üretir, `media_assets`'e URL yazar. İki hız (yavaş + normal) üretebilir (A1 pedagojisi için faydalı).
 
-Bu görseller storage’a kaydedilecek.
+---
 
-⸻
+## 7. Egzersiz Mekanikleri (5)
 
-Katman 2 — İçerik / Medya Katmanı
+Runtime motoru mekanik-agnostik: her mekanik `payload` (render) + `solution` (değerlendirme) JSON'u ile gelir; frontend `mechanic` alanına göre bileşen seçer, backend `validators/*` ile puanlar.
 
-Kitaptaki fotoğraflar, görseller, sesler, sayfa parçaları ayrı asset olarak tutulacak.
+| Mekanik | Açıklama | Değerlendirme |
+|---|---|---|
+| `matching` | Eşleştirme (kelime↔görsel, tekil↔çoğul) | Tam eşleşme (kısmi puan opsiyonel) |
+| `fill_blank` | Boşluk doldurma | Normalize + `answer`/`alt` eşleşmesi |
+| `listening` | Ses dinle → anlama sorusu (MC) | Doğru şık |
+| `quiz` | Çoktan seçmeli / doğru-yanlış | Doğru şık |
+| `speaking` | AI konuşma partneri (runtime) | Konuşma sonu 2. Claude çağrısı → rubrik |
 
-Örnek:
+Payload/solution şemaları `sprachapp_pipeline_detayli.md` §4'te. Örnek render JSON'ları §8.4'te.
 
-assets/books/9783191810801/pages/page-001.png
-assets/books/9783191810801/images/page-001-cafe.png
-assets/books/9783191810801/images/page-001-portrait.png
-assets/books/9783191810801/audio/track-001.mp3
+---
 
-Admin panelden:
+## 8. Kullanıcı Rolleri (LMS katmanı — v1'den korunuyor)
 
-Sayfadan görsel kırpılacak
-Ses dosyası yüklenecek
-Egzersize bağlanacak
+**Admin:** organizasyon yönetimi, içerik pipeline'ını tetikleme, üretilen içeriği QA/onaylama (`reviewed=true`), yayınlama, kullanıcı yönetimi.
+**Teacher:** sınıf oluşturma, öğrenci ekleme, ödev atama, ilerleme/yanlış analizi.
+**Student:** Lektion/ders açma, egzersiz çözme, ses dinleme, konuşma pratiği, ilerleme takibi.
 
-⸻
+Not: v2'de admin artık "PDF kırpma / canvas import" yapmıyor; onun yerine **içerik/QA operatörü** rolü (üretilen içeriği gözden geçir → onayla).
 
-Katman 3 — İnteraktif Egzersiz Katmanı
+---
 
-Kitaptaki pratikler uygulama egzersizlerine dönüştürülecek.
+## 9. TEKNOLOJİ KARARI (görsel-yoğun uygulama için)
 
-Desteklenecek ilk egzersiz tipleri:
+> Soru: "Çok fazla resim olacağı için en efektif hangisi?" — Kritik ayrım şu: **görsel verimliliği framework'ten çok teslim (delivery) hattından gelir.** Yani asıl kaldıraç CDN + format + lazy-load. Framework'ü de buna göre seçiyoruz.
 
-1. Multiple choice
-2. Fill in the blanks
-3. Matching
-4. Ordering / sentence sorting
-5. Listening question
-6. True / false
-7. Dialogue completion
-8. Open text answer
-9. Speaking answer — ikinci faz
-10. Writing AI feedback — ikinci faz
+**Karar:**
 
-⸻
+| Katman | Seçim | Gerekçe |
+|---|---|---|
+| **Öğrenci uygulaması** | **Expo (React Native)** + `expo-image` | Tek kod tabanı iOS/Android/Web. `expo-image` bu iş için en güçlüsü: yerel AVIF/WebP desteği, agresif disk+bellek cache, `blurhash`/`thumbhash` placeholder, öncelikli/lazy yükleme. Görsel-yoğun app tam da bunu ister. TS ile tüm stack tek dilde. |
+| **Admin + Teacher panel** | **Next.js (React)** + Tailwind + shadcn/ui | `next/image` ile otomatik responsive + AVIF/WebP; QA/onay arayüzü için hızlı. |
+| **Backend** | **NestJS** + PostgreSQL + Prisma | v1 kararı geçerli; TS stack bütünlüğü, BullMQ/Redis kuyruğu (üretim job'ları). |
+| **Depolama + CDN** | **Cloudflare R2 + Cloudflare Images** | Görsel dağıtımının kalbi. Master PNG'yi bir kez yükle; cihaza göre AVIF/WebP + boyut *on-the-fly*. "PNG→WebP manuel çevirme" derdi CDN'e devredilir. |
+| **İçerik pipeline** | **Python** (pdfplumber, pydantic, anthropic SDK) | Extract/Structure/Generate; kanıtlanmış. |
+| **TTS** | ElevenLabs (`tools/elevenlabs_tts.py`) | Almanca anadil, hız/stabilite kontrolü. |
 
-4. MVP kapsamı
+**Neden Flutter değil (kullanıcının geçmişi olsa da)?** İki gerçek sebep: (1) Backend+admin zaten TS (NestJS+Next.js) — Expo ile **tüm ürün tek dil (TypeScript)** ve **paylaşılan tipler** olur. (2) Görsel-yoğun senaryoda `expo-image`'in AVIF + cache + placeholder olgunluğu, Flutter `cached_network_image`'e göre daha az uğraşla daha iyi sonuç verir. Flutter ikincil bir alternatif olarak masada kalabilir; ama tavsiye Expo.
 
-İlk sürümde çok büyütmeyelim. MVP şu olmalı:
+**Not:** Framework ne olursa olsun, görsel performansının %80'i şu 3 karardan gelir → (a) CDN'in AVIF/WebP + responsive boyut vermesi, (b) `expo-image`/`next/image` ile lazy-load + placeholder, (c) master görselleri makul çözünürlükte tutmak (aşağı §11).
 
-1 kitap
-1 seviye
-2–3 ünite
-30–50 egzersiz
-PDF sayfa görüntüleme
-Görsel asset yönetimi
-Ses asset yönetimi
-Öğrenci egzersiz çözme
-Basit skor sistemi
-Admin içerik paneli
-Öğretmen sınıf/ödev paneli
+---
 
-İlk fazda AI şart değil. Önce sistemin omurgasını kurmak daha doğru.
+## 10. Klasör Yapısı (monorepo)
 
-⸻
-
-5. Kullanıcı rolleri
-
-5.1 Admin
-
-Yetkileri:
-
-Okul / organizasyon yönetimi
-Kitap ekleme
-PDF yükleme
-Sayfa import etme
-Sayfa görsellerini üretme
-Görsel kırpma
-Ses yükleme
-Ünite / ders / egzersiz oluşturma
-Cevap anahtarı girme
-İçerik yayınlama
-Kullanıcı yönetimi
-
-5.2 Teacher
-
-Yetkileri:
-
-Sınıf oluşturma
-Öğrenci ekleme
-Ödev atama
-Öğrenci ilerleme takibi
-Egzersiz sonuçlarını görme
-Yanlış cevapları inceleme
-
-5.3 Student
-
-Yetkileri:
-
-Kendi kitaplarını görme
-Dersleri açma
-Egzersiz çözme
-Ses dinleme
-Yanlışlarını görme
-İlerleme durumunu takip etme
-
-⸻
-
-6. Ana modüller
-
-6.1 Auth modülü
-
-Özellikler:
-
-Email + password login
-Rol bazlı yetkilendirme
-Organization bazlı erişim
-JWT auth
-Refresh token
-Password reset
-
-Roller:
-
-admin
-teacher
-student
-
-⸻
-
-6.2 Organization / School modülü
-
-Sistem ileride başka okullara da açılabilir. Bu yüzden baştan organization mantığı olmalı.
-
-Organization = okul / firma / müşteri
-
-Her kitap, kullanıcı, sınıf bir organization’a bağlı olacak.
-
-⸻
-
-6.3 Book modülü
-
-Kitap hiyerarşisi:
-
-Book
-  Unit
-    Lesson
-      Exercise
-
-Örnek:
-
-Book: Deutsch A1
-Unit 1: Hallo!
-Lesson 1: Begrüßung
-Exercise 1: Guten Morgen / Guten Abend
-
-⸻
-
-6.4 PDF Import modülü
-
-Admin PDF yükler.
-
-Sistem:
-
-PDF’i kaydeder
-Sayfa sayısını bulur
-Her sayfayı PNG’ye çevirir
-page_assets oluşturur
-
-Terminalde bunun karşılığı:
-
-pdftoppm -png -r 200 9783191810801.pdf pages/page
-
-Backend’de otomatik yapılacak.
-
-⸻
-
-6.5 Page Viewer modülü
-
-Öğrenci kitap sayfasını görecek.
-
-Özellikler:
-
-Sayfa listesi
-Önceki / sonraki sayfa
-Zoom
-Full screen
-Sayfa üstü hotspot
-Sayfaya bağlı egzersiz listesi
-Ses oynatma
-
-⸻
-
-6.6 Media Asset modülü
-
-Medya tipleri:
-
-page_image
-image
-audio
-video
-document
-
-Admin şunları yapacak:
-
-Görsel yükle
-Ses yükle
-Sayfadan görsel kırp
-Asset’i egzersize bağla
-
-⸻
-
-6.7 Canvas / Annotation Import modülü
-
-Senin bulduğun endpoint’ten gelen Fabric.js datası gibi veriler burada işlenecek.
-
-Ham veri örneği:
-
-{
-  "type": "Textbox",
-  "text": "Tschau",
-  "left": 442.16,
-  "top": 153.20
-}
-
-Biz bunu normalize edeceğiz:
-
-{
-  "type": "text",
-  "text": "Tschau",
-  "x": 442.16,
-  "y": 153.20,
-  "source": "fabric_canvas"
-}
-
-Bu veri şu amaçlarla kullanılabilir:
-
-Sayfa üstü notları göstermek
-Tıklanabilir kelime alanları oluşturmak
-Highlight verilerini saklamak
-Egzersiz adayları çıkarmak
-
-⸻
-
-6.8 Exercise Engine modülü
-
-Her egzersiz tipi için ortak motor olacak.
-
-Ortak alanlar:
-
-instruction
-content_json
-answer_json
-validation_json
-feedback_json
-score
-
-Egzersiz tipleri JSON ile esnek tutulacak.
-
-⸻
-
-7. Egzersiz tipleri ve JSON örnekleri
-
-7.1 Multiple Choice
-
-{
-  "question": "Was sagt man am Morgen?",
-  "options": [
-    { "id": "a", "text": "Guten Morgen" },
-    { "id": "b", "text": "Gute Nacht" },
-    { "id": "c", "text": "Tschau" }
-  ]
-}
-
-Cevap:
-
-{
-  "correctOptionIds": ["a"]
-}
-
-⸻
-
-7.2 Fill Blank
-
-{
-  "text": "Guten ___!",
-  "blanks": [
-    {
-      "id": "blank_1",
-      "placeholder": "..."
-    }
-  ]
-}
-
-Cevap:
-
-{
-  "blank_1": ["Morgen"]
-}
-
-Validation:
-
-{
-  "caseSensitive": false,
-  "trimSpaces": true,
-  "ignorePunctuation": true
-}
-
-⸻
-
-7.3 Matching
-
-{
-  "leftItems": [
-    { "id": "l1", "text": "Guten Morgen" },
-    { "id": "l2", "text": "Tschau" }
-  ],
-  "rightItems": [
-    { "id": "r1", "text": "Good morning" },
-    { "id": "r2", "text": "Bye" }
-  ]
-}
-
-Cevap:
-
-{
-  "pairs": [
-    { "left": "l1", "right": "r1" },
-    { "left": "l2", "right": "r2" }
-  ]
-}
-
-⸻
-
-7.4 Ordering
-
-{
-  "items": [
-    { "id": "i1", "text": "Ich" },
-    { "id": "i2", "text": "heiße" },
-    { "id": "i3", "text": "Murat" }
-  ]
-}
-
-Cevap:
-
-{
-  "correctOrder": ["i1", "i2", "i3"]
-}
-
-⸻
-
-7.5 Listening Question
-
-{
-  "audioAssetId": "audio_001",
-  "question": "Was hörst du?",
-  "options": [
-    { "id": "a", "text": "Guten Morgen" },
-    { "id": "b", "text": "Gute Nacht" }
-  ]
-}
-
-Cevap:
-
-{
-  "correctOptionIds": ["a"]
-}
-
-⸻
-
-7.6 Dialogue Completion
-
-{
-  "dialogue": [
-    {
-      "speaker": "A",
-      "text": "Hallo!"
-    },
-    {
-      "speaker": "B",
-      "blankId": "b1"
-    }
-  ],
-  "options": [
-    { "id": "o1", "text": "Hallo!" },
-    { "id": "o2", "text": "Gute Nacht!" }
-  ]
-}
-
-Cevap:
-
-{
-  "b1": "o1"
-}
-
-⸻
-
-8. Veritabanı şeması
-
-Aşağıdaki şema ile başlayabiliriz.
-
-8.1 Organizations
-
-CREATE TABLE organizations (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  status TEXT NOT NULL DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-
-⸻
-
-8.2 Users / Roles
-
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organization_id UUID REFERENCES organizations(id),
-  name TEXT NOT NULL,
-  email TEXT NOT NULL,
-  password_hash TEXT,
-  status TEXT NOT NULL DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP,
-  UNIQUE (organization_id, email)
-);
-CREATE TABLE roles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL
-);
-CREATE TABLE user_roles (
-  user_id UUID REFERENCES users(id),
-  role_id UUID REFERENCES roles(id),
-  PRIMARY KEY (user_id, role_id)
-);
-
-⸻
-
-8.3 Books / Units / Lessons
-
-CREATE TABLE books (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organization_id UUID REFERENCES organizations(id),
-  title TEXT NOT NULL,
-  language TEXT,
-  target_language TEXT,
-  support_language TEXT,
-  level TEXT,
-  isbn TEXT,
-  publisher_ref TEXT,
-  status TEXT NOT NULL DEFAULT 'draft',
-  content_source_status TEXT DEFAULT 'licensed_final',
-  license_status TEXT DEFAULT 'licensed_final',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-CREATE TABLE units (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  book_id UUID REFERENCES books(id),
-  unit_no TEXT,
-  title TEXT NOT NULL,
-  description TEXT,
-  order_index INT DEFAULT 0,
-  status TEXT DEFAULT 'draft',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-CREATE TABLE lessons (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  unit_id UUID REFERENCES units(id),
-  lesson_no TEXT,
-  title TEXT NOT NULL,
-  description TEXT,
-  order_index INT DEFAULT 0,
-  status TEXT DEFAULT 'draft',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-
-⸻
-
-8.4 PDF / Pages
-
-CREATE TABLE book_files (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  book_id UUID REFERENCES books(id),
-  file_type TEXT NOT NULL, -- pdf, source, teacher_guide
-  file_url TEXT NOT NULL,
-  file_name TEXT,
-  mime_type TEXT,
-  file_size BIGINT,
-  uploaded_by UUID REFERENCES users(id),
-  created_at TIMESTAMP DEFAULT now()
-);
-CREATE TABLE book_pages (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  book_id UUID REFERENCES books(id),
-  page_no INT NOT NULL,
-  page_image_url TEXT,
-  width INT,
-  height INT,
-  status TEXT DEFAULT 'ready',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  UNIQUE (book_id, page_no)
-);
-
-⸻
-
-8.5 Media Assets
-
-CREATE TABLE media_assets (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organization_id UUID REFERENCES organizations(id),
-  book_id UUID REFERENCES books(id),
-  type TEXT NOT NULL, -- image, audio, video, page_image
-  file_url TEXT NOT NULL,
-  file_name TEXT,
-  mime_type TEXT,
-  duration_seconds NUMERIC,
-  source_page INT,
-  source_ref TEXT,
-  license_status TEXT DEFAULT 'licensed_final',
-  content_source_status TEXT DEFAULT 'licensed_final',
-  uploaded_by UUID REFERENCES users(id),
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-
-⸻
-
-8.6 Sayfa üstü objeler / Canvas
-
-CREATE TABLE page_canvas_layers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  book_id UUID REFERENCES books(id),
-  page_no INT NOT NULL,
-  raw_fabric_json JSONB,
-  normalized_json JSONB,
-  source TEXT,
-  imported_at TIMESTAMP DEFAULT now(),
-  UNIQUE (book_id, page_no, source)
-);
-CREATE TABLE page_objects (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  book_id UUID REFERENCES books(id),
-  page_no INT NOT NULL,
-  object_type TEXT NOT NULL, -- text, rect, circle, path, highlight, hotspot
-  text TEXT,
-  x NUMERIC,
-  y NUMERIC,
-  width NUMERIC,
-  height NUMERIC,
-  style_json JSONB,
-  raw_json JSONB,
-  created_at TIMESTAMP DEFAULT now()
-);
-
-⸻
-
-8.7 Exercise Types / Exercises
-
-CREATE TABLE exercise_types (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  code TEXT UNIQUE NOT NULL,
-  name TEXT NOT NULL,
-  schema_json JSONB,
-  status TEXT DEFAULT 'active'
-);
-CREATE TABLE exercises (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  lesson_id UUID REFERENCES lessons(id),
-  book_id UUID REFERENCES books(id),
-  page_no INT,
-  exercise_type_id UUID REFERENCES exercise_types(id),
-  page_ref TEXT,
-  exercise_no TEXT,
-  title TEXT,
-  instruction_text TEXT,
-  content_json JSONB NOT NULL,
-  order_index INT DEFAULT 0,
-  status TEXT DEFAULT 'draft',
-  content_source_status TEXT DEFAULT 'licensed_final',
-  license_status TEXT DEFAULT 'licensed_final',
-  source_ref TEXT,
-  created_by UUID REFERENCES users(id),
-  updated_by UUID REFERENCES users(id),
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-
-⸻
-
-8.8 Answers / Feedback
-
-CREATE TABLE answers (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  exercise_id UUID REFERENCES exercises(id),
-  answer_json JSONB NOT NULL,
-  validation_json JSONB,
-  is_primary BOOLEAN DEFAULT true,
-  order_index INT DEFAULT 0,
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-CREATE TABLE feedback (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  exercise_id UUID REFERENCES exercises(id),
-  on_correct_text TEXT,
-  on_wrong_text TEXT,
-  explanation_json JSONB,
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
-⸻
-
-8.9 Exercise Media
-
-CREATE TABLE exercise_media (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  exercise_id UUID REFERENCES exercises(id),
-  media_asset_id UUID REFERENCES media_assets(id),
-  start_time NUMERIC,
-  end_time NUMERIC,
-  role TEXT, -- listening_source, image, background, prompt_image
-  order_index INT DEFAULT 0
-);
-
-⸻
-
-8.10 Classes / Students
-
-CREATE TABLE classes (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  organization_id UUID REFERENCES organizations(id),
-  name TEXT NOT NULL,
-  teacher_id UUID REFERENCES users(id),
-  status TEXT DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-CREATE TABLE class_students (
-  class_id UUID REFERENCES classes(id),
-  student_id UUID REFERENCES users(id),
-  status TEXT DEFAULT 'active',
-  joined_at TIMESTAMP DEFAULT now(),
-  PRIMARY KEY (class_id, student_id)
-);
-
-⸻
-
-8.11 Assignments
-
-CREATE TABLE assignments (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  class_id UUID REFERENCES classes(id),
-  assigned_by UUID REFERENCES users(id),
-  target_type TEXT NOT NULL, -- book, unit, lesson, exercise
-  target_id UUID NOT NULL,
-  title TEXT,
-  description TEXT,
-  due_date TIMESTAMP,
-  status TEXT DEFAULT 'active',
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now(),
-  deleted_at TIMESTAMP
-);
-
-⸻
-
-8.12 Attempts / Progress
-
-CREATE TABLE attempt_sessions (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  student_id UUID REFERENCES users(id),
-  assignment_id UUID REFERENCES assignments(id),
-  lesson_id UUID REFERENCES lessons(id),
-  started_at TIMESTAMP DEFAULT now(),
-  completed_at TIMESTAMP,
-  total_score NUMERIC,
-  status TEXT DEFAULT 'started'
-);
-CREATE TABLE attempt_responses (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  session_id UUID REFERENCES attempt_sessions(id),
-  exercise_id UUID REFERENCES exercises(id),
-  given_answer_json JSONB,
-  is_correct BOOLEAN,
-  score NUMERIC,
-  checked_by TEXT DEFAULT 'system', -- system, teacher, ai
-  feedback_json JSONB,
-  attempted_at TIMESTAMP DEFAULT now()
-);
-CREATE TABLE progress_summary (
-  student_id UUID REFERENCES users(id),
-  lesson_id UUID REFERENCES lessons(id),
-  completion_pct NUMERIC DEFAULT 0,
-  correct_count INT DEFAULT 0,
-  wrong_count INT DEFAULT 0,
-  last_activity_at TIMESTAMP,
-  PRIMARY KEY (student_id, lesson_id)
-);
-
-⸻
-
-9. Teknoloji seçimi
-
-Backend
-
-NestJS
-PostgreSQL
-Prisma veya TypeORM
-JWT Auth
-BullMQ / Redis queue
-S3 veya Cloudflare R2 storage
-
-Ben burada NestJS + PostgreSQL + Prisma öneririm.
-
-⸻
-
-Frontend Web
-
-Next.js
-React
-TailwindCSS
-shadcn/ui
-PDF/page viewer component
-Canvas crop tool
-
-⸻
-
-Mobile
-
-İkinci fazda:
-
-Flutter
-
-Senin geçmişin Flutter olduğu için mobilde Flutter mantıklı. Ama MVP önce web olmalı.
-
-⸻
-
-Storage
-
-Cloudflare R2
-veya
-AWS S3
-
-Geliştirme ortamında:
-
-local storage
-
-⸻
-
-PDF processing
-
-Sunucuda kullanılacak araçlar:
-
-poppler-utils
-pdftoppm
-pdfimages
-imagemagick
-
-Node tarafında worker:
-
-PDF import job
-Page image generation job
-Image crop job
-
-⸻
-
-10. Backend servisleri
-
-AuthService
-
-login
-register
-refreshToken
-resetPassword
-getCurrentUser
-
-OrganizationService
-
-createOrganization
-updateOrganization
-getOrganization
-
-BookService
-
-createBook
-uploadPdf
-listBooks
-getBookDetail
-publishBook
-
-PdfImportService
-
-savePdf
-getPageCount
-generatePageImages
-storePageImages
-createBookPages
-
-MediaService
-
-uploadAsset
-cropFromPage
-listAssets
-attachAssetToExercise
-
-ExerciseService
-
-createExercise
-updateExercise
-publishExercise
-validateAnswer
-getExerciseForStudent
-
-AssignmentService
-
-createAssignment
-listClassAssignments
-getStudentAssignments
-
-AttemptService
-
-startSession
-submitAnswer
-calculateScore
-completeSession
-updateProgress
-
-CanvasImportService
-
-importRawFabricJson
-normalizeFabricObjects
-createPageObjects
-
-⸻
-
-11. API endpoint planı
-
-Auth
-
-POST /auth/login
-POST /auth/register
-POST /auth/refresh
-GET  /auth/me
-
-Books
-
-GET    /books
-POST   /books
-GET    /books/:id
-PATCH  /books/:id
-POST   /books/:id/upload-pdf
-POST   /books/:id/import-pages
-GET    /books/:id/pages
-GET    /books/:id/pages/:pageNo
-
-Media
-
-POST   /media/upload
-GET    /media
-GET    /media/:id
-POST   /media/crop-from-page
-DELETE /media/:id
-
-Crop request:
-
-{
-  "bookId": "uuid",
-  "pageNo": 1,
-  "x": 120,
-  "y": 300,
-  "width": 500,
-  "height": 320,
-  "name": "page-001-cafe"
-}
-
-Canvas
-
-POST /books/:id/pages/:pageNo/canvas/import
-GET  /books/:id/pages/:pageNo/objects
-
-Exercises
-
-GET    /exercises
-POST   /exercises
-GET    /exercises/:id
-PATCH  /exercises/:id
-DELETE /exercises/:id
-POST   /exercises/:id/publish
-POST   /exercises/:id/check-answer
-
-Classes
-
-GET   /classes
-POST  /classes
-GET   /classes/:id
-POST  /classes/:id/students
-GET   /classes/:id/students
-
-Assignments
-
-POST /assignments
-GET  /assignments/class/:classId
-GET  /assignments/student/me
-
-Attempts
-
-POST /attempt-sessions
-POST /attempt-sessions/:id/answers
-POST /attempt-sessions/:id/complete
-GET  /students/:studentId/progress
-
-⸻
-
-12. Frontend ekranları
-
-12.1 Admin panel
-
-Dashboard
-
-Toplam kitap
-Toplam öğrenci
-Toplam öğretmen
-Yayınlanmış egzersiz sayısı
-Son import edilen kitaplar
-
-Books
-
-Kitap listesi
-Kitap oluştur
-PDF yükle
-Sayfaları import et
-Kitap yayınla
-
-Page Manager
-
-Sayfa listesi
-Sayfa görseli görüntüleme
-Sayfadan görsel kırpma
-Sayfa üstü canvas objeleri
-Hotspot ekleme
-Sayfaya egzersiz bağlama
-
-Media Library
-
-Görseller
-Sesler
-Sayfa görselleri
-Filtre: book/page/type
-
-Exercise Builder
-
-Egzersiz tipi seç
-Instruction yaz
-Content JSON’u form üzerinden oluştur
-Cevap anahtarı gir
-Feedback gir
-Medya bağla
-Önizleme
-Yayınla
-
-Users
-
-Admin / teacher / student listesi
-Kullanıcı oluştur
-Rol ata
-
-⸻
-
-12.2 Teacher panel
-
-Dashboard
-
-Sınıflarım
-Aktif ödevler
-Son öğrenci aktiviteleri
-
-Class Detail
-
-Öğrenciler
-Atanan dersler
-Tamamlama oranı
-Yanlış cevap analizi
-
-Assignment Create
-
-Sınıf seç
-Kitap / ünite / ders / egzersiz seç
-Teslim tarihi belirle
-Yayınla
-
-⸻
-
-12.3 Student uygulaması
-
-Home
-
-Kitaplarım
-Devam ettiğim dersler
-Aktif ödevler
-İlerleme yüzdesi
-
-Book Reader
-
-Sayfa görüntüleme
-Önceki / sonraki sayfa
-Zoom
-Sayfadaki egzersizler
-Ses oynatıcı
-
-Lesson Detail
-
-Ders açıklaması
-Egzersiz listesi
-Tamamlanan / tamamlanmayan durum
-
-Exercise Screen
-
-Instruction
-Question
-Options / input / drag-drop
-Check answer
-Feedback
-Next exercise
-
-Progress
-
-Tamamlanan dersler
-Doğru / yanlış sayısı
-Yanlışlarım
-Tekrar et
-
-⸻
-
-13. PDF ve görsel import süreci
-
-13.1 Manuel test
-
-Sen zaten PDF’i indirdin. İlk test şu:
-
-file 9783191810801.pdf
-head -c 5 9783191810801.pdf
-open 9783191810801.pdf
-
-Sonra:
-
-brew install poppler
-mkdir -p book-pages
-pdftoppm -png -r 200 9783191810801.pdf book-pages/page
-
-Bu, sayfa görsellerini verir.
-
-⸻
-
-13.2 Backend otomasyon
-
-Backend’de import flow:
-
-Admin PDF yükler
-↓
-PDF storage’a kaydedilir
-↓
-Queue job başlar
-↓
-pdftoppm çalışır
-↓
-Her page PNG storage’a yüklenir
-↓
-book_pages kayıtları açılır
-
-⸻
-
-13.3 Görsel kırpma
-
-Admin panelde:
-
-Sayfa açılır
-Mouse ile alan seçilir
-Crop butonuna basılır
-Backend crop yapar
-Yeni image asset oluşturur
-
-Backend crop mantığı:
-
-Input:
-page_image_url
-x
-y
-width
-height
-Output:
-cropped image file
-media_assets kaydı
-
-⸻
-
-14. Canvas import süreci
-
-Senin gördüğün endpoint’ten gelen JSON şu tip objeler içeriyor:
-
-Textbox
-Rect
-Circle
-Path
-
-Bunları şu normalize tiplere çeviririz:
-
-Textbox → text
-Rect    → rect / hotspot candidate
-Circle  → marker
-Path    → drawing / highlight
-
-Normalize örnek:
-
-{
-  "type": "text",
-  "text": "Tschau",
-  "x": 442.16,
-  "y": 153.2,
-  "fontSize": 24,
-  "color": "rgb(0, 0, 0)"
-}
-
-Path/highlight örnek:
-
-{
-  "type": "highlight",
-  "stroke": "rgba(255, 255, 0, 0.3)",
-  "strokeWidth": 19.1,
-  "path": []
-}
-
-⸻
-
-15. İçerik import şablonu
-
-Firmadan şu formatta Excel/CSV isteyebiliriz.
-
-Books
-
-book_code
-title
-isbn
-level
-target_language
-support_language
-publisher_ref
-
-Units
-
-book_code
-unit_no
-title
-order_index
-
-Lessons
-
-book_code
-unit_no
-lesson_no
-title
-order_index
-
-Exercises
-
-book_code
-unit_no
-lesson_no
-page_no
-exercise_no
-exercise_type
-instruction
-question_text
-options_json
-answer_json
-feedback_correct
-feedback_wrong
-media_refs
-
-Media
-
-book_code
-page_no
-media_type
-file_name
-source_ref
-role
-
-⸻
-
-16. Klasör yapısı
-
-Monorepo öneririm.
-
-edu-language-platform/
+```
+sprachapp/
   apps/
-    api/
-      src/
-        modules/
-          auth/
-          organizations/
-          users/
-          books/
-          pdf-import/
-          media/
-          canvas-import/
-          exercises/
-          classes/
-          assignments/
-          attempts/
-    web/
-      app/
-        admin/
-        teacher/
-        student/
-      components/
-      lib/
+    api/                      # NestJS
+      src/modules/
+        auth/ organizations/ users/
+        content/              # prod.content_items servis
+        media/                # asset servis (R2/CDN URL)
+        exercises/            # engine + validators/
+        classes/ assignments/ attempts/
+        speaking/             # runtime Claude konuşma partneri
+    student/                  # Expo (React Native) — iOS/Android/Web
+    admin/                    # Next.js — admin + teacher panel
   packages/
-    db/
-      prisma/
-    shared/
-      types/
-      schemas/
-  storage/
-    local/
-      books/
+    db/prisma/                # şema + migration
+    shared/                   # ortak TS tipleri (payload/solution şemaları)
+  pipeline/                   # Python içerik üretim hattı
+    extract/ structure/ generate/
+    quality_gate/
+  tools/
+    elevenlabs_tts.py         # ses üretimi
+    voices.json               # karakter→voice eşlemesi
+    dialogues.sample.json     # örnek girdi
+    img_to_webp.mjs           # (opsiyonel) yerel PNG→WebP/AVIF
+  storage/                    # yerel dev (R2 mock)
   docker-compose.yml
-  README.md
-
-⸻
-
-17. Backend klasör yapısı
-
-apps/api/src/modules/
-  auth/
-    auth.controller.ts
-    auth.service.ts
-    jwt.strategy.ts
-  books/
-    books.controller.ts
-    books.service.ts
-  pdf-import/
-    pdf-import.service.ts
-    pdf-import.processor.ts
-  media/
-    media.controller.ts
-    media.service.ts
-  canvas-import/
-    canvas-import.controller.ts
-    canvas-import.service.ts
-    fabric-normalizer.ts
-  exercises/
-    exercises.controller.ts
-    exercises.service.ts
-    validators/
-      multiple-choice.validator.ts
-      fill-blank.validator.ts
-      matching.validator.ts
-  attempts/
-    attempts.controller.ts
-    attempts.service.ts
-
-⸻
-
-18. Answer validation mantığı
-
-Her egzersiz tipi için ayrı validator.
-
-Ortak interface:
-
-interface ExerciseValidator {
-  validate(
-    content: unknown,
-    answer: unknown,
-    givenAnswer: unknown,
-    validationRules: unknown
-  ): ValidationResult;
-}
-interface ValidationResult {
-  isCorrect: boolean;
-  score: number;
-  feedback?: string;
-  details?: unknown;
-}
-
-Örnek fill blank:
-
-function normalizeText(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[.,!?]/g, '');
-}
-
-⸻
-
-19. MVP sprint planı
-
-Sprint 0 — Hazırlık
-
-Süre: 2–3 gün
-
-Repo oluştur
-Docker compose hazırla
-PostgreSQL kur
-NestJS api oluştur
-Next.js web oluştur
-Auth temelini kur
-Prisma schema başlat
-
-Çıktı:
-
-Çalışan boş monorepo
-API health endpoint
-DB bağlantısı
-Login altyapısı başlangıcı
-
-⸻
-
-Sprint 1 — Core schema + auth
-
-Süre: 1 hafta
-
-Organizations
-Users
-Roles
-Auth
-RBAC middleware
-Admin login
-Seed data
-
-Çıktı:
-
-Admin sisteme girebilir
-Rol bazlı erişim çalışır
-
-⸻
-
-Sprint 2 — Book + PDF import
-
-Süre: 1 hafta
-
-Book CRUD
-PDF upload
-PDF storage
-Page generation job
-Book pages table
-Admin book pages ekranı
-
-Çıktı:
-
-PDF yüklenir
-Sayfalar PNG’ye çevrilir
-Admin sayfaları görür
-
-⸻
-
-Sprint 3 — Media crop tool
-
-Süre: 1 hafta
-
-Page viewer admin ekranı
-Mouse ile crop seçimi
-Backend crop endpoint
-media_assets kaydı
-Media library
-
-Çıktı:
-
-Admin PDF sayfasından görsel kırpar
-Görsel asset olarak kaydedilir
-
-⸻
-
-Sprint 4 — Exercise builder
-
-Süre: 1–2 hafta
-
-Exercise types
-Exercise CRUD
-Multiple choice builder
-Fill blank builder
-Matching builder
-Listening builder
-Answer JSON
-Feedback
-Preview
-
-Çıktı:
-
-Admin egzersiz oluşturur
-Önizleyebilir
-Yayınlayabilir
-
-⸻
-
-Sprint 5 — Student exercise flow
-
-Süre: 1 hafta
-
-Student home
-Book reader
-Lesson detail
-Exercise solve screen
-Answer check
-Feedback
-Attempt responses
-Progress update
-
-Çıktı:
-
-Öğrenci egzersiz çözebilir
-Cevap kontrolü alır
-İlerlemesi kaydedilir
-
-⸻
-
-Sprint 6 — Teacher panel
-
-Süre: 1 hafta
-
-Classes
-Class students
-Assignments
-Progress report
-Student result detail
-
-Çıktı:
-
-Öğretmen sınıf oluşturur
-Ödev verir
-Sonuçları görür
-
-⸻
-
-Sprint 7 — Canvas import
-
-Süre: 1 hafta
-
-Fabric JSON import endpoint
-Normalize service
-Page objects table
-Admin page overlay viewer
-Textbox/highlight gösterimi
-
-Çıktı:
-
-EduReader canvas datası içeri alınır
-Sayfa üstünde gösterilir
-
-⸻
-
-20. İlk milestone
-
-İlk demo hedefi:
-
-1 PDF kitap yüklendi
-İlk 10 sayfa PNG’ye çevrildi
-2 görsel sayfadan kırpıldı
-10 egzersiz oluşturuldu
-1 öğrenci login oldu
-Egzersizleri çözdü
-Öğretmen sonucu gördü
-
-Bu demo firmaya gösterilebilir.
-
-⸻
-
-21. Firmadan istenecek materyaller
-
-Firmaya net şu liste gönderilmeli:
-
-1. Tam PDF dosyaları
-2. Orijinal görseller JPG/PNG
-3. Ses dosyaları MP3/WAV
-4. Cevap anahtarları
-5. Öğretmen kitabı / teacher guide
-6. Ünite-ders-egzersiz listesi
-7. Hangi içeriklerin uygulamada kullanılabileceğine dair yazılı onay
-8. Eğer varsa InDesign / XML / EPUB kaynak dosyaları
-9. Kitapların seviye bilgileri: A1, A2, B1...
-10. Öğrenci/öğretmen kullanım senaryoları
-
-⸻
-
-22. Firmaya gönderilecek açıklama
-
-Şunu kullanabilirsin:
-
-Uygulamayı sürdürülebilir şekilde geliştirebilmemiz için viewer linki yerine içeriklerin kaynak dosyalarına ihtiyacımız olacak.
-PDF’i sisteme import edip sayfa görsellerini oluşturabiliriz. Sayfalardan gerekli görselleri kırpıp uygulama asset’i haline getirebiliriz. Ayrıca ses dosyaları, cevap anahtarları ve egzersiz eşleştirme bilgileri gelirse içerikleri doğrudan interaktif egzersizlere dönüştürebiliriz.
-Teknik olarak sistem şu şekilde çalışacak:
-PDF → sayfa görselleri → medya asset’leri → interaktif egzersizler → öğrenci çözümü → öğretmen raporu.
-Eğer mevcut reader sisteminde canvas/annotation verileri varsa bunları da import edip sayfa üstü yazı, işaretleme ve hotspot bilgisi olarak kullanabiliriz.
-
-⸻
-
-23. Riskler
-
-23.1 İçerik formatı riski
-
-Firma sadece viewer linki verirse import zorlaşır.
-
-Çözüm:
-
-Tam PDF + medya dosyalarını istemek
-
-23.2 Görsel kalitesi riski
-
-PDF’den çıkarılan görseller düşük kalite olabilir.
-
-Çözüm:
-
-Orijinal görselleri istemek
-PDF sayfalarını 300 DPI üretmek
-Admin crop tool yapmak
-
-23.3 Egzersiz mapping riski
-
-PDF’deki egzersizi otomatik anlamak her zaman mümkün değil.
-
-Çözüm:
-
-AI destekli import + insan onayı
-
-23.4 Telif / lisans riski
-
-Firma yaptırıyor olsa bile yazılı izin gerekli.
-
-Çözüm:
-
-İçerik kullanım izni ve lisans durumunu kayıt altına almak
-
-23.5 Session/token bağımlılığı
-
-EduReader endpoint’leri geçici olabilir.
-
-Çözüm:
-
-Endpoint’i runtime’da kullanmamak
-Sadece import aşamasında kullanmak
-Kendi storage sistemimize almak
-
-⸻
-
-24. Sonraki fazlar
-
-Faz 2 — AI özellikleri
-
-Yanlış cevaba açıklama üretme
-Ek pratik üretme
-Yazma cevabı düzeltme
-Konuşma pratiği
-Telaffuz analizi
-
-Faz 3 — Mobil uygulama
-
-Flutter app
-Offline sayfa görüntüleme
-Offline egzersiz çözme
-Sonra sync
-
-Faz 4 — LMS entegrasyonu
-
-Moodle
-Google Classroom
-Canvas
-LTI entegrasyonu
-
-Faz 5 — Multi-school SaaS
-
-Her okul kendi kitaplarını yükler
-Kendi öğretmen/öğrenci yapısı olur
-Subscription modeli
-
-⸻
-
-25. Başlangıç için yapılacak ilk 10 iş
-
-Bence projeyi başlatırken sırayla şunları yap:
-
-1. Repo oluştur
-2. Docker compose ile PostgreSQL + Redis ayağa kaldır
-3. NestJS API kur
-4. Next.js admin panel kur
-5. Prisma schema oluştur
-6. Organization / user / role seed et
-7. Book CRUD yap
-8. PDF upload endpoint yap
-9. PDF’i sayfalara çeviren worker yaz
-10. Admin panelde kitap sayfalarını göster
-
-Bunlar bitince proje gerçekten başlamış olur.
-
-⸻
-
-26. Minimum geliştirme ekibi
-
-MVP için ideal ekip:
-
-1 Backend developer
-1 Frontend developer
-1 UI/UX designer
-1 Content operator / admin
-1 Project owner
-
-Sen backend/frontend’i yöneteceksen, ilk etapta 2 kişiyle bile başlanabilir:
-
-1 full-stack developer
-1 content/admin person
-
-⸻
-
-27. Tahmini süre
-
-MVP gerçekçi süre:
-
-6–8 hafta
-
-Daha hızlı demo:
-
-2 hafta içinde clickable demo
-3–4 hafta içinde çalışan import + egzersiz demo
-6–8 hafta içinde öğretmen/öğrenci MVP
-
-⸻
-
-28. En doğru ilk teknik karar
-
-Ben bu projede şunu öneririm:
-
-Önce web app + admin panel yap.
-Mobil uygulamayı ikinci faza bırak.
-
-Çünkü asıl zor kısım mobil değil:
-
-PDF import
-görsel/ses asset yönetimi
-egzersiz builder
-cevap kontrol motoru
-öğretmen raporu
-
-Bunlar oturmadan mobil uygulama sadece ekran olur.
-
-⸻
-
-29. Net proje tanımı
-
-Bu proje şu cümleyle anlatılabilir:
-
-Mevcut dil okulu kitaplarını PDF, görsel, ses ve canvas verileriyle birlikte içe aktaran; bu içerikleri interaktif egzersizlere dönüştüren; öğrenci çözüm ve öğretmen takip sistemi sunan web tabanlı bir dil öğrenme platformu.
-
-⸻
-
-30. Projeye başlama kararı
-
-Ben olsam projeyi şu isimle başlatırdım:
-
-edu-language-platform
-
-İlk milestone:
-
-PDF Import + Page Viewer + Exercise Builder MVP
-
-İlk demo hedefi:
-
-9783191810801.pdf sisteme yüklenecek
-İlk 10 sayfa görsele çevrilecek
-İlk sayfadan 2 görsel kırpılacak
-10 tane egzersiz oluşturulacak
-Öğrenci bu egzersizleri çözecek
-Öğretmen sonucu görecek
-
-Bu demo çıktısı firmaya proje vizyonunu net gösterir.
+  Project.md · sprachapp_pipeline_detayli.md · gorsel_prompt_yonetimi.md
+```
+
+---
+
+## 11. Görsel/Asset Dağıtım Stratejisi ("çok resim" problemi)
+
+**Problem:** GPT büyük PNG üretiyor (çoğu ~1024–1536 px, birkaç MB). Yüzlerce/binlerce görsel olacak.
+
+**Strateji (katmanlı):**
+
+1. **Master:** GPT çıktısı PNG → R2'de `masters/` altında saklanır (orijinal, kayıpsız). Kaynak olarak bir kez.
+2. **Servis:** İstemci görseli **CDN üzerinden** ister; Cloudflare Images (veya imgproxy) cihazın `Accept` başlığına göre **AVIF > WebP > PNG** ve istenen genişlikte döner. İstemci asla ham PNG çekmez.
+3. **İstemci:** `expo-image` / `next/image` → lazy-load + placeholder (blurhash) + disk cache. Ekranda görünene kadar indirmez.
+4. **Boyut disiplini:** Vocab/flashcard görselleri 512–768 px yeter; sahne/kapak 1024–1280 px. Master'ı gereğinden büyük tutma.
+
+**Neden bu "manuel WebP çevirmekten" daha iyi?** Manuel çevirmede tek bir sabit boyut/format üretirsin; telefon da tablet de aynı dosyayı çeker. CDN yaklaşımında her cihaz kendine en uygun format+boyutu alır, sen tek master tutarsın. Bakımı sıfıra yakın.
+
+**İlk fazda manuel çalışırken** (henüz CDN yokken) yerel dönüştürme için `tools/img_to_webp.mjs` (sharp): PNG → WebP (q80) + AVIF + 2 boyut (768/1280). Detay `gorsel_prompt_yonetimi.md` §8.
+
+---
+
+## 12. Veri Modeli (PostgreSQL)
+
+İki şema: `staging` (telifli, izole) ve `prod` (uygulama tüketir). Aşağıda özet; pipeline tabloları `sprachapp_pipeline_detayli.md` §5'te ayrıntılı.
+
+### 12.1 Referans / telifsiz
+```sql
+CREATE TABLE prod.lektionen (
+  id INT PRIMARY KEY, nummer INT, titel TEXT, thema TEXT, grammar_focus TEXT[]);
+
+CREATE TABLE prod.vocab (           -- Lernwortschatz'tan parse (fikir telifsiz)
+  id BIGSERIAL PRIMARY KEY, lektion_id INT,
+  artikel TEXT, wort TEXT, plural TEXT, wortart TEXT,
+  beispiel TEXT, uebersetzung_tr TEXT,
+  image_asset_id UUID);            -- kelimenin üretilmiş görseli
+```
+
+### 12.2 Staging (izole, prod'a sızmaz)
+```sql
+-- staging.raw_blocks, staging.skeletons
+-- (tam tanım sprachapp_pipeline_detayli.md §2, §3)
+```
+
+### 12.3 Prod içerik
+```sql
+CREATE TABLE prod.content_items (
+  id            TEXT PRIMARY KEY,
+  skeleton_id   TEXT,
+  lektion_id    INT,
+  mechanic      TEXT,              -- matching|fill_blank|listening|quiz|speaking
+  cefr          TEXT DEFAULT 'A1',
+  grammar_topic TEXT,
+  vocab_domain  TEXT,
+  payload       JSONB,             -- render verisi
+  solution      JSONB,             -- değerlendirme anahtarı
+  audio_url     TEXT,
+  quality_pass  BOOL,
+  reviewed      BOOL DEFAULT false,  -- QA onayı
+  generated_at  TIMESTAMPTZ DEFAULT now());
+```
+
+### 12.4 Media assets (üretilen görsel/ses)
+```sql
+CREATE TABLE prod.media_assets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL,             -- image | audio
+  origin TEXT NOT NULL,           -- 'gpt_image' | 'elevenlabs'
+  master_url TEXT NOT NULL,       -- R2 master (PNG/mp3)
+  cdn_url TEXT,                   -- Cloudflare Images tabanı
+  prompt_ref TEXT,                -- gorsel_prompt_yonetimi.md kaydı / tts text hash
+  lektion_id INT, slug TEXT,
+  width INT, height INT, duration_seconds NUMERIC,
+  license_status TEXT DEFAULT 'original_generated',
+  created_at TIMESTAMPTZ DEFAULT now());
+```
+
+### 12.5 Platform / LMS (v1'den korunan tablolar)
+`organizations`, `users`, `roles`, `user_roles`, `classes`, `class_students`,
+`assignments`, `attempt_sessions`, `attempt_responses`, `progress_summary`.
+(Tam DDL için v1 şeması geçerlidir; `book_files`, `book_pages`, `page_canvas_layers`, `page_objects` **kaldırıldı** — v2'de PDF/canvas göstermiyoruz.)
+
+```sql
+CREATE TABLE prod.attempt_responses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  session_id UUID, content_id TEXT REFERENCES prod.content_items(id),
+  given_answer JSONB, is_correct BOOL, score NUMERIC,
+  checked_by TEXT DEFAULT 'system',   -- system | teacher | ai
+  feedback JSONB, attempted_at TIMESTAMPTZ DEFAULT now());
+```
+
+---
+
+## 13. API Endpoint Planı (v2)
+
+```
+Auth       POST /auth/login  /auth/refresh   GET /auth/me
+Content    GET  /lektionen                    GET /lektionen/:id/content
+           GET  /content/:id                  # payload (solution gizli)
+           POST /content/:id/check            # cevap değerlendirme
+Speaking   POST /speaking/:contentId/session  # runtime AI partner
+           POST /speaking/sessions/:id/turn
+           POST /speaking/sessions/:id/finish # rubrik puanı
+Media      GET  /media/:id                    # CDN URL resolve
+Classes    GET/POST /classes  POST /classes/:id/students
+Assign.    POST /assignments  GET /assignments/student/me
+Attempts   POST /attempt-sessions  POST /attempt-sessions/:id/answers
+           POST /attempt-sessions/:id/complete   GET /students/:id/progress
+Admin/QA   GET  /admin/content?reviewed=false    # QA kuyruğu
+           POST /admin/content/:id/review        # reviewed=true
+           POST /admin/pipeline/run             # üretim job tetikle (BullMQ)
+```
+
+---
+
+## 14. Uygulama Sırası (build planı / sprintler)
+
+Pipeline fazları (`sprachapp_pipeline_detayli.md` §6) ile uygulama sprintlerini tek hatta hizalıyoruz. Prensip: **önce L3 pilotunu uçtan uca kanıtla, sonra ölçekle.**
+
+| Sprint | İçerik hattı | Uygulama tarafı | Bitiş kriteri |
+|---|---|---|---|
+| **S0 · Hazırlık** | pipeline repo iskeleti, DB şeması | monorepo, NestJS + Expo + Next.js iskelet, docker-compose, auth temeli | API health + login + boş app çalışır |
+| **S1 · Extract/Structure (L3)** | L3 raw_blocks → skeletons | admin QA ekranı iskeleti | L3 iskeletleri telifsiz, etiketli |
+| **S2 · Generate metin (L3, 2 mekanik)** | matching + fill_blank + kalite kapısı | student: bu 2 mekaniğin render + check | L3'te 2 mekanik oynanabilir |
+| **S3 · Görsel üretim (L3)** | GPT ile L3 vocab+scene görselleri → R2 + CDN | student: görsel render (expo-image) | L3 görselleri app'te CDN'den akıcı |
+| **S4 · Ses üretim + listening (L3)** | ElevenLabs ile L3 diyalogları → mp3 | student: listening mekaniği | Sesli dinleme çalışıyor |
+| **S5 · quiz + speaking (L3)** | quiz üret; speaking sistem promptu | student: quiz + runtime konuşma partneri | L3 uçtan uca 5 mekanik |
+| **S6 · QA/onay akışı** | reviewed flag | admin: içerik onay arayüzü | reviewed=true içerik yayınlanır |
+| **S7 · Teacher panel** | — | sınıf/öğrenci/ödev/ilerleme | öğretmen ödev verip sonucu görür |
+| **S8 · Ölçekleme** | 7 Lektion'a batch (metin+görsel+ses) | app: tam Lektion listesi | 7 Lektion prod'da, onaylı |
+
+**İlk demo hedefi (S2–S3 sonu):** L3 Einkaufen — öğrenci giriş yapar, üretilmiş görsellerle matching + fill_blank çözer, sonucu görür. Firmaya "özgün içerik + tutarlı görsel dili" vizyonunu kanıtlar.
+
+---
+
+## 15. Riskler
+
+| Risk | Etki | Azaltma |
+|---|---|---|
+| Ham metin prod'a sızar | Telif ihlali | CI statik kontrol: `raw_text`→`prod` import yasak |
+| Görsel tutarsızlığı (her resim farklı stil) | Amatör görünüm | Master stil promptu + karakter kanonu (`gorsel_prompt_yonetimi.md`); seed/referans görsel |
+| GPT görsel maliyeti/hacmi | Bütçe | Vocab görselleri paylaşımlı (kelime bazlı tekilleştir); boyut disiplini; CDN tek master |
+| ElevenLabs karakter tutarsızlığı | Ses kopukluğu | `voices.json` ile karakter→voice sabitleme |
+| de-CH vs de-DE karışması | Yanlış öğretim | Kalite kapısında dil normalizasyonu (hedef de-DE) |
+| A1 üstü içerik | Seviye kayması | Kalite kapısı CEFR kontrolü + vocab beyaz liste |
+| Speaking runtime maliyeti | Değişken maliyet | Kısa cevap sistem promptu; oturum/limit; ucuz model opsiyonu |
+
+---
+
+## 16. Özet — Sıradaki İlk 10 İş
+
+1. Monorepo + docker-compose (Postgres + Redis) ayağa kaldır.
+2. Prisma şeması: `prod` + `staging` + LMS tabloları.
+3. NestJS auth (JWT + rol) + Expo/Next.js iskeletleri.
+4. Python pipeline iskeleti (extract/structure/generate klasörleri).
+5. L3 Extract → `staging.raw_blocks`.
+6. L3 Structure → `staging.skeletons` (telifsiz).
+7. L3 Generate: matching + fill_blank + kalite kapısı.
+8. `gorsel_prompt_yonetimi.md`'deki L3 promptlarıyla görselleri üret → R2/CDN.
+9. `tools/elevenlabs_tts.py` ile L3 diyaloglarını seslendir.
+10. Student app'te L3'ü uçtan uca oynanabilir yap → ilk demo.

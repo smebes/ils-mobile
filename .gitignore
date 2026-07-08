@@ -1,1 +1,23 @@
 9783191810801.pdf
+
+# Sırlar / ortam
+.env
+.env.*
+!.env.example
+
+# Üretilen medya (git'e girmez; R2/CDN'e gider)
+storage/
+masters/
+public/img/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store

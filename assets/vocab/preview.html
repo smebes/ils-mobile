@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SprachApp — Vocab SVG önizleme (L3)</title>
+<style>
+  :root { --cream:#FAF3E7; --navy:#264653; }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:32px; background:#EEF3F4; color:var(--navy);
+         font-family: -apple-system, system-ui, "Segoe UI", Roboto, sans-serif; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  p  { margin:0 0 24px; color:#5a6b70; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+          gap:16px; max-width:1000px; }
+  .card { background:#fff; border-radius:20px; padding:14px;
+          box-shadow:0 6px 18px rgba(38,70,83,.08); text-align:center; }
+  .card img { width:100%; height:auto; border-radius:14px; display:block; }
+  .card .word { margin-top:10px; font-weight:600; font-size:14px; }
+</style>
+</head>
+<body>
+  <h1>Vocab SVG — Lektion 3 (Einkaufen) · 26 ikon</h1>
+  <p>Uygulamada görsel yazısız durur; kelime ayrı metindir. Bu önizlemede altına etiket koydum.</p>
+  <div class="grid" id="grid"></div>
+  <script>
+    const items = [
+      ["apfel","der Apfel"],["banane","die Banane"],["orange","die Orange"],
+      ["ei","das Ei"],["brot","das Brot"],["broetchen","das Brötchen"],
+      ["milch","die Milch"],["kaese","der Käse"],["butter","die Butter"],
+      ["tomate","die Tomate"],["kartoffel","die Kartoffel"],["gemuese","das Gemüse"],
+      ["obst","das Obst"],["fleisch","das Fleisch"],["fisch","der Fisch"],
+      ["wurst","die Wurst"],["reis","der Reis"],["zucker","der Zucker"],
+      ["salz","das Salz"],["wasser","das Wasser"],["saft","der Saft"],
+      ["kaffee","der Kaffee"],["tee","der Tee"],["einkaufswagen","der Einkaufswagen"],
+      ["einkaufskorb","der Einkaufskorb"],["geld","das Geld"]
+    ];
+    document.getElementById("grid").innerHTML = items.map(([slug,word]) =>
+      `<div class="card"><img src="l3_vocab_${slug}.svg" alt=""><div class="word">${word}</div></div>`
+    ).join("");
+  </script>
+</body>
+</html>

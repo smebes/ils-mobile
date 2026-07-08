@@ -1,0 +1,5 @@
+# SprachApp ses üretimi
+elevenlabs>=1.9.0
+
+# Opsiyonel: diyalog satırlarını tek mp3'te birleştirmek için (ffmpeg gerektirir)
+# pydub>=0.25.1

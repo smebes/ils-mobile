@@ -1,0 +1,33 @@
+{
+  "_note": "Konusmaci -> ElevenLabs voice eslemesi. EN IYI ALMANCA AKSAN icin ElevenLabs Voice Library'den ANADIL ALMAN sesleri secip voice_id'leri buraya yapistir. Asagidakiler calisan public premade ID'lerdir (multilingual_v2 Almanca konusur) ama native Alman sesiyle degistirilmesi onerilir. 'settings' alani karaktere ozel override (bos birakilirsa BASE_SETTINGS kullanilir).",
+  "_karakter_kanonu": "gorsel_prompt_yonetimi.md §4 ile ayni isimler kullanildi.",
+
+  "narrator": {
+    "voice_id": "JBFqnCBsd6RMkjVDRZzb",
+    "settings": { "stability": 0.7, "similarity_boost": 0.8 }
+  },
+  "mara": {
+    "voice_id": "21m00Tcm4TlvDq8ikWAM",
+    "settings": { "stability": 0.6 }
+  },
+  "tarek": {
+    "voice_id": "pNInz6obpgDQGcFmaJgB",
+    "settings": { "stability": 0.6 }
+  },
+  "frau_weber": {
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "settings": { "stability": 0.7 }
+  },
+  "herr_koch": {
+    "voice_id": "ErXwobaYiN019PkySvjV",
+    "settings": { "stability": 0.65 }
+  },
+  "leo": {
+    "voice_id": "21m00Tcm4TlvDq8ikWAM",
+    "settings": { "stability": 0.5, "style": 0.2 }
+  },
+  "sofia": {
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "settings": { "stability": 0.5, "style": 0.2 }
+  }
+}

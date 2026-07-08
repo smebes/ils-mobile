@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Wurst">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 140 C60 92 140 92 140 140 C140 149 132 149 132 140 C132 106 68 106 68 140 C68 149 60 149 60 140 Z" fill="#C0632F"/>
+  </g>
+</svg>

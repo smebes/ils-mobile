@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Apfel">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 76 C86 62 58 66 58 102 C58 142 82 164 100 164 C118 164 142 142 142 102 C142 66 114 62 100 76 Z" fill="#E4572E"/>
+    <path d="M100 76 C100 64 100 54 110 48"/>
+    <path d="M110 52 C126 41 143 50 136 67 C123 76 109 67 110 52 Z" fill="#2A9D8F"/>
+  </g>
+</svg>

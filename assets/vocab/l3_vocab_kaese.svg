@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Kaese">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 138 L150 96 C154 94 156 100 152 103 L150 138 C150 145 144 150 137 150 L63 150 C56 150 50 145 50 138 Z" fill="#F2C14E"/>
+    <circle cx="118" cy="132" r="7" fill="#FAF3E7"/>
+    <circle cx="136" cy="118" r="5" fill="#FAF3E7"/>
+    <circle cx="96" cy="136" r="5" fill="#FAF3E7"/>
+  </g>
+</svg>

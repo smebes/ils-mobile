@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Broetchen">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="100" cy="114" rx="54" ry="36" fill="#E0A96B"/>
+    <path d="M100 82 C95 96 95 132 100 146" stroke-width="5"/>
+  </g>
+</svg>

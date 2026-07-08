@@ -1,0 +1,42 @@
+{
+  "_note": "ElevenLabs seslendirme girdisi. Her item bir diyalog/anlatim. 'lines' cok konusmacili; 'speaker' voices.json ile eslesir. Bu icerik OZGUN uretilmis ornektir (telifsiz). Uretimde prod.content_items'tan otomatik uretilir.",
+  "items": [
+    {
+      "id": "L3_folge1",
+      "lektion": 3,
+      "vocab_domain": "Einkaufen / Lebensmittel",
+      "lines": [
+        { "speaker": "herr_koch", "text": "Guten Tag! Was möchten Sie?" },
+        { "speaker": "mara", "text": "Guten Tag. Ich möchte bitte drei Äpfel und eine Banane." },
+        { "speaker": "herr_koch", "text": "Gerne. Möchten Sie auch Brot?" },
+        { "speaker": "mara", "text": "Ja, ein Brot bitte. Was kostet das zusammen?" },
+        { "speaker": "herr_koch", "text": "Das macht vier Euro fünfzig." },
+        { "speaker": "mara", "text": "Hier bitte. Vielen Dank!" }
+      ]
+    },
+    {
+      "id": "L3_listening_01",
+      "lektion": 3,
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie den Dialog im Supermarkt." },
+        { "speaker": "tarek", "text": "Entschuldigung, wo finde ich die Milch?" },
+        { "speaker": "herr_koch", "text": "Die Milch ist dort hinten, neben dem Käse." },
+        { "speaker": "tarek", "text": "Danke schön!" }
+      ]
+    },
+    {
+      "id": "L1_greeting_01",
+      "lektion": 1,
+      "lines": [
+        { "speaker": "mara", "text": "Guten Morgen! Ich heiße Mara. Wie heißen Sie?" },
+        { "speaker": "tarek", "text": "Guten Morgen, Mara. Mein Name ist Tarek. Ich komme aus Syrien." },
+        { "speaker": "mara", "text": "Schön, Sie kennenzulernen." }
+      ]
+    },
+    {
+      "id": "L3_vocab_narration",
+      "lektion": 3,
+      "text": "der Apfel. die Banane. das Brot. die Milch. der Käse."
+    }
+  ]
+}
