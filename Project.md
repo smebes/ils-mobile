@@ -3,17 +3,19 @@
 > **Bu doküman v2'dir.** İlk versiyon (v1) "firmanın lisanslı dijital kitabını uygulamaya taşıyan reader/import platformu" olarak kurgulanmıştı. Telif analizinden (bkz. `sprachapp_pipeline_detayli.md`) sonra ürün yönü değişti: **artık kitabın içeriğini göstermiyoruz; kitabı yalnızca "iskelet/şablon" olarak kullanıp sıfırdan özgün içerik üretiyoruz.** Bu doküman genel mimariyi bu son duruma göre günceller.
 >
 > İlgili dokümanlar:
+> - **`PRODUCT.md`** — ürün tezi, 3 katmanlı deneyim (SR / oyunlaştırma / AI konuşma), ekran akışları, ticari model, V0–V6 yol haritası
 > - `sprachapp_pipeline_detayli.md` — içerik pipeline'ının implementasyon-hazır detayı (Extract/Structure/Generate)
-> - `gorsel_prompt_yonetimi.md` — GPT görsel üretimi için prompt kataloğu ve stil rehberi
+> - `gorsel_prompt_yonetimi.md` — GPT foto sahneler + vocab SVG stratejisi
+> - `content/l3/` — L3 pilot içerik (vocab, egzersizler, medya referansları)
 > - `tools/elevenlabs_tts.py` — tüm diyalogların Almanca seslendirme script'i
 
 ---
 
 ## 0. Tek Cümlelik Ürün Tanımı
 
-**SprachApp**, Schritte Plus Neu 1 (A1) kitabının *öğretim mekaniğini* referans alıp; metinleri Claude, görselleri GPT (gpt-image-1), sesleri ElevenLabs ile **%100 özgün üreten**, öğrenci/öğretmen/admin rolleriyle çalışan, görsel-yoğun bir A1 Almanca öğrenme uygulamasıdır.
+**SprachApp**, Schritte Plus Neu 1 (A1) temelli; **görünmez SR kalıcılığı** + **görünür oyunlaştırma** + **AI konuşma kanıtı** ile çalışan, mobil-öncelikli, ticari bir A1 Almanca uygulamasıdır. İçerik kitabın *mekaniğinden* ilham alınır ama metin/görsel/ses **%100 özgün üretilir** (telif güvenli).
 
-Kullanıcıya gösterilen hiçbir metin/görsel/ses telifli kaynaktan **kopyalanmaz**; hepsi üretilir.
+Ürün deneyimi detayı: **`PRODUCT.md`**
 
 ---
 
@@ -72,12 +74,12 @@ Detay: `sprachapp_pipeline_detayli.md` §1.
                                              ▼
 ┌──────────────────────────────── RUNTIME (uygulama) ───────────────────────────────────────┐
 │                                                                                            │
-│  PostgreSQL ──▶ NestJS API ──▶ CDN (Cloudflare R2 + Images: AVIF/WebP)                      │
+│  PostgreSQL ──▶ FastAPI ──▶ CDN (Cloudflare R2 + Images)                                   │
 │                     │                                                                       │
 │        ┌────────────┼────────────┐                                                         │
 │        ▼            ▼            ▼                                                          │
-│   Student App   Teacher Panel  Admin Panel        speaking mekaniği = runtime Claude çağrısı │
-│  (Expo RN)      (Next.js)      (Next.js)                                                    │
+│   Flutter App   (V5+ Admin)   AI proxy          speaking = runtime Claude; SR sync endpoint  │
+│  iOS/Android    web panel     Claude API         offline: Hive + asset bundle per Lektion    │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -144,24 +146,24 @@ Not: v2'de admin artık "PDF kırpma / canvas import" yapmıyor; onun yerine **i
 
 ---
 
-## 9. TEKNOLOJİ KARARI (görsel-yoğun uygulama için)
+## 9. TEKNOLOJİ KARARI (mobil-öncelikli, ticari)
 
-> Soru: "Çok fazla resim olacağı için en efektif hangisi?" — Kritik ayrım şu: **görsel verimliliği framework'ten çok teslim (delivery) hattından gelir.** Yani asıl kaldıraç CDN + format + lazy-load. Framework'ü de buna göre seçiyoruz.
-
-**Karar:**
+> Ürün kararı: **`PRODUCT.md` §7**. Özet: Flutter (offline-first mobil) + FastAPI (Python stack ile uyum) + PostgreSQL.
 
 | Katman | Seçim | Gerekçe |
 |---|---|---|
-| **Öğrenci uygulaması** | **Expo (React Native)** + `expo-image` | Tek kod tabanı iOS/Android/Web. `expo-image` bu iş için en güçlüsü: yerel AVIF/WebP desteği, agresif disk+bellek cache, `blurhash`/`thumbhash` placeholder, öncelikli/lazy yükleme. Görsel-yoğun app tam da bunu ister. TS ile tüm stack tek dilde. |
-| **Admin + Teacher panel** | **Next.js (React)** + Tailwind + shadcn/ui | `next/image` ile otomatik responsive + AVIF/WebP; QA/onay arayüzü için hızlı. |
-| **Backend** | **NestJS** + PostgreSQL + Prisma | v1 kararı geçerli; TS stack bütünlüğü, BullMQ/Redis kuyruğu (üretim job'ları). |
-| **Depolama + CDN** | **Cloudflare R2 + Cloudflare Images** | Görsel dağıtımının kalbi. Master PNG'yi bir kez yükle; cihaza göre AVIF/WebP + boyut *on-the-fly*. "PNG→WebP manuel çevirme" derdi CDN'e devredilir. |
-| **İçerik pipeline** | **Python** (pdfplumber, pydantic, anthropic SDK) | Extract/Structure/Generate; kanıtlanmış. |
-| **TTS** | ElevenLabs (`tools/elevenlabs_tts.py`) | Almanca anadil, hız/stabilite kontrolü. |
+| **Mobil app** | **Flutter** | iOS+Android tek kod; offline/cache olgun; ekip uzmanlığı; B2C ticari ürün odak |
+| **Backend** | **FastAPI** + PostgreSQL | Content API, SR sync, AI konuşma proxy; pipeline (Python) ile aynı ekosistem |
+| **Lokal (mobil)** | **Hive** veya SQLite | SR kutuları + oturum verisi offline; online sync |
+| **Depolama + CDN** | **Cloudflare R2 + Images** | Foto sahneler WebP/AVIF; vocab SVG doğrudan bundle/CDN |
+| **İçerik pipeline** | **Python** (pdfplumber, pydantic, anthropic SDK) | Extract/Structure/Generate |
+| **TTS (build-time)** | ElevenLabs (`tools/elevenlabs_tts.py`) | Sesler önceden üretilir — runtime maliyet yok |
+| **AI konuşma (runtime)** | Claude API (backend proxy) | Tek canlı maliyet noktası |
+| **Auth + ödeme (V5+)** | RevenueCat / Stripe | Freemium abonelik |
 
-**Neden Flutter değil (kullanıcının geçmişi olsa da)?** İki gerçek sebep: (1) Backend+admin zaten TS (NestJS+Next.js) — Expo ile **tüm ürün tek dil (TypeScript)** ve **paylaşılan tipler** olur. (2) Görsel-yoğun senaryoda `expo-image`'in AVIF + cache + placeholder olgunluğu, Flutter `cached_network_image`'e göre daha az uğraşla daha iyi sonuç verir. Flutter ikincil bir alternatif olarak masada kalabilir; ama tavsiye Expo.
+**Medya ayrımı:** Vocab = **SVG** (`assets/vocab/`, repoda, offline bundle). Sahneler = **foto WebP** (`public/img/` → CDN). Görsel performansının çoğu CDN + preload + offline cache'ten gelir.
 
-**Not:** Framework ne olursa olsun, görsel performansının %80'i şu 3 karardan gelir → (a) CDN'in AVIF/WebP + responsive boyut vermesi, (b) `expo-image`/`next/image` ile lazy-load + placeholder, (c) master görselleri makul çözünürlükte tutmak (aşağı §11).
+**Not:** Öğretmen/LMS paneli (`Project.md` §8) B2B fazında (V6); V1–V4 öğrenci uygulaması odaklı.
 
 ---
 
@@ -169,31 +171,19 @@ Not: v2'de admin artık "PDF kırpma / canvas import" yapmıyor; onun yerine **i
 
 ```
 sprachapp/
-  apps/
-    api/                      # NestJS
-      src/modules/
-        auth/ organizations/ users/
-        content/              # prod.content_items servis
-        media/                # asset servis (R2/CDN URL)
-        exercises/            # engine + validators/
-        classes/ assignments/ attempts/
-        speaking/             # runtime Claude konuşma partneri
-    student/                  # Expo (React Native) — iOS/Android/Web
-    admin/                    # Next.js — admin + teacher panel
-  packages/
-    db/prisma/                # şema + migration
-    shared/                   # ortak TS tipleri (payload/solution şemaları)
+  mobile/                     # Flutter — iOS/Android (ana ürün)
+    lib/
+      features/ home/ learn/ speaking/ progress/
+      core/ sr/ audio/ assets/
+  api/                        # FastAPI
+    app/routers/ content.py sr.py speaking.py auth.py
+  content/                    # Üretilmiş içerik (git'te örnek L3)
+    l3/lektion.json exercises.json
+  assets/vocab/               # SVG ikonlar (offline bundle)
   pipeline/                   # Python içerik üretim hattı
-    extract/ structure/ generate/
-    quality_gate/
-  tools/
-    elevenlabs_tts.py         # ses üretimi
-    voices.json               # karakter→voice eşlemesi
-    dialogues.sample.json     # örnek girdi
-    img_to_webp.mjs           # (opsiyonel) yerel PNG→WebP/AVIF
-  storage/                    # yerel dev (R2 mock)
-  docker-compose.yml
-  Project.md · sprachapp_pipeline_detayli.md · gorsel_prompt_yonetimi.md
+  tools/                      # elevenlabs_tts, img_to_webp
+  masters/ public/img/ storage/ # medya (gitignore)
+  PRODUCT.md Project.md sprachapp_pipeline_detayli.md
 ```
 
 ---
@@ -206,7 +196,7 @@ sprachapp/
 
 1. **Master:** GPT çıktısı PNG → R2'de `masters/` altında saklanır (orijinal, kayıpsız). Kaynak olarak bir kez.
 2. **Servis:** İstemci görseli **CDN üzerinden** ister; Cloudflare Images (veya imgproxy) cihazın `Accept` başlığına göre **AVIF > WebP > PNG** ve istenen genişlikte döner. İstemci asla ham PNG çekmez.
-3. **İstemci:** `expo-image` / `next/image` → lazy-load + placeholder (blurhash) + disk cache. Ekranda görünene kadar indirmez.
+3. **İstemci:** Flutter `cached_network_image` + asset bundle (SVG vocab) + Lektion preload. Offline'da bundle'dan okur.
 4. **Boyut disiplini:** Vocab/flashcard görselleri 512–768 px yeter; sahne/kapak 1024–1280 px. Master'ı gereğinden büyük tutma.
 
 **Neden bu "manuel WebP çevirmekten" daha iyi?** Manuel çevirmede tek bir sabit boyut/format üretirsin; telefon da tablet de aynı dosyayı çeker. CDN yaklaşımında her cihaz kendine en uygun format+boyutu alır, sen tek master tutarsın. Bakımı sıfıra yakın.
@@ -270,10 +260,33 @@ CREATE TABLE prod.media_assets (
   created_at TIMESTAMPTZ DEFAULT now());
 ```
 
-### 12.5 Platform / LMS (v1'den korunan tablolar)
-`organizations`, `users`, `roles`, `user_roles`, `classes`, `class_students`,
-`assignments`, `attempt_sessions`, `attempt_responses`, `progress_summary`.
-(Tam DDL için v1 şeması geçerlidir; `book_files`, `book_pages`, `page_canvas_layers`, `page_objects` **kaldırıldı** — v2'de PDF/canvas göstermiyoruz.)
+### 12.6 SR + oyunlaştırma (PRODUCT.md §3–4)
+```sql
+CREATE TABLE user_sr_progress (
+  user_id UUID, vocab_id BIGINT,
+  box INT DEFAULT 1,           -- Leitner 1..5
+  next_review DATE,
+  correct_streak INT DEFAULT 0,
+  total_attempts INT DEFAULT 0,
+  last_result BOOL,
+  updated_at TIMESTAMPTZ DEFAULT now(),
+  PRIMARY KEY (user_id, vocab_id));
+
+CREATE TABLE user_gamification (
+  user_id UUID PRIMARY KEY,
+  streak INT DEFAULT 0,
+  streak_freeze_remaining INT DEFAULT 1,
+  xp INT DEFAULT 0,
+  level INT DEFAULT 1,
+  daily_goal_minutes INT DEFAULT 10,
+  last_active_date DATE
+);
+```
+Mobil offline: Hive'da aynı şema → sync endpoint `POST /sr/sync`.
+
+### 12.7 Platform / LMS (B2B — V6, opsiyonel)
+
+`organizations`, `users`, `classes`, `assignments` — kurumsal lisans fazında. V1–V4 B2C öğrenci app odaklı.
 
 ```sql
 CREATE TABLE prod.attempt_responses (
@@ -308,23 +321,21 @@ Admin/QA   GET  /admin/content?reviewed=false    # QA kuyruğu
 
 ---
 
-## 14. Uygulama Sırası (build planı / sprintler)
+## 14. Yol Haritası (`PRODUCT.md` §10 ile hizalı)
 
-Pipeline fazları (`sprachapp_pipeline_detayli.md` §6) ile uygulama sprintlerini tek hatta hizalıyoruz. Prensip: **önce L3 pilotunu uçtan uca kanıtla, sonra ölçekle.**
-
-| Sprint | İçerik hattı | Uygulama tarafı | Bitiş kriteri |
+| Faz | İçerik | Uygulama | Durum |
 |---|---|---|---|
-| **S0 · Hazırlık** | pipeline repo iskeleti, DB şeması | monorepo, NestJS + Expo + Next.js iskelet, docker-compose, auth temeli | API health + login + boş app çalışır |
-| **S1 · Extract/Structure (L3)** | L3 raw_blocks → skeletons | admin QA ekranı iskeleti | L3 iskeletleri telifsiz, etiketli |
-| **S2 · Generate metin (L3, 2 mekanik)** | matching + fill_blank + kalite kapısı | student: bu 2 mekaniğin render + check | L3'te 2 mekanik oynanabilir |
-| **S3 · Görsel üretim (L3)** | GPT ile L3 vocab+scene görselleri → R2 + CDN | student: görsel render (expo-image) | L3 görselleri app'te CDN'den akıcı |
-| **S4 · Ses üretim + listening (L3)** | ElevenLabs ile L3 diyalogları → mp3 | student: listening mekaniği | Sesli dinleme çalışıyor |
-| **S5 · quiz + speaking (L3)** | quiz üret; speaking sistem promptu | student: quiz + runtime konuşma partneri | L3 uçtan uca 5 mekanik |
-| **S6 · QA/onay akışı** | reviewed flag | admin: içerik onay arayüzü | reviewed=true içerik yayınlanır |
-| **S7 · Teacher panel** | — | sınıf/öğrenci/ödev/ilerleme | öğretmen ödev verip sonucu görür |
-| **S8 · Ölçekleme** | 7 Lektion'a batch (metin+görsel+ses) | app: tam Lektion listesi | 7 Lektion prod'da, onaylı |
+| **V0** | Lektion içerik (vocab SVG + foto + ses + egzersiz JSON) | — | **L3 pilot ~%80** (`content/l3/`) |
+| **V1 MVP** | L1 tam içerik | Flutter: flashcard→quiz→matching→fill_blank, temel streak | Sırada |
+| **V2** | 7 Lektion içerik batch | SR motoru (Leitner) + günlük hedef + hakimiyet % | — |
+| **V3** | speaking senaryoları | AI konuşma (yazılı) + rubrik | — |
+| **V4** | — | Rozet, seviye, streak freeze, **offline** Lektion bundle | — |
+| **V5** | tam set | Sesli konuşma, freemium, 7 Lektion | — |
+| **V6** | gastronomi paketi | B2B lisans | — |
 
-**İlk demo hedefi (S2–S3 sonu):** L3 Einkaufen — öğrenci giriş yapar, üretilmiş görsellerle matching + fill_blank çözer, sonucu görür. Firmaya "özgün içerik + tutarlı görsel dili" vizyonunu kanıtlar.
+**V1 ilk demo:** L3 veya L1 — öğrenci "Heute lernen" → 4 mekanik döngüsü → ses 🐢/🐇. İçerik hazır (L3); app iskeleti eksik.
+
+**Eski sprint planı (teknik borç / pipeline):** Extract/Structure/Generate otomasyonu V2 sonrası ölçekleme için; şimdilik `content/l3/` manuel üretim kanıtı yeterli.
 
 ---
 
@@ -342,15 +353,13 @@ Pipeline fazları (`sprachapp_pipeline_detayli.md` §6) ile uygulama sprintlerin
 
 ---
 
-## 16. Özet — Sıradaki İlk 10 İş
+## 16. Sıradaki İşler (V1 MVP)
 
-1. Monorepo + docker-compose (Postgres + Redis) ayağa kaldır.
-2. Prisma şeması: `prod` + `staging` + LMS tabloları.
-3. NestJS auth (JWT + rol) + Expo/Next.js iskeletleri.
-4. Python pipeline iskeleti (extract/structure/generate klasörleri).
-5. L3 Extract → `staging.raw_blocks`.
-6. L3 Structure → `staging.skeletons` (telifsiz).
-7. L3 Generate: matching + fill_blank + kalite kapısı.
-8. `gorsel_prompt_yonetimi.md`'deki L3 promptlarıyla görselleri üret → R2/CDN.
-9. `tools/elevenlabs_tts.py` ile L3 diyaloglarını seslendir.
-10. Student app'te L3'ü uçtan uca oynanabilir yap → ilk demo.
+1. **Flutter iskelet:** `mobile/` — Home ("Heute lernen"), Learn oturumu, 4 mekanik widget.
+2. **İçerik yükleme:** `content/l3/` JSON'ları + `assets/vocab/` + `public/img/` + `storage/audio/` bundle veya API.
+3. **FastAPI minimal:** `GET /lektionen/3`, `GET /content/:id`, `POST /content/:id/check`.
+4. **Öğrenme döngüsü:** flashcard → quiz → matching → fill_blank (`PRODUCT.md` §6.2).
+5. **Ses:** 🐢/🐇 butonları (slow/normal mp3 yolları `exercises.json`'da hazır).
+6. **Temel streak:** günlük hedef tamamlanınca +1 (Hive lokal).
+7. **L1 içerik:** V0'yı L1 için tekrarla (tanışma teması — kitaptaki foto stiline uygun sahneler).
+8. **V2:** Leitner SR motoru (`user_sr_progress` + günlük kuyruk karışımı).
