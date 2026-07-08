@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Obst">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M100 62 C100 72 100 78 100 86" stroke-width="5"/>
+    <path d="M100 70 C110 66 120 66 124 72" stroke-width="5" fill="#2A9D8F"/>
+    <circle cx="86" cy="98" r="12" fill="#2A9D8F"/>
+    <circle cx="112" cy="98" r="12" fill="#2A9D8F"/>
+    <circle cx="74" cy="120" r="12" fill="#2A9D8F"/>
+    <circle cx="100" cy="120" r="12" fill="#2A9D8F"/>
+    <circle cx="126" cy="120" r="12" fill="#2A9D8F"/>
+    <circle cx="88" cy="142" r="12" fill="#2A9D8F"/>
+    <circle cx="114" cy="142" r="12" fill="#2A9D8F"/>
+  </g>
+</svg>

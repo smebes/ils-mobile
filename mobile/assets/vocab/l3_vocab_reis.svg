@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Reis">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M62 116 C62 98 138 98 138 116 Z" fill="#FFFDF6"/>
+    <path d="M56 116 L144 116 C140 148 60 148 56 116 Z" fill="#2A9D8F"/>
+    <path d="M84 108 l6 -6 M100 106 l6 -6 M116 108 l6 -6" stroke-width="4"/>
+  </g>
+</svg>

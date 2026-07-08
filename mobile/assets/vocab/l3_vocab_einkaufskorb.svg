@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Einkaufskorb">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M78 102 C78 78 122 78 122 102" stroke-width="6"/>
+    <path d="M58 102 L142 102 L131 150 C130 156 125 158 119 158 L81 158 C75 158 70 156 69 150 Z" fill="#2A9D8F"/>
+    <path d="M64 124 L136 124" stroke-width="4"/>
+    <path d="M86 104 L90 156 M108 104 L110 156" stroke-width="4"/>
+  </g>
+</svg>

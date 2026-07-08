@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Fleisch">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 112 C60 88 96 78 122 86 C150 94 152 122 138 138 C122 156 80 154 68 138 C63 130 64 120 64 112 Z" fill="#E4572E"/>
+    <path d="M70 104 C64 96 66 88 74 84" stroke="#FFFDF6" stroke-width="9"/>
+    <path d="M70 104 C64 96 66 88 74 84" stroke-width="5"/>
+    <path d="M104 108 C114 112 118 122 112 132" stroke-width="4"/>
+  </g>
+</svg>

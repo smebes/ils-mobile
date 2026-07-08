@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Butter">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 100 L118 84 L152 100 L94 116 Z" fill="#F6D170"/>
+    <path d="M94 116 L152 100 L152 140 C152 146 148 150 142 150 L94 150 Z" fill="#F2C14E"/>
+    <path d="M60 100 L94 116 L94 150 L68 150 C64 150 60 146 60 142 Z" fill="#E4B94A"/>
+  </g>
+</svg>

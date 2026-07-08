@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Kartoffel">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 108 C58 82 94 72 118 82 C146 92 152 120 138 138 C124 156 84 156 72 140 C66 132 66 118 64 108 Z" fill="#C98A4B"/>
+    <circle cx="94" cy="106" r="3" fill="#264653" stroke="none"/>
+    <circle cx="120" cy="118" r="3" fill="#264653" stroke="none"/>
+    <circle cx="102" cy="132" r="3" fill="#264653" stroke="none"/>
+  </g>
+</svg>

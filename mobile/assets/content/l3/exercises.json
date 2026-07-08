@@ -1,0 +1,275 @@
+{
+  "_meta": {
+    "note": "Lektion 3 egzersizleri. Her item prod.content_items semasina uyar: payload=render verisi (cevap yok), solution=degerlendirme anahtari. Sesler storage/audio/manifest.json ile ayni dosyalar. Tum icerik OZGUN (telifsiz).",
+    "schema": {
+      "matching":   "payload{left[{id,image?,text?}], right[{id,text}]}  solution{leftId:rightId}",
+      "fill_blank": "payload{sentence, blanks[{id,options?}]}            solution{blankId:{answer,accept[]}}",
+      "listening":  "payload{audio{slow[],normal[]}, questions[{id,q,options[{id,text}]}]}  solution{qId:optionId}",
+      "quiz":       "payload{question, options[{id,text}]}               solution{answer, explanation}"
+    },
+    "validation": { "case_sensitive": false, "trim": true, "ignore_punctuation": true }
+  },
+
+  "items": [
+    {
+      "id": "L3_M1",
+      "lektion_id": 3,
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Nomen mit Artikel",
+      "vocab_domain": "Lebensmittel",
+      "payload": {
+        "instruction": "Ordne die Bilder den Wörtern zu.",
+        "left": [
+          { "id": "a", "image": "assets/vocab/l3_vocab_apfel.svg" },
+          { "id": "b", "image": "assets/vocab/l3_vocab_banane.svg" },
+          { "id": "c", "image": "assets/vocab/l3_vocab_brot.svg" },
+          { "id": "d", "image": "assets/vocab/l3_vocab_milch.svg" },
+          { "id": "e", "image": "assets/vocab/l3_vocab_kaese.svg" },
+          { "id": "f", "image": "assets/vocab/l3_vocab_ei.svg" }
+        ],
+        "right": [
+          { "id": "1", "text": "der Apfel" },
+          { "id": "2", "text": "die Banane" },
+          { "id": "3", "text": "das Brot" },
+          { "id": "4", "text": "die Milch" },
+          { "id": "5", "text": "der Käse" },
+          { "id": "6", "text": "das Ei" }
+        ]
+      },
+      "solution": { "a": "1", "b": "2", "c": "3", "d": "4", "e": "5", "f": "6" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_M2",
+      "lektion_id": 3,
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Plural der Nomen",
+      "vocab_domain": "Lebensmittel",
+      "payload": {
+        "instruction": "Ordne zu: Singular und Plural.",
+        "left": [
+          { "id": "a", "text": "der Apfel",     "image": "assets/vocab/l3_vocab_apfel.svg" },
+          { "id": "b", "text": "das Ei",        "image": "assets/vocab/l3_vocab_ei.svg" },
+          { "id": "c", "text": "die Banane",    "image": "assets/vocab/l3_vocab_banane.svg" },
+          { "id": "d", "text": "die Tomate",    "image": "assets/vocab/l3_vocab_tomate.svg" },
+          { "id": "e", "text": "die Kartoffel", "image": "assets/vocab/l3_vocab_kartoffel.svg" }
+        ],
+        "right": [
+          { "id": "1", "text": "Äpfel" },
+          { "id": "2", "text": "Eier" },
+          { "id": "3", "text": "Bananen" },
+          { "id": "4", "text": "Tomaten" },
+          { "id": "5", "text": "Kartoffeln" }
+        ]
+      },
+      "solution": { "a": "1", "b": "2", "c": "3", "d": "4", "e": "5" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F1",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Verbkonjugation + Akkusativ",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Ergänze das Verb im Präsens.",
+        "sentence": "Ich {{b1}} einen Apfel und eine Banane.",
+        "blanks": [
+          { "id": "b1", "options": ["kaufe", "kaufst", "kauft"] }
+        ]
+      },
+      "solution": {
+        "b1": { "answer": "kaufe", "accept": ["kaufe"] }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F2",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Plural der Nomen",
+      "vocab_domain": "Lebensmittel",
+      "payload": {
+        "instruction": "Schreibe den Plural.",
+        "sentence": "Ein Apfel — zwei {{b1}}. Eine Tomate — drei {{b2}}.",
+        "blanks": [
+          { "id": "b1" },
+          { "id": "b2" }
+        ]
+      },
+      "solution": {
+        "b1": { "answer": "Äpfel",   "accept": ["äpfel", "Äpfel"] },
+        "b2": { "answer": "Tomaten", "accept": ["tomaten", "Tomaten"] }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_L1",
+      "lektion_id": 3,
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Hör den Dialog und beantworte die Fragen.",
+        "scene_image": "public/img/l3_scene_an_der_kasse.webp",
+        "audio_ref": "L3_folge1",
+        "default_speed": "slow",
+        "audio": {
+          "slow": [
+            "storage/audio/l3/slow/l3_folge1_slow_01_herr_koch_e5c8a2f4ba.mp3",
+            "storage/audio/l3/slow/l3_folge1_slow_02_mara_156c1d6d20.mp3",
+            "storage/audio/l3/slow/l3_folge1_slow_03_herr_koch_969b7afbab.mp3",
+            "storage/audio/l3/slow/l3_folge1_slow_04_mara_a7e37cdaaf.mp3",
+            "storage/audio/l3/slow/l3_folge1_slow_05_herr_koch_92e3b986fb.mp3",
+            "storage/audio/l3/slow/l3_folge1_slow_06_mara_b78eb52d7b.mp3"
+          ],
+          "normal": [
+            "storage/audio/l3/normal/l3_folge1_normal_01_herr_koch_8aa229b973.mp3",
+            "storage/audio/l3/normal/l3_folge1_normal_02_mara_69593d0878.mp3",
+            "storage/audio/l3/normal/l3_folge1_normal_03_herr_koch_9579be5ed6.mp3",
+            "storage/audio/l3/normal/l3_folge1_normal_04_mara_b7ed32eb4e.mp3",
+            "storage/audio/l3/normal/l3_folge1_normal_05_herr_koch_1d64611783.mp3",
+            "storage/audio/l3/normal/l3_folge1_normal_06_mara_0f0f71e4b9.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was möchte die Kundin kaufen?",
+            "options": [
+              { "id": "o1", "text": "drei Äpfel und eine Banane" },
+              { "id": "o2", "text": "zwei Bananen und Milch" },
+              { "id": "o3", "text": "einen Apfel und Käse" }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Was kostet alles zusammen?",
+            "options": [
+              { "id": "o1", "text": "vier Euro fünfzig" },
+              { "id": "o2", "text": "vierzehn Euro" },
+              { "id": "o3", "text": "fünf Euro" }
+            ]
+          }
+        ]
+      },
+      "solution": { "q1": "o1", "q2": "o1" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_L2",
+      "lektion_id": 3,
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen",
+      "vocab_domain": "Supermarkt",
+      "payload": {
+        "instruction": "Hör zu: im Supermarkt. Beantworte die Fragen.",
+        "scene_image": "public/img/l3_scene_milch_finden.webp",
+        "audio_ref": "L3_listening_01",
+        "default_speed": "slow",
+        "audio": {
+          "slow": [
+            "storage/audio/l3/slow/l3_listening_01_slow_01_narrator_4ff95690d1.mp3",
+            "storage/audio/l3/slow/l3_listening_01_slow_02_tarek_468dd354b9.mp3",
+            "storage/audio/l3/slow/l3_listening_01_slow_03_herr_koch_6f2425b8b9.mp3",
+            "storage/audio/l3/slow/l3_listening_01_slow_04_tarek_7f3e2d6662.mp3"
+          ],
+          "normal": [
+            "storage/audio/l3/normal/l3_listening_01_normal_01_narrator_df231abbf6.mp3",
+            "storage/audio/l3/normal/l3_listening_01_normal_02_tarek_e68cdf8170.mp3",
+            "storage/audio/l3/normal/l3_listening_01_normal_03_herr_koch_51b2ad6f95.mp3",
+            "storage/audio/l3/normal/l3_listening_01_normal_04_tarek_39c60ff5d5.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was sucht der Mann?",
+            "options": [
+              { "id": "o1", "text": "die Milch" },
+              { "id": "o2", "text": "das Brot" },
+              { "id": "o3", "text": "den Kaffee" }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Wo ist die Milch?",
+            "options": [
+              { "id": "o1", "text": "neben dem Käse" },
+              { "id": "o2", "text": "neben dem Brot" },
+              { "id": "o3", "text": "an der Kasse" }
+            ]
+          }
+        ]
+      },
+      "solution": { "q1": "o1", "q2": "o1" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q1",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Akkusativ (unbestimmter Artikel)",
+      "vocab_domain": "Lebensmittel",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Ich kaufe ___ Apfel.",
+        "options": [
+          { "id": "o1", "text": "einen" },
+          { "id": "o2", "text": "eine" },
+          { "id": "o3", "text": "ein" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "„Apfel“ ist maskulin (der Apfel). Im Akkusativ: einen Apfel."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q2",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Wortschatz / Einkaufen",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Wo kauft man Brot?",
+        "question": "Wo kauft man Brot und Brötchen?",
+        "image": "public/img/l3_scene_baeckerei.webp",
+        "options": [
+          { "id": "o1", "text": "in der Bäckerei" },
+          { "id": "o2", "text": "in der Apotheke" },
+          { "id": "o3", "text": "in der Bank" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "Brot und Brötchen kauft man in der Bäckerei."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    }
+  ]
+}

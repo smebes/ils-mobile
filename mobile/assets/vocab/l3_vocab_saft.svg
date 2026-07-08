@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Saft">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M78 86 L122 86 L116 152 C115 158 111 160 106 160 L94 160 C89 160 85 158 84 152 Z" fill="#FFFDF6"/>
+    <path d="M81 110 L119 110 L116 152 C115 158 111 160 106 160 L94 160 C89 160 85 158 84 152 Z" fill="#E9A23B"/>
+    <path d="M110 72 L118 118" stroke-width="6" stroke="#E4572E"/>
+  </g>
+</svg>

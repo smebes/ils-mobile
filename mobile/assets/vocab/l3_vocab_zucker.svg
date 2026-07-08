@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Zucker">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M74 90 C74 84 78 80 84 80 L116 80 C122 80 126 84 126 90 L134 142 C136 152 128 158 118 158 L82 158 C72 158 64 152 66 142 Z" fill="#E6D9BD"/>
+    <path d="M84 80 C92 72 108 72 116 80" stroke-width="5"/>
+    <path d="M69 120 L131 120" stroke-width="5"/>
+  </g>
+</svg>

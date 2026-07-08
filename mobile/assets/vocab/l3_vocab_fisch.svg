@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Fisch">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M56 114 C56 92 92 90 116 100 C130 106 138 110 146 112 C138 116 130 120 116 128 C92 138 56 136 56 114 Z" fill="#2A9D8F"/>
+    <path d="M146 112 C158 100 168 100 174 96 C172 108 172 118 174 130 C168 126 158 124 146 112 Z" fill="#2A9D8F"/>
+    <circle cx="78" cy="110" r="4" fill="#264653" stroke="none"/>
+    <path d="M100 102 C96 112 96 118 100 128" stroke-width="4"/>
+  </g>
+</svg>
