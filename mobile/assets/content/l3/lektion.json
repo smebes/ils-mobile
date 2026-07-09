@@ -13,36 +13,251 @@
     "titel": "Einkaufen",
     "thema": "Alışveriş, yiyecek (Lebensmittel)",
     "cefr": "A1",
-    "grammar_focus": ["Plural der Nomen", "Akkusativ", "kein-", "Preise und Mengenangaben"],
+    "grammar_focus": [
+      "Plural der Nomen",
+      "Akkusativ",
+      "kein-",
+      "Preise und Mengenangaben"
+    ],
     "cover_image": "public/img/l3_cover.webp",
-    "vocab_narration": { "audio_ref": "L3_vocab_narration" }
+    "vocab_narration": {
+      "audio_ref": "L3_vocab_narration"
+    }
   },
   "vocab": [
-    { "wort": "Apfel",         "artikel": "der", "plural": "Äpfel",        "wortart": "Nomen", "image": "assets/vocab/l3_vocab_apfel.svg",         "uebersetzung_tr": "elma" },
-    { "wort": "Banane",        "artikel": "die", "plural": "Bananen",      "wortart": "Nomen", "image": "assets/vocab/l3_vocab_banane.svg",        "uebersetzung_tr": "muz" },
-    { "wort": "Orange",        "artikel": "die", "plural": "Orangen",      "wortart": "Nomen", "image": "assets/vocab/l3_vocab_orange.svg",        "uebersetzung_tr": "portakal" },
-    { "wort": "Ei",            "artikel": "das", "plural": "Eier",         "wortart": "Nomen", "image": "assets/vocab/l3_vocab_ei.svg",            "uebersetzung_tr": "yumurta" },
-    { "wort": "Brot",          "artikel": "das", "plural": "Brote",        "wortart": "Nomen", "image": "assets/vocab/l3_vocab_brot.svg",          "uebersetzung_tr": "ekmek" },
-    { "wort": "Brötchen",      "artikel": "das", "plural": "Brötchen",     "wortart": "Nomen", "image": "assets/vocab/l3_vocab_broetchen.svg",     "uebersetzung_tr": "sandviç ekmeği" },
-    { "wort": "Milch",         "artikel": "die", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_milch.svg",         "uebersetzung_tr": "süt" },
-    { "wort": "Käse",          "artikel": "der", "plural": "Käse",         "wortart": "Nomen", "image": "assets/vocab/l3_vocab_kaese.svg",         "uebersetzung_tr": "peynir" },
-    { "wort": "Butter",        "artikel": "die", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_butter.svg",        "uebersetzung_tr": "tereyağı" },
-    { "wort": "Tomate",        "artikel": "die", "plural": "Tomaten",      "wortart": "Nomen", "image": "assets/vocab/l3_vocab_tomate.svg",        "uebersetzung_tr": "domates" },
-    { "wort": "Kartoffel",     "artikel": "die", "plural": "Kartoffeln",   "wortart": "Nomen", "image": "assets/vocab/l3_vocab_kartoffel.svg",     "uebersetzung_tr": "patates" },
-    { "wort": "Gemüse",        "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_gemuese.svg",       "uebersetzung_tr": "sebze" },
-    { "wort": "Obst",          "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_obst.svg",          "uebersetzung_tr": "meyve" },
-    { "wort": "Fleisch",       "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_fleisch.svg",       "uebersetzung_tr": "et" },
-    { "wort": "Fisch",         "artikel": "der", "plural": "Fische",       "wortart": "Nomen", "image": "assets/vocab/l3_vocab_fisch.svg",         "uebersetzung_tr": "balık" },
-    { "wort": "Wurst",         "artikel": "die", "plural": "Würste",       "wortart": "Nomen", "image": "assets/vocab/l3_vocab_wurst.svg",         "uebersetzung_tr": "sosis" },
-    { "wort": "Reis",          "artikel": "der", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_reis.svg",          "uebersetzung_tr": "pirinç" },
-    { "wort": "Zucker",        "artikel": "der", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_zucker.svg",        "uebersetzung_tr": "şeker" },
-    { "wort": "Salz",          "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_salz.svg",          "uebersetzung_tr": "tuz" },
-    { "wort": "Wasser",        "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_wasser.svg",        "uebersetzung_tr": "su" },
-    { "wort": "Saft",          "artikel": "der", "plural": "Säfte",        "wortart": "Nomen", "image": "assets/vocab/l3_vocab_saft.svg",          "uebersetzung_tr": "meyve suyu" },
-    { "wort": "Kaffee",        "artikel": "der", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_kaffee.svg",        "uebersetzung_tr": "kahve" },
-    { "wort": "Tee",           "artikel": "der", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_tee.svg",           "uebersetzung_tr": "çay" },
-    { "wort": "Einkaufswagen", "artikel": "der", "plural": "Einkaufswagen","wortart": "Nomen", "image": "assets/vocab/l3_vocab_einkaufswagen.svg", "uebersetzung_tr": "market arabası" },
-    { "wort": "Einkaufskorb",  "artikel": "der", "plural": "Einkaufskörbe","wortart": "Nomen", "image": "assets/vocab/l3_vocab_einkaufskorb.svg",  "uebersetzung_tr": "alışveriş sepeti" },
-    { "wort": "Geld",          "artikel": "das", "plural": null,           "wortart": "Nomen", "image": "assets/vocab/l3_vocab_geld.svg",          "uebersetzung_tr": "para" }
+    {
+      "wort": "Apfel",
+      "artikel": "der",
+      "plural": "Äpfel",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_apfel.svg",
+      "uebersetzung_tr": "elma",
+      "audio": "assets/audio/l3/slow/l3_wort_apfel_slow_01_narrator_34590bd7f0.mp3"
+    },
+    {
+      "wort": "Banane",
+      "artikel": "die",
+      "plural": "Bananen",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_banane.svg",
+      "uebersetzung_tr": "muz",
+      "audio": "assets/audio/l3/slow/l3_wort_banane_slow_01_narrator_b0f16768df.mp3"
+    },
+    {
+      "wort": "Orange",
+      "artikel": "die",
+      "plural": "Orangen",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_orange.svg",
+      "uebersetzung_tr": "portakal",
+      "audio": "assets/audio/l3/slow/l3_wort_orange_slow_01_narrator_86c50aeb03.mp3"
+    },
+    {
+      "wort": "Ei",
+      "artikel": "das",
+      "plural": "Eier",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_ei.svg",
+      "uebersetzung_tr": "yumurta",
+      "audio": "assets/audio/l3/slow/l3_wort_ei_slow_01_narrator_9c28fbda07.mp3"
+    },
+    {
+      "wort": "Brot",
+      "artikel": "das",
+      "plural": "Brote",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_brot.svg",
+      "uebersetzung_tr": "ekmek",
+      "audio": "assets/audio/l3/slow/l3_wort_brot_slow_01_narrator_695de44ed8.mp3"
+    },
+    {
+      "wort": "Brötchen",
+      "artikel": "das",
+      "plural": "Brötchen",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_broetchen.svg",
+      "uebersetzung_tr": "sandviç ekmeği",
+      "audio": "assets/audio/l3/slow/l3_wort_brötchen_slow_01_narrator_02fb10ce82.mp3"
+    },
+    {
+      "wort": "Milch",
+      "artikel": "die",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_milch.svg",
+      "uebersetzung_tr": "süt",
+      "audio": "assets/audio/l3/slow/l3_wort_milch_slow_01_narrator_0d97fdfacd.mp3"
+    },
+    {
+      "wort": "Käse",
+      "artikel": "der",
+      "plural": "Käse",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_kaese.svg",
+      "uebersetzung_tr": "peynir",
+      "audio": "assets/audio/l3/slow/l3_wort_käse_slow_01_narrator_96a96ee0fe.mp3"
+    },
+    {
+      "wort": "Butter",
+      "artikel": "die",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_butter.svg",
+      "uebersetzung_tr": "tereyağı",
+      "audio": "assets/audio/l3/slow/l3_wort_butter_slow_01_narrator_17401f08f4.mp3"
+    },
+    {
+      "wort": "Tomate",
+      "artikel": "die",
+      "plural": "Tomaten",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_tomate.svg",
+      "uebersetzung_tr": "domates",
+      "audio": "assets/audio/l3/slow/l3_wort_tomate_slow_01_narrator_29b6f468b6.mp3"
+    },
+    {
+      "wort": "Kartoffel",
+      "artikel": "die",
+      "plural": "Kartoffeln",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_kartoffel.svg",
+      "uebersetzung_tr": "patates",
+      "audio": "assets/audio/l3/slow/l3_wort_kartoffel_slow_01_narrator_c26d0e597a.mp3"
+    },
+    {
+      "wort": "Gemüse",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_gemuese.svg",
+      "uebersetzung_tr": "sebze",
+      "audio": "assets/audio/l3/slow/l3_wort_gemüse_slow_01_narrator_deee6e84bb.mp3"
+    },
+    {
+      "wort": "Obst",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_obst.svg",
+      "uebersetzung_tr": "meyve",
+      "audio": "assets/audio/l3/slow/l3_wort_obst_slow_01_narrator_f3363d3096.mp3"
+    },
+    {
+      "wort": "Fleisch",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_fleisch.svg",
+      "uebersetzung_tr": "et",
+      "audio": "assets/audio/l3/slow/l3_wort_fleisch_slow_01_narrator_7c4bf93aea.mp3"
+    },
+    {
+      "wort": "Fisch",
+      "artikel": "der",
+      "plural": "Fische",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_fisch.svg",
+      "uebersetzung_tr": "balık",
+      "audio": "assets/audio/l3/slow/l3_wort_fisch_slow_01_narrator_769012ce5c.mp3"
+    },
+    {
+      "wort": "Wurst",
+      "artikel": "die",
+      "plural": "Würste",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_wurst.svg",
+      "uebersetzung_tr": "sosis",
+      "audio": "assets/audio/l3/slow/l3_wort_wurst_slow_01_narrator_74969314de.mp3"
+    },
+    {
+      "wort": "Reis",
+      "artikel": "der",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_reis.svg",
+      "uebersetzung_tr": "pirinç",
+      "audio": "assets/audio/l3/slow/l3_wort_reis_slow_01_narrator_462d0b0165.mp3"
+    },
+    {
+      "wort": "Zucker",
+      "artikel": "der",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_zucker.svg",
+      "uebersetzung_tr": "şeker",
+      "audio": "assets/audio/l3/slow/l3_wort_zucker_slow_01_narrator_5fc985fa99.mp3"
+    },
+    {
+      "wort": "Salz",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_salz.svg",
+      "uebersetzung_tr": "tuz",
+      "audio": "assets/audio/l3/slow/l3_wort_salz_slow_01_narrator_2bb1a10947.mp3"
+    },
+    {
+      "wort": "Wasser",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_wasser.svg",
+      "uebersetzung_tr": "su",
+      "audio": "assets/audio/l3/slow/l3_wort_wasser_slow_01_narrator_2805c12ff2.mp3"
+    },
+    {
+      "wort": "Saft",
+      "artikel": "der",
+      "plural": "Säfte",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_saft.svg",
+      "uebersetzung_tr": "meyve suyu",
+      "audio": "assets/audio/l3/slow/l3_wort_saft_slow_01_narrator_834bf37d23.mp3"
+    },
+    {
+      "wort": "Kaffee",
+      "artikel": "der",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_kaffee.svg",
+      "uebersetzung_tr": "kahve",
+      "audio": "assets/audio/l3/slow/l3_wort_kaffee_slow_01_narrator_163ed12dba.mp3"
+    },
+    {
+      "wort": "Tee",
+      "artikel": "der",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_tee.svg",
+      "uebersetzung_tr": "çay",
+      "audio": "assets/audio/l3/slow/l3_wort_tee_slow_01_narrator_0ed46f2a4d.mp3"
+    },
+    {
+      "wort": "Einkaufswagen",
+      "artikel": "der",
+      "plural": "Einkaufswagen",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_einkaufswagen.svg",
+      "uebersetzung_tr": "market arabası",
+      "audio": "assets/audio/l3/slow/l3_wort_einkaufswagen_slow_01_narrator_870dac85c8.mp3"
+    },
+    {
+      "wort": "Einkaufskorb",
+      "artikel": "der",
+      "plural": "Einkaufskörbe",
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_einkaufskorb.svg",
+      "uebersetzung_tr": "alışveriş sepeti",
+      "audio": "assets/audio/l3/slow/l3_wort_einkaufskorb_slow_01_narrator_01c968aa70.mp3"
+    },
+    {
+      "wort": "Geld",
+      "artikel": "das",
+      "plural": null,
+      "wortart": "Nomen",
+      "image": "assets/vocab/l3_vocab_geld.svg",
+      "uebersetzung_tr": "para",
+      "audio": "assets/audio/l3/slow/l3_wort_geld_slow_01_narrator_0b68efd5ba.mp3"
+    }
   ]
 }

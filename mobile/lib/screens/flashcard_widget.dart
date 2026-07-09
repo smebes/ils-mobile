@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../audio_service.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../tts_service.dart';
@@ -17,6 +18,22 @@ class FlashcardWidget extends StatefulWidget {
 
 class _FlashcardWidgetState extends State<FlashcardWidget> {
   bool revealed = false;
+  final _audio = AudioService();
+
+  void _speak() {
+    final v = widget.vocab;
+    if (v.audio != null) {
+      _audio.playOne(v.audio!);
+    } else {
+      TtsService.speak(v.display);
+    }
+  }
+
+  @override
+  void dispose() {
+    _audio.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +88,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                           child: IconButton(
                             icon: const Icon(Icons.volume_up,
                                 color: AppColors.teal, size: 28),
-                            onPressed: () => TtsService.speak(v.display),
+                            onPressed: _speak,
                             tooltip: 'Vorlesen',
                           ),
                         ),

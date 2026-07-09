@@ -1,0 +1,161 @@
+{
+  "_note": "Lektion 3 kelime okunuslari. Her kelime tek dosya. Uretim: python tools/elevenlabs_tts.py --input tools/dialogues_l3_vocab.json --speeds slow",
+  "items": [
+    {
+      "id": "L3_wort_apfel",
+      "lektion": 3,
+      "text": "der Apfel",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_banane",
+      "lektion": 3,
+      "text": "die Banane",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_orange",
+      "lektion": 3,
+      "text": "die Orange",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_ei",
+      "lektion": 3,
+      "text": "das Ei",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_brot",
+      "lektion": 3,
+      "text": "das Brot",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_brötchen",
+      "lektion": 3,
+      "text": "das Brötchen",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_milch",
+      "lektion": 3,
+      "text": "die Milch",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_käse",
+      "lektion": 3,
+      "text": "der Käse",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_butter",
+      "lektion": 3,
+      "text": "die Butter",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_tomate",
+      "lektion": 3,
+      "text": "die Tomate",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_kartoffel",
+      "lektion": 3,
+      "text": "die Kartoffel",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_gemüse",
+      "lektion": 3,
+      "text": "das Gemüse",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_obst",
+      "lektion": 3,
+      "text": "das Obst",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_fleisch",
+      "lektion": 3,
+      "text": "das Fleisch",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_fisch",
+      "lektion": 3,
+      "text": "der Fisch",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_wurst",
+      "lektion": 3,
+      "text": "die Wurst",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_reis",
+      "lektion": 3,
+      "text": "der Reis",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_zucker",
+      "lektion": 3,
+      "text": "der Zucker",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_salz",
+      "lektion": 3,
+      "text": "das Salz",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_wasser",
+      "lektion": 3,
+      "text": "das Wasser",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_saft",
+      "lektion": 3,
+      "text": "der Saft",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_kaffee",
+      "lektion": 3,
+      "text": "der Kaffee",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_tee",
+      "lektion": 3,
+      "text": "der Tee",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_einkaufswagen",
+      "lektion": 3,
+      "text": "der Einkaufswagen",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_einkaufskorb",
+      "lektion": 3,
+      "text": "der Einkaufskorb",
+      "speaker": "narrator"
+    },
+    {
+      "id": "L3_wort_geld",
+      "lektion": 3,
+      "text": "das Geld",
+      "speaker": "narrator"
+    }
+  ]
+}

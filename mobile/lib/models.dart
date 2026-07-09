@@ -4,7 +4,8 @@ class VocabItem {
   final String wort;
   final String? artikel;
   final String? plural;
-  final String image; // asset yolu (çözümlenmiş)
+  final String image;
+  final String? audio;
   final String uebersetzungTr;
 
   VocabItem({
@@ -12,6 +13,7 @@ class VocabItem {
     this.artikel,
     this.plural,
     required this.image,
+    this.audio,
     required this.uebersetzungTr,
   });
 
@@ -22,6 +24,7 @@ class VocabItem {
         artikel: j['artikel'] as String?,
         plural: j['plural'] as String?,
         image: AssetPaths.resolve(j['image'] as String),
+        audio: j['audio'] != null ? j['audio'] as String : null,
         uebersetzungTr: (j['uebersetzung_tr'] ?? '') as String,
       );
 }
