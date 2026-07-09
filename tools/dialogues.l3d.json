@@ -1,0 +1,28 @@
+{
+  "_note": "Lektion 3 — D Preise und Mengenangaben. Fiyatlar PDF İsviçre (Fr.) kaynaklı; seslendirmede Euro formatı. İçerik özgün (telifsiz).",
+  "items": [
+    {
+      "id": "L3_preise_d2",
+      "lektion": 3,
+      "vocab_domain": "Preise / Mengenangaben",
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie die Preise im Laden." },
+        { "speaker": "herr_koch", "text": "Ein Brötchen kostet null Komma achtzig fünf Euro." },
+        { "speaker": "herr_koch", "text": "Ein Ei kostet null Komma siebzig Euro." },
+        { "speaker": "herr_koch", "text": "Der Fisch kostet drei Euro dreißig." }
+      ]
+    },
+    {
+      "id": "L3_preise_markt",
+      "lektion": 3,
+      "vocab_domain": "Preise / Lebensmittel",
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie den Dialog in der Lebensmittelabteilung." },
+        { "speaker": "mara", "text": "Entschuldigung, was kostet ein Kilo Orangen?" },
+        { "speaker": "frau_weber", "text": "Ein Kilo Orangen kostet fünf Euro achtzig." },
+        { "speaker": "mara", "text": "Und was kosten hundert Gramm Käse?" },
+        { "speaker": "frau_weber", "text": "Hundert Gramm Käse kosten eins Euro neunzig." }
+      ]
+    }
+  ]
+}

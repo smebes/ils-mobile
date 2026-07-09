@@ -13,10 +13,28 @@ class MediaImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (assetPath.endsWith('.svg')) {
-      return SvgPicture.asset(assetPath, height: height, fit: fit);
+      return SvgPicture.asset(
+        assetPath,
+        height: height,
+        fit: fit,
+        placeholderBuilder: (_) => _placeholder(),
+      );
     }
-    return Image.asset(assetPath, height: height, fit: fit);
+    return Image.asset(
+      assetPath,
+      height: height,
+      fit: fit,
+      errorBuilder: (_, e, st) => _placeholder(),
+    );
   }
+
+  Widget _placeholder() => SizedBox(
+        height: height ?? 80,
+        child: const Center(
+          child: Icon(Icons.image_not_supported_outlined,
+              size: 40, color: AppColors.navy),
+        ),
+      );
 }
 
 /// der/die/das renk kodlu artikel rozeti.

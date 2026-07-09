@@ -6,11 +6,13 @@ class ResultScreen extends StatefulWidget {
   final int correct;
   final int total;
   final int xp;
+  final int reviewsSaved;
   const ResultScreen({
     super.key,
     required this.correct,
     required this.total,
     required this.xp,
+    this.reviewsSaved = 0,
   });
 
   @override
@@ -35,9 +37,8 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final pct = widget.total == 0
-        ? 1.0
-        : widget.correct / widget.total;
+    final pct =
+        widget.total == 0 ? 1.0 : widget.correct / widget.total;
     return Scaffold(
       body: Stack(
         alignment: Alignment.topCenter,
@@ -50,7 +51,7 @@ class _ResultScreenState extends State<ResultScreen> {
                 children: [
                   const Text('🎉', style: TextStyle(fontSize: 72)),
                   const SizedBox(height: 12),
-                  const Text('Sehr gut!',
+                  const Text('Geschafft!',
                       style: TextStyle(
                           fontSize: 30, fontWeight: FontWeight.w800)),
                   const SizedBox(height: 8),
@@ -59,18 +60,29 @@ class _ResultScreenState extends State<ResultScreen> {
                           fontSize: 16,
                           color: AppColors.navy.withValues(alpha: 0.6))),
                   const SizedBox(height: 32),
-                  _statRow('Doğru', '${widget.correct} / ${widget.total}'),
+                  _statRow('Übungen', '${widget.correct} / ${widget.total}'),
                   const SizedBox(height: 12),
-                  _statRow('Başarı', '${(pct * 100).round()}%'),
+                  _statRow('Erfolg', '${(pct * 100).round()}%'),
                   const SizedBox(height: 12),
-                  _statRow('Kazanılan XP', '+${widget.xp}'),
+                  _statRow('XP', '+${widget.xp}'),
+                  if (widget.reviewsSaved > 0) ...[
+                    const SizedBox(height: 20),
+                    Text(
+                      'Wörter zur Wiederholung gespeichert 📚\n'
+                      '(${widget.reviewsSaved} im SR-Plan)',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.navy.withValues(alpha: 0.65)),
+                    ),
+                  ],
                   const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity,
                     child: FilledButton(
-                      onPressed: () =>
-                          Navigator.of(context).maybePop(),
-                      child: const Text('Fertig'),
+                      onPressed: () => Navigator.of(context)
+                          .popUntil((route) => route.isFirst),
+                      child: const Text('Weiter lernen'),
                     ),
                   ),
                 ],

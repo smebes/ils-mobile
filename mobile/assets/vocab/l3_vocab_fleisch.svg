@@ -1,9 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Fleisch">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M64 112 C60 88 96 78 122 86 C150 94 152 122 138 138 C122 156 80 154 68 138 C63 130 64 120 64 112 Z" fill="#E4572E"/>
-    <path d="M70 104 C64 96 66 88 74 84" stroke="#FFFDF6" stroke-width="9"/>
-    <path d="M70 104 C64 96 66 88 74 84" stroke-width="5"/>
-    <path d="M104 108 C114 112 118 122 112 132" stroke-width="4"/>
+  <g fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M56 120 C56 88 80 72 110 72 C140 72 156 88 156 108 C156 128 144 148 120 152 C96 156 56 148 56 120 Z" fill="#D64545"/>
+    <path d="M68 108 C64 94 78 82 92 80" stroke="#F5C6C6" stroke-width="12" stroke-linecap="round"/>
+    <path d="M68 108 C64 94 78 82 92 80" stroke-width="4"/>
+    <ellipse cx="118" cy="112" rx="22" ry="18" fill="#C03030" stroke="none"/>
+    <path d="M108 106 C114 100 124 102 128 108" stroke-width="3" stroke="#F5C6C6"/>
+    <path d="M110 118 C116 124 126 122 128 116" stroke-width="3" stroke="#F5C6C6"/>
+    <circle cx="80" cy="128" r="4" fill="#F5C6C6" stroke="none"/>
   </g>
 </svg>

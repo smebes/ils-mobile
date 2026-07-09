@@ -1,7 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Ei">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
   <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M100 50 C128 50 140 96 140 124 C140 152 122 166 100 166 C78 166 60 152 60 124 C60 96 72 50 100 50 Z" fill="#FFFDF6"/>
-    <path d="M84 108 C92 116 100 112 108 120" stroke-width="4" stroke="#E9C46A"/>
+    <path d="M100 46 C132 46 148 96 148 126 C148 158 126 170 100 170 C74 170 52 158 52 126 C52 96 68 46 100 46 Z" fill="#F5E6C8"/>
+    <ellipse cx="100" cy="138" rx="36" ry="18" fill="#EDD9A3" stroke="none"/>
+    <path d="M82 100 C88 94 96 98 100 92 C104 98 112 94 118 100" stroke-width="4" stroke="#D4A55A"/>
   </g>
 </svg>

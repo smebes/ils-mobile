@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
+import '../tts_service.dart';
 import '../widgets.dart';
 
 /// Tanıtım kartı: görsel + artikel renk kodu + kelime + çeviri (tap ile).
@@ -46,8 +47,12 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ArtikelDot(v.artikel),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: ArtikelDot(v.artikel),
+                        ),
                         const SizedBox(width: 8),
                         Flexible(
                           child: Text(
@@ -58,6 +63,16 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                               fontWeight: FontWeight.w800,
                               color: AppColors.artikel(v.artikel),
                             ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: IconButton(
+                            icon: const Icon(Icons.volume_up,
+                                color: AppColors.teal, size: 28),
+                            onPressed: () => TtsService.speak(v.display),
+                            tooltip: 'Vorlesen',
                           ),
                         ),
                       ],

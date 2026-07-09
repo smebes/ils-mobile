@@ -13,7 +13,7 @@
     "titel": "Einkaufen",
     "thema": "Alışveriş, yiyecek (Lebensmittel)",
     "cefr": "A1",
-    "grammar_focus": ["Plural der Nomen", "Akkusativ", "kein-"],
+    "grammar_focus": ["Plural der Nomen", "Akkusativ", "kein-", "Preise und Mengenangaben"],
     "cover_image": "public/img/l3_cover.webp",
     "vocab_narration": { "audio_ref": "L3_vocab_narration" }
   },

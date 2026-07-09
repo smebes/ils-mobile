@@ -1,0 +1,41 @@
+{
+  "_note": "Lektion 3 Bölüm D+E yeni diyaloglar. Fiyatlar EUR (Komma ondalık). Tüm içerik ÖZGÜN (telifsiz). Üretim: python tools/elevenlabs_tts.py --input tools/dialogues_l3_de.json --speeds slow,normal",
+  "items": [
+    {
+      "id": "L3_preise_d2",
+      "lektion": 3,
+      "vocab_domain": "Preise und Mengenangaben",
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie die Preise." },
+        { "speaker": "herr_koch", "text": "Ein Brötchen kostet fünfundachtzig Cent." },
+        { "speaker": "herr_koch", "text": "Zehn Eier kosten vier Euro siebzig." },
+        { "speaker": "herr_koch", "text": "Der Fisch kostet drei Euro dreißig." }
+      ]
+    },
+    {
+      "id": "L3_preise_markt",
+      "lektion": 3,
+      "vocab_domain": "Preise und Mengenangaben",
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie den Dialog auf dem Markt." },
+        { "speaker": "mara", "text": "Guten Tag. Was kostet ein Kilo Orangen?" },
+        { "speaker": "frau_weber", "text": "Ein Kilo Orangen kostet fünf Euro achtzig. Möchten Sie auch Käse?" },
+        { "speaker": "mara", "text": "Ja, hundert Gramm Käse bitte. Was kostet das?" },
+        { "speaker": "frau_weber", "text": "Hundert Gramm Käse kosten eins neunzig. Das macht zusammen sieben Euro siebzig." }
+      ]
+    },
+    {
+      "id": "L3_einkauf_dialog",
+      "lektion": 3,
+      "vocab_domain": "Einkaufsdialog (möchte / hätte gern)",
+      "lines": [
+        { "speaker": "narrator", "text": "Hören Sie den Einkaufsdialog." },
+        { "speaker": "mara", "text": "Guten Tag. Ich hätte gern ein Kilo Kartoffeln." },
+        { "speaker": "herr_koch", "text": "Gern. Sonst noch etwas?" },
+        { "speaker": "mara", "text": "Ja, ich möchte auch drei Äpfel und eine Packung Butter." },
+        { "speaker": "herr_koch", "text": "Drei Äpfel und eine Packung Butter. Das macht zusammen sechs Euro fünfzig." },
+        { "speaker": "mara", "text": "Hier bitte. Vielen Dank!" }
+      ]
+    }
+  ]
+}

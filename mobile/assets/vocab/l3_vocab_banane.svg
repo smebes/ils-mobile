@@ -1,7 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Banane">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
   <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M50 104 C62 166 150 166 158 104 C158 99 151 98 148 104 C140 148 74 148 62 108 C60 100 50 99 50 104 Z" fill="#F2C14E"/>
+    <path d="M50 104 C62 166 150 166 158 104 C158 99 151 98 148 104 C140 148 74 148 62 108 C60 100 50 99 50 104 Z" fill="#E9C43A"/>
     <path d="M62 108 C66 122 80 132 100 137" stroke-width="4"/>
+    <path d="M50 102 C48 96 52 90 58 90" stroke-width="5" fill="#8B6914"/>
+    <path d="M158 102 C160 96 156 90 150 90" stroke-width="5" fill="#8B6914"/>
+    <path d="M80 120 L90 118 M100 124 L108 122" stroke-width="2" opacity="0.3"/>
   </g>
 </svg>

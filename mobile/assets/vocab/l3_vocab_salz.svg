@@ -1,10 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Salz">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M76 98 L124 98 L120 150 C120 156 116 160 110 160 L90 160 C84 160 80 156 80 150 Z" fill="#FFFDF6"/>
-    <path d="M80 98 C80 84 120 84 120 98 Z" fill="#2A9D8F"/>
-    <circle cx="92" cy="90" r="2.5" fill="#264653" stroke="none"/>
-    <circle cx="100" cy="88" r="2.5" fill="#264653" stroke="none"/>
-    <circle cx="108" cy="90" r="2.5" fill="#264653" stroke="none"/>
+  <g fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M78 70 L78 150 C78 158 86 164 100 164 C114 164 122 158 122 150 L122 70" fill="#FFFDF6"/>
+    <path d="M78 70 C78 60 122 60 122 70" fill="#2A9D8F" stroke-width="5"/>
+    <circle cx="88" cy="66" r="3" fill="#FFFDF6" stroke="none"/>
+    <circle cx="100" cy="63" r="3" fill="#FFFDF6" stroke="none"/>
+    <circle cx="112" cy="66" r="3" fill="#FFFDF6" stroke="none"/>
+    <text x="100" y="124" text-anchor="middle" font-size="16" font-weight="bold" fill="#264653" stroke="none" font-family="sans-serif">Salz</text>
+    <circle cx="90" cy="142" r="2" fill="#AAAAAA" stroke="none"/>
+    <circle cx="100" cy="148" r="1.5" fill="#AAAAAA" stroke="none"/>
+    <circle cx="108" cy="140" r="2" fill="#AAAAAA" stroke="none"/>
+    <circle cx="96" cy="152" r="1.5" fill="#AAAAAA" stroke="none"/>
   </g>
 </svg>

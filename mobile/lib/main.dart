@@ -9,7 +9,11 @@ final progressStore = ProgressStore();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await progressStore.init();
+  try {
+    await progressStore.init();
+  } catch (e) {
+    debugPrint('ProgressStore init failed: $e');
+  }
   runApp(const SprachApp());
 }
 

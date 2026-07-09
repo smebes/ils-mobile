@@ -241,7 +241,7 @@
       },
       "solution": {
         "answer": "o1",
-        "explanation": "„Apfel“ ist maskulin (der Apfel). Im Akkusativ: einen Apfel."
+        "explanation": "«Apfel» ist maskulin (der Apfel). Im Akkusativ: einen Apfel."
       },
       "quality_pass": true,
       "reviewed": false
@@ -268,6 +268,411 @@
         "answer": "o1",
         "explanation": "Brot und Brötchen kauft man in der Bäckerei."
       },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F3",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Preise nennen",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Schreibe den Preis (Euro, Komma).",
+        "sentence": "Ein Brötchen kostet {{b1}}.",
+        "blanks": [{ "id": "b1" }]
+      },
+      "solution": {
+        "b1": {
+          "answer": "0,85 €",
+          "accept": ["0,85 €", "0.85 €", "0,85€", "0.85€", "0,85 euro", "0.85 euro"]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F4",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Mengenangaben",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Ergänze die Mengenangabe.",
+        "sentence": "Ich möchte ein {{b1}} Orangen und eine {{b2}} Milch.",
+        "blanks": [
+          { "id": "b1", "options": ["Kilo", "Pfund", "Gramm"] },
+          { "id": "b2", "options": ["Liter", "Kilo", "Packung"] }
+        ]
+      },
+      "solution": {
+        "b1": { "answer": "Kilo", "accept": ["kilo"] },
+        "b2": { "answer": "Liter", "accept": ["liter"] }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F5",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Preise nennen",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Schreibe die Preise (Euro, Komma).",
+        "sentence": "1 Kilo Lauch kostet {{b1}}. 1 Kilo Spinat kostet {{b2}}.",
+        "blanks": [{ "id": "b1" }, { "id": "b2" }]
+      },
+      "solution": {
+        "b1": {
+          "answer": "5,75 €",
+          "accept": ["5,75 €", "5.75 €", "5,75€", "5.75€"]
+        },
+        "b2": {
+          "answer": "2,40 €",
+          "accept": ["2,40 €", "2.40 €", "2,40€", "2.40€"]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_L3",
+      "lektion_id": 3,
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen — Preise",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Hör die Preise und beantworte die Fragen.",
+        "scene_image": "public/img/l3_scene_baeckerei.webp",
+        "audio_ref": "L3_preise_d2",
+        "default_speed": "slow",
+        "audio": {
+          "slow": [
+            "storage/audio/l3/slow/l3_preise_d2_slow_01_narrator_a04223834e.mp3",
+            "storage/audio/l3/slow/l3_preise_d2_slow_02_herr_koch_73129c5abf.mp3",
+            "storage/audio/l3/slow/l3_preise_d2_slow_03_herr_koch_848672b76f.mp3",
+            "storage/audio/l3/slow/l3_preise_d2_slow_04_herr_koch_3a8b68cbcd.mp3"
+          ],
+          "normal": [
+            "storage/audio/l3/normal/l3_preise_d2_normal_01_narrator_7ab38cc365.mp3",
+            "storage/audio/l3/normal/l3_preise_d2_normal_02_herr_koch_502b7e46c1.mp3",
+            "storage/audio/l3/normal/l3_preise_d2_normal_03_herr_koch_9e4989684c.mp3",
+            "storage/audio/l3/normal/l3_preise_d2_normal_04_herr_koch_1ed6d72c39.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was kostet ein Brötchen?",
+            "options": [
+              { "id": "o1", "text": "0,85 €" },
+              { "id": "o2", "text": "0,80 €" },
+              { "id": "o3", "text": "0,70 €" }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Was kostet der Fisch?",
+            "options": [
+              { "id": "o1", "text": "3,30 €" },
+              { "id": "o2", "text": "3,00 €" },
+              { "id": "o3", "text": "3,35 €" }
+            ]
+          }
+        ]
+      },
+      "solution": { "q1": "o1", "q2": "o1" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_L4",
+      "lektion_id": 3,
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen — Preise im Laden",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Hör den Dialog und beantworte die Fragen.",
+        "scene_image": "public/img/l3_scene_wochenmarkt.webp",
+        "audio_ref": "L3_preise_markt",
+        "default_speed": "slow",
+        "audio": {
+          "slow": [
+            "storage/audio/l3/slow/l3_preise_markt_slow_01_narrator_293a2ced1b.mp3",
+            "storage/audio/l3/slow/l3_preise_markt_slow_02_mara_ade14a0f12.mp3",
+            "storage/audio/l3/slow/l3_preise_markt_slow_03_frau_weber_44252e1205.mp3",
+            "storage/audio/l3/slow/l3_preise_markt_slow_04_mara_aac6464bc8.mp3",
+            "storage/audio/l3/slow/l3_preise_markt_slow_05_frau_weber_519b34e6fe.mp3"
+          ],
+          "normal": [
+            "storage/audio/l3/normal/l3_preise_markt_normal_01_narrator_d4ea0b56a7.mp3",
+            "storage/audio/l3/normal/l3_preise_markt_normal_02_mara_28365d43e9.mp3",
+            "storage/audio/l3/normal/l3_preise_markt_normal_03_frau_weber_fe603b33ff.mp3",
+            "storage/audio/l3/normal/l3_preise_markt_normal_04_mara_1d81fe689c.mp3",
+            "storage/audio/l3/normal/l3_preise_markt_normal_05_frau_weber_b8aecc4cad.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was kostet ein Kilo Orangen?",
+            "options": [
+              { "id": "o1", "text": "5,80 €" },
+              { "id": "o2", "text": "8,90 €" },
+              { "id": "o3", "text": "2,20 €" }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Was kosten 100 Gramm Käse?",
+            "options": [
+              { "id": "o1", "text": "1,90 €" },
+              { "id": "o2", "text": "3,15 €" },
+              { "id": "o3", "text": "1,30 €" }
+            ]
+          }
+        ]
+      },
+      "solution": { "q1": "o1", "q2": "o1" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q3",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Fragen zu Preisen (Singular/Plural)",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Sie möchten den Preis von 100 Gramm Käse wissen. Was fragen Sie?",
+        "options": [
+          { "id": "o1", "text": "Was kosten 100 Gramm Käse?" },
+          { "id": "o2", "text": "Was kostet 100 Gramm Käse?" },
+          { "id": "o3", "text": "Wie viel ist 100 Gramm Käse?" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "«100 Gramm Käse» ist Plural → «Was kosten …?» / «Wie viel kosten …?»"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q4",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Preise und Mengenangaben",
+      "vocab_domain": "Preise und Mengenangaben",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "1 Pfund Brot kostet …",
+        "image": "public/img/l3_scene_baeckerei.webp",
+        "options": [
+          { "id": "o1", "text": "3,40 €" },
+          { "id": "o2", "text": "0,85 €" },
+          { "id": "o3", "text": "5,80 €" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "1 Pfund (= 500 g) Brot kostet 3,40 €. Ein Brötchen kostet 0,85 €."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_M3",
+      "lektion_id": 3,
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Mengenangaben",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Ordne zu: Welche Mengenangabe passt?",
+        "left": [
+          { "id": "a", "image": "assets/vocab/l3_vocab_wasser.svg" },
+          { "id": "b", "image": "assets/vocab/l3_vocab_butter.svg" },
+          { "id": "c", "image": "assets/vocab/l3_vocab_kartoffel.svg" },
+          { "id": "d", "image": "assets/vocab/l3_vocab_milch.svg" },
+          { "id": "e", "image": "assets/vocab/l3_vocab_tomate.svg" }
+        ],
+        "right": [
+          { "id": "1", "text": "eine Flasche Wasser" },
+          { "id": "2", "text": "eine Packung Butter" },
+          { "id": "3", "text": "ein Kilo Kartoffeln" },
+          { "id": "4", "text": "ein Liter Milch" },
+          { "id": "5", "text": "eine Dose Tomaten" }
+        ]
+      },
+      "solution": { "a": "1", "b": "2", "c": "3", "d": "4", "e": "5" },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F6",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Verb: möchte (Konjugation)",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Ergänze die richtige Form von «möchte».",
+        "sentence": "Er {{b1}} Käse kaufen. Wir {{b2}} auch Brot.",
+        "blanks": [
+          { "id": "b1", "options": ["möchte", "möchtest", "möchten"] },
+          { "id": "b2", "options": ["möchten", "möchte", "möchtet"] }
+        ]
+      },
+      "solution": {
+        "b1": { "answer": "möchte", "accept": ["möchte"] },
+        "b2": { "answer": "möchten", "accept": ["möchten"] }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_F7",
+      "lektion_id": 3,
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Einkaufsdialog",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Ergänze den Dialog.",
+        "sentence": "Kunde: Ich {{b1}} gern drei Äpfel. Verkäufer: Gern. {{b2}} noch etwas?",
+        "blanks": [
+          { "id": "b1", "options": ["hätte", "habe", "bin"] },
+          { "id": "b2", "options": ["Sonst", "Und", "Also"] }
+        ]
+      },
+      "solution": {
+        "b1": { "answer": "hätte", "accept": ["hätte"] },
+        "b2": { "answer": "Sonst", "accept": ["Sonst", "sonst"] }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q5",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Einkaufsdialog",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Was sagt man beim Einkaufen?",
+        "question": "Der Verkäufer fragt: «Sonst noch etwas?» Sie brauchen nichts mehr. Was sagen Sie?",
+        "options": [
+          { "id": "o1", "text": "Nein, danke. Das ist alles." },
+          { "id": "o2", "text": "Ich heisse Müller." },
+          { "id": "o3", "text": "Guten Morgen!" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "«Nein, danke. Das ist alles.» — So beendet man ein Einkaufsgespräch."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_Q6",
+      "lektion_id": 3,
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Verb: möchte (Konjugation)",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Was ___ du kaufen?",
+        "options": [
+          { "id": "o1", "text": "möchtest" },
+          { "id": "o2", "text": "möchte" },
+          { "id": "o3", "text": "möchten" }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "du möchtest — ich möchte, er/sie möchte, wir möchten, ihr möchtet, sie/Sie möchten."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+
+    {
+      "id": "L3_L5",
+      "lektion_id": 3,
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen — Einkaufsdialog",
+      "vocab_domain": "Einkaufen",
+      "payload": {
+        "instruction": "Hör den Einkaufsdialog und beantworte die Fragen.",
+        "scene_image": "public/img/l3_scene_supermarkt.webp",
+        "audio_ref": "L3_einkauf_dialog",
+        "default_speed": "slow",
+        "audio": {
+          "slow": [
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_01_narrator_8dd13d0146.mp3",
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_02_mara_01c9a9084d.mp3",
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_03_herr_koch_5e77f79324.mp3",
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_04_mara_79cd17e333.mp3",
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_05_herr_koch_e6dd4abd8c.mp3",
+            "storage/audio/l3/slow/l3_einkauf_dialog_slow_06_mara_b78eb52d7b.mp3"
+          ],
+          "normal": [
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_01_narrator_bd64ac21ee.mp3",
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_02_mara_52ba99dc56.mp3",
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_03_herr_koch_6e35e3a0bb.mp3",
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_04_mara_7788bfb8a1.mp3",
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_05_herr_koch_cdf25a4cf3.mp3",
+            "storage/audio/l3/normal/l3_einkauf_dialog_normal_06_mara_0f0f71e4b9.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was möchte die Kundin kaufen?",
+            "options": [
+              { "id": "o1", "text": "Kartoffeln, Äpfel und Butter" },
+              { "id": "o2", "text": "Milch und Käse" },
+              { "id": "o3", "text": "Brot und Eier" }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Was kostet alles zusammen?",
+            "options": [
+              { "id": "o1", "text": "6,50 €" },
+              { "id": "o2", "text": "4,20 €" },
+              { "id": "o3", "text": "8,90 €" }
+            ]
+          }
+        ]
+      },
+      "solution": { "q1": "o1", "q2": "o1" },
       "quality_pass": true,
       "reviewed": false
     }

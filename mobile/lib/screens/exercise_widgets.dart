@@ -249,51 +249,93 @@ class _FillBlankWidgetState extends State<FillBlankWidget> with CheckFlow {
     );
   }
 
+  static const _sentStyle = TextStyle(fontSize: 22, height: 1.6);
+
   Widget _renderSentence(String sentence) {
-    final spans = <InlineSpan>[];
     final re = RegExp(r'\{\{(\w+)\}\}');
+    final children = <Widget>[];
     int last = 0;
     for (final m in re.allMatches(sentence)) {
       if (m.start > last) {
-        spans.add(TextSpan(text: sentence.substring(last, m.start)));
+        children.add(Text(
+          sentence.substring(last, m.start),
+          style: _sentStyle,
+        ));
       }
       final id = m.group(1)!;
       final hasOptions =
           blanks.firstWhere((b) => b['id'] == id)['options'] != null;
+
+      // Trailing punctuation after blank (". " or ", " etc.) stays with blank
+      String trailing = '';
+      int afterBlank = m.end;
+      while (afterBlank < sentence.length &&
+          '.,;:!?'.contains(sentence[afterBlank])) {
+        trailing += sentence[afterBlank];
+        afterBlank++;
+      }
+
+      Widget blankWidget;
       if (hasOptions) {
-        spans.add(TextSpan(
-          text: answers[id] ?? '____',
-          style: TextStyle(
+        blankWidget = Text(
+          answers[id] ?? '____',
+          style: _sentStyle.copyWith(
             fontWeight: FontWeight.w800,
             color: answers[id] != null ? AppColors.teal : AppColors.coral,
           ),
-        ));
+        );
       } else {
-        spans.add(WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: SizedBox(
-            width: 110,
-            child: TextField(
-              controller: controllers[id],
-              enabled: !checked,
-              onChanged: (_) => setState(() {}),
-              textAlign: TextAlign.center,
-              decoration: const InputDecoration(
-                isDense: true,
-                hintText: '…',
+        blankWidget = SizedBox(
+          width: 120,
+          child: TextField(
+            controller: controllers[id],
+            enabled: !checked,
+            onChanged: (_) => setState(() {}),
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: '…',
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: AppColors.teal, width: 2),
               ),
             ),
           ),
-        ));
+        );
       }
-      last = m.end;
+
+      if (trailing.isNotEmpty) {
+        children.add(Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            blankWidget,
+            Text(trailing, style: _sentStyle),
+          ],
+        ));
+        last = afterBlank;
+      } else {
+        children.add(blankWidget);
+        last = m.end;
+      }
     }
     if (last < sentence.length) {
-      spans.add(TextSpan(text: sentence.substring(last)));
+      final tail = sentence.substring(last);
+      if (tail.trim().isNotEmpty) {
+        children.add(Text(tail, style: _sentStyle));
+      }
     }
-    return Text.rich(
-      TextSpan(
-          style: const TextStyle(fontSize: 22, height: 1.6), children: spans),
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      spacing: 4,
+      runSpacing: 12,
+      children: children,
     );
   }
 }
@@ -341,32 +383,41 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
       children: [
         Expanded(
           child: ListView(
+            padding: const EdgeInsets.only(bottom: 16),
             children: [
               exerciseHeader(widget.exercise.instruction),
-              if (p['scene_image'] != null)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: MediaImage(AssetPaths.resolve(p['scene_image']),
-                        height: 180, fit: BoxFit.cover),
-                  ),
-                ),
               Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.volume_up, color: AppColors.teal),
-                    const SizedBox(width: 12),
-                    SpeedButtons(
-                      onSlow: () => _audio.playSequence(_audioList('slow')),
-                      onNormal: () =>
-                          _audio.playSequence(_audioList('normal')),
+                    if (p['scene_image'] != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: MediaImage(AssetPaths.resolve(p['scene_image']),
+                            height: 80, fit: BoxFit.cover),
+                      ),
+                    if (p['scene_image'] != null) const SizedBox(width: 12),
+                    Column(
+                      children: [
+                        SpeedButtons(
+                          onSlow: () =>
+                              _audio.playSequence(_audioList('slow')),
+                          onNormal: () =>
+                              _audio.playSequence(_audioList('normal')),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          '${answers.length} / ${questions.length} beantwortet',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.navy.withValues(alpha: 0.5)),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 8),
               ...questions.map((q) {
                 final id = q['id'] as String;
                 final opts = (q['options'] as List).cast<Map>();
@@ -415,12 +466,22 @@ class MatchingWidget extends ExerciseScaffold {
 }
 
 class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
-  late final List left =
-      (widget.exercise.payload['left'] as List).cast<Map>();
-  late final List right =
-      (widget.exercise.payload['right'] as List).cast<Map>();
+  late final List<Map> left;
+  late final List<Map> right;
   final Map<String, String> pairs = {}; // leftId -> rightId
   String? activeLeft;
+
+  @override
+  void initState() {
+    super.initState();
+    left = List<Map>.from(
+        (widget.exercise.payload['left'] as List).cast<Map>())
+      ..shuffle();
+    right = List<Map>.from(
+        (widget.exercise.payload['right'] as List).cast<Map>())
+      ..shuffle();
+    activeLeft = left.first['id'] as String;
+  }
 
   @override
   bool get canCheck => pairs.length == left.length;
@@ -432,14 +493,6 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
       if (sol[e.key] != e.value) return false;
     }
     return pairs.length == sol.length;
-  }
-
-  int _rightNumberFor(String rightId) {
-    // atanan solId'nin sırasını rozet olarak göster
-    final entry =
-        pairs.entries.where((e) => e.value == rightId).toList();
-    if (entry.isEmpty) return 0;
-    return left.indexWhere((l) => l['id'] == entry.first.key) + 1;
   }
 
   @override
@@ -482,22 +535,37 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
         } else if (assigned) {
           border = AppColors.mustard;
         }
+        final pairColor = assigned ? _colorForLeft(id) : null;
         return GestureDetector(
-          onTap: checked ? null : () => setState(() => activeLeft = id),
+          onTap: checked
+              ? null
+              : () => setState(() => activeLeft = id),
           child: Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(10),
-            decoration: cardDecoration(border: border),
+            height: 64,
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: cardDecoration(
+              border: checked && assigned
+                  ? border
+                  : isActive
+                      ? AppColors.teal
+                      : assigned
+                          ? pairColor
+                          : null,
+            ),
             child: Row(
               children: [
                 CircleAvatar(
                   radius: 12,
-                  backgroundColor: AppColors.navy.withValues(alpha: 0.1),
+                  backgroundColor:
+                      assigned ? pairColor : AppColors.navy.withValues(alpha: 0.1),
                   child: Text('$idx',
-                      style: const TextStyle(
-                          fontSize: 12, fontWeight: FontWeight.w700)),
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: assigned ? Colors.white : AppColors.navy)),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
                 Expanded(child: _leftContent(item)),
               ],
             ),
@@ -509,49 +577,77 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
 
   Widget _leftContent(Map item) {
     if (item['image'] != null) {
-      return Column(
-        children: [
-          MediaImage(AssetPaths.resolve(item['image']), height: 64),
-          if (item['text'] != null)
-            Text(item['text'] as String,
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-        ],
-      );
+      if (item['text'] != null) {
+        return Row(
+          children: [
+            MediaImage(AssetPaths.resolve(item['image']), height: 36),
+            const SizedBox(width: 4),
+            Expanded(
+              child: Text(item['text'] as String,
+                  style: const TextStyle(
+                      fontSize: 11, fontWeight: FontWeight.w600)),
+            ),
+          ],
+        );
+      }
+      return MediaImage(AssetPaths.resolve(item['image']), height: 42);
     }
     return Text(item['text'] as String,
         style: const TextStyle(fontWeight: FontWeight.w600));
   }
 
+  static const _pairColors = [
+    AppColors.teal,
+    AppColors.coral,
+    AppColors.mustard,
+    AppColors.das,
+    AppColors.der,
+    AppColors.die,
+  ];
+
+  Color _colorForLeft(String leftId) {
+    final idx = left.indexWhere((l) => l['id'] == leftId);
+    return _pairColors[idx % _pairColors.length];
+  }
+
+  List<Map> get _unassignedLeft =>
+      left.where((l) => !pairs.containsKey(l['id'])).toList();
+
   Widget _rightColumn() {
     return ListView(
       children: right.map((item) {
         final id = item['id'] as String;
-        final num = _rightNumberFor(id);
-        final assigned = num > 0;
+        final pairedLeftId =
+            pairs.entries.where((e) => e.value == id).firstOrNull?.key;
+        final assigned = pairedLeftId != null;
+        final pairColor = assigned ? _colorForLeft(pairedLeftId) : null;
+        final leftIdx = assigned
+            ? left.indexWhere((l) => l['id'] == pairedLeftId) + 1
+            : 0;
         return GestureDetector(
           onTap: checked || activeLeft == null
               ? null
               : () => setState(() {
-                    pairs.removeWhere((k, v) => v == id); // sağ tekil
-                    pairs[activeLeft!] = id;
-                    // sıradaki atanmamış sola geç
-                    final next = left.firstWhere(
-                        (l) => !pairs.containsKey(l['id']),
-                        orElse: () => {});
-                    activeLeft = next.isEmpty ? null : next['id'] as String;
+                    final target = activeLeft!;
+                    pairs.removeWhere((k, v) => v == id);
+                    pairs[target] = id;
+                    final remaining = _unassignedLeft;
+                    activeLeft = remaining.isEmpty
+                        ? null
+                        : remaining.first['id'] as String;
                   }),
           child: Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            padding: const EdgeInsets.all(14),
-            decoration: cardDecoration(
-                border: assigned ? AppColors.mustard : null),
+            height: 64,
+            margin: const EdgeInsets.only(bottom: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: cardDecoration(border: pairColor),
             child: Row(
               children: [
                 if (assigned)
                   CircleAvatar(
                     radius: 12,
-                    backgroundColor: AppColors.teal,
-                    child: Text('$num',
+                    backgroundColor: pairColor,
+                    child: Text('$leftIdx',
                         style: const TextStyle(
                             fontSize: 12,
                             color: Colors.white,

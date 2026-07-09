@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../main.dart';
 import '../models.dart';
@@ -6,7 +7,6 @@ import 'exercise_widgets.dart';
 import 'flashcard_widget.dart';
 import 'result_screen.dart';
 
-/// Bir oturum adımı: ya bir flashcard (vocab) ya da bir egzersiz.
 class _Step {
   final VocabItem? vocab;
   final Exercise? exercise;
@@ -23,9 +23,11 @@ class SessionScreen extends StatefulWidget {
 
 class _SessionScreenState extends State<SessionScreen> {
   List<_Step>? _steps;
+  List<String> _sessionWords = [];
   int _index = 0;
   int _correct = 0;
-  int _answerable = 0; // puanlanabilir adım sayısı (egzersizler)
+  int _answerable = 0;
+  int _reviewsScheduled = 0;
 
   @override
   void initState() {
@@ -36,18 +38,29 @@ class _SessionScreenState extends State<SessionScreen> {
   Future<void> _build() async {
     final lektion = await contentRepo.loadLektion();
     final exercises = await contentRepo.loadExercises();
+    final allWorts = lektion.vocab.map((v) => v.wort).toList();
+
+    _sessionWords = progressStore.dailyWordQueue(allWorts, size: 15);
+    _reviewsScheduled = progressStore.dueReviewCount(allWorts);
+
+    final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
+    final cards = _sessionWords
+        .where(vocabByWord.containsKey)
+        .map((w) => _Step.card(vocabByWord[w]!));
+
     final steps = <_Step>[
-      // İlk 6 kelime tanıtım kartı
-      ...lektion.vocab.take(6).map((v) => _Step.card(v)),
-      // Sonra tüm egzersizler
+      ...cards,
       ...exercises.map((e) => _Step.ex(e)),
     ];
     _answerable = exercises.length;
     if (mounted) setState(() => _steps = steps);
   }
 
-  void _advance(bool? correct) {
+  Future<void> _advance(bool? correct, {Exercise? exercise}) async {
     if (correct == true) _correct++;
+    if (exercise != null && correct != null) {
+      await _updateSrForExercise(exercise, correct);
+    }
     if (_index + 1 >= _steps!.length) {
       _finish();
     } else {
@@ -55,23 +68,39 @@ class _SessionScreenState extends State<SessionScreen> {
     }
   }
 
+  Future<void> _onFlashcardNext(VocabItem v) async {
+    await progressStore.introduceWord(v.wort);
+    _advance(null);
+  }
+
+  Future<void> _updateSrForExercise(Exercise ex, bool correct) async {
+    for (final w in _wordsTouchedByExercise(ex)) {
+      await progressStore.recordAnswer(w, correct);
+    }
+  }
+
+  List<String> _wordsTouchedByExercise(Exercise ex) {
+    final blob = json.encode(ex.payload).toLowerCase();
+    return _sessionWords
+        .where((w) => blob.contains(w.toLowerCase()))
+        .toList();
+  }
+
   Future<void> _finish() async {
     final xpGained = _correct * 10;
     await progressStore.addXp(xpGained);
     await progressStore.completeDailyGoal();
-    // Tanıtılan kelimeleri "görüldü" say (V2'de SR kutusuyla değişecek)
-    final lektion = await contentRepo.loadLektion();
-    for (final v in lektion.vocab.take(6)) {
-      await progressStore.markMastered(v.wort);
-    }
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(MaterialPageRoute(
-      builder: (_) => ResultScreen(
-        correct: _correct,
-        total: _answerable,
-        xp: xpGained,
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ResultScreen(
+          correct: _correct,
+          total: _answerable,
+          xp: xpGained,
+          reviewsSaved: _reviewsScheduled + _sessionWords.length,
+        ),
       ),
-    ));
+    );
   }
 
   @override
@@ -81,7 +110,7 @@ class _SessionScreenState extends State<SessionScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final step = steps[_index];
-    final progress = _index / steps.length;
+    final progress = (_index + 1) / steps.length;
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 16,
@@ -89,38 +118,36 @@ class _SessionScreenState extends State<SessionScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: () => Navigator.of(context).maybePop(),
+              onPressed: () => Navigator.of(context).pop(),
             ),
             Expanded(child: SessionProgressBar(progress)),
           ],
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: _buildStep(step),
-      ),
+      body: SafeArea(top: false, child: _buildStep(step)),
     );
   }
 
   Widget _buildStep(_Step step) {
     if (step.isCard) {
       return FlashcardWidget(
-        key: ValueKey('card_$_index'),
+        key: ValueKey('card_${step.vocab!.wort}'),
         vocab: step.vocab!,
-        onNext: () => _advance(null),
+        onNext: () => _onFlashcardNext(step.vocab!),
       );
     }
     final ex = step.exercise!;
     final key = ValueKey('ex_${ex.id}');
+    void done(bool c) => _advance(c, exercise: ex);
     switch (ex.mechanic) {
       case Mechanic.quiz:
-        return QuizWidget(key: key, exercise: ex, onComplete: _advance);
+        return QuizWidget(key: key, exercise: ex, onComplete: done);
       case Mechanic.fillBlank:
-        return FillBlankWidget(key: key, exercise: ex, onComplete: _advance);
+        return FillBlankWidget(key: key, exercise: ex, onComplete: done);
       case Mechanic.listening:
-        return ListeningWidget(key: key, exercise: ex, onComplete: _advance);
+        return ListeningWidget(key: key, exercise: ex, onComplete: done);
       case Mechanic.matching:
-        return MatchingWidget(key: key, exercise: ex, onComplete: _advance);
+        return MatchingWidget(key: key, exercise: ex, onComplete: done);
       default:
         return Center(child: Text('Desteklenmeyen: ${ex.mechanic}'));
     }

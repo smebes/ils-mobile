@@ -14,59 +14,86 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Lektion? _lektion;
+  String? _error;
 
   @override
   void initState() {
     super.initState();
-    contentRepo.loadLektion().then((l) {
+    _load();
+  }
+
+  Future<void> _load() async {
+    try {
+      final l = await contentRepo.loadLektion();
       if (mounted) setState(() => _lektion = l);
-    });
+    } catch (e) {
+      if (mounted) setState(() => _error = e.toString());
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l = _lektion;
-    final mastery =
-        l == null ? 0.0 : progressStore.masteryPct(l.vocab.length);
-    return Scaffold(
-      body: SafeArea(
-        child: l == null
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _topBar(),
-                    const SizedBox(height: 24),
-                    const Text('Guten Tag! 👋',
-                        style: TextStyle(
-                            fontSize: 28, fontWeight: FontWeight.w800)),
-                    const SizedBox(height: 4),
-                    Text('Lass uns Deutsch lernen.',
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.navy.withValues(alpha: 0.6))),
-                    const SizedBox(height: 24),
-                    _lektionCard(l, mastery),
-                    const SizedBox(height: 24),
-                    _mainCta(l),
-                    const SizedBox(height: 16),
-                    _secondaryActions(),
-                  ],
-                ),
+    return ListenableBuilder(
+      listenable: progressStore,
+      builder: (context, _) {
+        if (_error != null) {
+          return Scaffold(
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Text('Fehler beim Laden: $_error',
+                    textAlign: TextAlign.center),
               ),
-      ),
+            ),
+          );
+        }
+        final l = _lektion;
+        if (l == null) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator()));
+        }
+        final mastery = progressStore.masteryPct(l.vocab.length);
+        final mastered = progressStore.masteredCount(l.vocab.length);
+        return Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _topBar(),
+                  const SizedBox(height: 24),
+                  const Text('Guten Tag! 👋',
+                      style: TextStyle(
+                          fontSize: 28, fontWeight: FontWeight.w800)),
+                  const SizedBox(height: 4),
+                  Text('Lass uns Deutsch lernen.',
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.navy.withValues(alpha: 0.6))),
+                  const SizedBox(height: 24),
+                  _lektionCard(l, mastery, mastered),
+                  const SizedBox(height: 24),
+                  _mainCta(l),
+                  const SizedBox(height: 16),
+                  _secondaryActions(),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
   Widget _topBar() {
-    return Row(
+    return Wrap(
+      spacing: 12,
+      runSpacing: 8,
+      alignment: WrapAlignment.spaceBetween,
       children: [
         _pill('🔥 ${progressStore.streak}', AppColors.coral),
-        const SizedBox(width: 12),
         _pill('⭐ Lvl ${progressStore.level}', AppColors.mustard),
-        const Spacer(),
         _pill('${progressStore.xp} XP', AppColors.teal),
       ],
     );
@@ -79,13 +106,13 @@ class _HomeScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(30),
         ),
         child: Text(text,
-            style: TextStyle(
+            style: const TextStyle(
                 color: AppColors.navy,
                 fontWeight: FontWeight.w700,
                 fontSize: 14)),
       );
 
-  Widget _lektionCard(Lektion l, double mastery) {
+  Widget _lektionCard(Lektion l, double mastery, int mastered) {
     return Container(
       decoration: cardDecoration(),
       clipBehavior: Clip.antiAlias,
@@ -113,10 +140,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Expanded(child: SessionProgressBar(mastery)),
                     const SizedBox(width: 10),
-                    Text('${(mastery * 100).round()}% hakim',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 13)),
+                    Text(
+                      '${(mastery * 100).round()}% Meisterschaft',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w700, fontSize: 13),
+                    ),
                   ],
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  '$mastered / ${l.vocab.length} Wörter sicher (Kiste 4–5)',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.navy.withValues(alpha: 0.55)),
                 ),
               ],
             ),
@@ -127,21 +163,23 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _mainCta(Lektion l) {
+    final queueSize = progressStore.dailyWordQueue(
+      l.vocab.map((v) => v.wort).toList(),
+      size: 15,
+    ).length;
     return SizedBox(
       width: double.infinity,
       child: FilledButton(
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(builder: (_) => const SessionScreen()),
-          );
-          if (mounted) setState(() {}); // dönünce ilerlemeyi tazele
-        },
-        child: const Column(
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const SessionScreen()),
+        ),
+        child: Column(
           children: [
-            Text('HEUTE LERNEN'),
-            SizedBox(height: 2),
-            Text('Einkaufen · 15 Wörter',
-                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w400)),
+            const Text('HEUTE LERNEN'),
+            const SizedBox(height: 2),
+            Text('${l.titel} · $queueSize Wörter',
+                style:
+                    const TextStyle(fontSize: 13, fontWeight: FontWeight.w400)),
           ],
         ),
       ),
