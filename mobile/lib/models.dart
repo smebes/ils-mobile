@@ -24,7 +24,9 @@ class VocabItem {
         artikel: j['artikel'] as String?,
         plural: j['plural'] as String?,
         image: AssetPaths.resolve(j['image'] as String),
-        audio: j['audio'] != null ? j['audio'] as String : null,
+        audio: j['audio'] != null
+            ? AssetPaths.resolve(j['audio'] as String)
+            : null,
         uebersetzungTr: (j['uebersetzung_tr'] ?? '') as String,
       );
 }
