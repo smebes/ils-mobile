@@ -1,6 +1,6 @@
 {
-    "name": "sprachapp",
-    "short_name": "sprachapp",
+    "name": "SprachApp",
+    "short_name": "SprachApp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

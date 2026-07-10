@@ -1,0 +1,10 @@
+# Netlify — Flutter web (manuel veya Git deploy)
+[build]
+  publish = "build/web"
+  command = "flutter build web --release"
+
+# SPA: tüm yollar index.html'e (deep link / yenileme)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
