@@ -1,0 +1,14 @@
+# Repo kökü — Netlify bunu otomatik okur (mobile/netlify.toml değil).
+[build]
+  base = "mobile"
+  publish = "build/web"
+  command = "bash ../scripts/netlify-build.sh"
+
+[build.environment]
+  FLUTTER_VERSION = "stable"
+
+# SPA: yenileme / deep link
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
