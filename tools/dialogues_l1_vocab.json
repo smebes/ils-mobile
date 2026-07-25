@@ -1,0 +1,425 @@
+{
+  "_note": "Lektion 1 kelime okunuşları. Üretim: python tools/elevenlabs_tts.py --input tools/dialogues_l1_vocab.json --speeds slow,normal",
+  "items": [
+    {
+      "id": "L1_wort_heissen",
+      "lektion": 1,
+      "text": "heißen",
+      "speaker": "narrator",
+      "wort": "heißen"
+    },
+    {
+      "id": "L1_wort_name",
+      "lektion": 1,
+      "text": "der Name",
+      "speaker": "narrator",
+      "wort": "Name"
+    },
+    {
+      "id": "L1_wort_kommen",
+      "lektion": 1,
+      "text": "kommen",
+      "speaker": "narrator",
+      "wort": "kommen"
+    },
+    {
+      "id": "L1_wort_sprechen",
+      "lektion": 1,
+      "text": "sprechen",
+      "speaker": "narrator",
+      "wort": "sprechen"
+    },
+    {
+      "id": "L1_wort_ein_bisschen",
+      "lektion": 1,
+      "text": "ein bisschen",
+      "speaker": "narrator",
+      "wort": "ein bisschen"
+    },
+    {
+      "id": "L1_wort_guten_morgen",
+      "lektion": 1,
+      "text": "Guten Morgen",
+      "speaker": "narrator",
+      "wort": "Guten Morgen"
+    },
+    {
+      "id": "L1_wort_guten_tag",
+      "lektion": 1,
+      "text": "Guten Tag",
+      "speaker": "narrator",
+      "wort": "Guten Tag"
+    },
+    {
+      "id": "L1_wort_guten_abend",
+      "lektion": 1,
+      "text": "Guten Abend",
+      "speaker": "narrator",
+      "wort": "Guten Abend"
+    },
+    {
+      "id": "L1_wort_gute_nacht",
+      "lektion": 1,
+      "text": "Gute Nacht",
+      "speaker": "narrator",
+      "wort": "Gute Nacht"
+    },
+    {
+      "id": "L1_wort_hallo",
+      "lektion": 1,
+      "text": "Hallo",
+      "speaker": "narrator",
+      "wort": "Hallo"
+    },
+    {
+      "id": "L1_wort_tschuess",
+      "lektion": 1,
+      "text": "Tschüss",
+      "speaker": "narrator",
+      "wort": "Tschüss"
+    },
+    {
+      "id": "L1_wort_auf_wiedersehen",
+      "lektion": 1,
+      "text": "Auf Wiedersehen",
+      "speaker": "narrator",
+      "wort": "Auf Wiedersehen"
+    },
+    {
+      "id": "L1_wort_willkommen",
+      "lektion": 1,
+      "text": "Willkommen",
+      "speaker": "narrator",
+      "wort": "Willkommen"
+    },
+    {
+      "id": "L1_wort_danke",
+      "lektion": 1,
+      "text": "danke",
+      "speaker": "narrator",
+      "wort": "danke"
+    },
+    {
+      "id": "L1_wort_frau",
+      "lektion": 1,
+      "text": "die Frau",
+      "speaker": "narrator",
+      "wort": "Frau"
+    },
+    {
+      "id": "L1_wort_herr",
+      "lektion": 1,
+      "text": "der Herr",
+      "speaker": "narrator",
+      "wort": "Herr"
+    },
+    {
+      "id": "L1_wort_dame",
+      "lektion": 1,
+      "text": "die Dame",
+      "speaker": "narrator",
+      "wort": "Dame"
+    },
+    {
+      "id": "L1_wort_entschuldigung",
+      "lektion": 1,
+      "text": "die Entschuldigung",
+      "speaker": "narrator",
+      "wort": "Entschuldigung"
+    },
+    {
+      "id": "L1_wort_wie",
+      "lektion": 1,
+      "text": "wie",
+      "speaker": "narrator",
+      "wort": "wie"
+    },
+    {
+      "id": "L1_wort_wer",
+      "lektion": 1,
+      "text": "wer",
+      "speaker": "narrator",
+      "wort": "wer"
+    },
+    {
+      "id": "L1_wort_ja",
+      "lektion": 1,
+      "text": "ja",
+      "speaker": "narrator",
+      "wort": "ja"
+    },
+    {
+      "id": "L1_wort_nein",
+      "lektion": 1,
+      "text": "nein",
+      "speaker": "narrator",
+      "wort": "nein"
+    },
+    {
+      "id": "L1_wort_stimmen",
+      "lektion": 1,
+      "text": "stimmen",
+      "speaker": "narrator",
+      "wort": "stimmen"
+    },
+    {
+      "id": "L1_wort_freut_mich",
+      "lektion": 1,
+      "text": "Freut mich",
+      "speaker": "narrator",
+      "wort": "Freut mich"
+    },
+    {
+      "id": "L1_wort_woher",
+      "lektion": 1,
+      "text": "woher",
+      "speaker": "narrator",
+      "wort": "woher"
+    },
+    {
+      "id": "L1_wort_aus",
+      "lektion": 1,
+      "text": "aus",
+      "speaker": "narrator",
+      "wort": "aus"
+    },
+    {
+      "id": "L1_wort_sprache",
+      "lektion": 1,
+      "text": "die Sprache",
+      "speaker": "narrator",
+      "wort": "Sprache"
+    },
+    {
+      "id": "L1_wort_toll",
+      "lektion": 1,
+      "text": "toll",
+      "speaker": "narrator",
+      "wort": "toll"
+    },
+    {
+      "id": "L1_wort_interessant",
+      "lektion": 1,
+      "text": "interessant",
+      "speaker": "narrator",
+      "wort": "interessant"
+    },
+    {
+      "id": "L1_wort_deutschland",
+      "lektion": 1,
+      "text": "Deutschland",
+      "speaker": "narrator",
+      "wort": "Deutschland"
+    },
+    {
+      "id": "L1_wort_oesterreich",
+      "lektion": 1,
+      "text": "Österreich",
+      "speaker": "narrator",
+      "wort": "Österreich"
+    },
+    {
+      "id": "L1_wort_schweiz",
+      "lektion": 1,
+      "text": "die Schweiz",
+      "speaker": "narrator",
+      "wort": "Schweiz"
+    },
+    {
+      "id": "L1_wort_polen",
+      "lektion": 1,
+      "text": "Polen",
+      "speaker": "narrator",
+      "wort": "Polen"
+    },
+    {
+      "id": "L1_wort_tuerkei",
+      "lektion": 1,
+      "text": "die Türkei",
+      "speaker": "narrator",
+      "wort": "Türkei"
+    },
+    {
+      "id": "L1_wort_spanien",
+      "lektion": 1,
+      "text": "Spanien",
+      "speaker": "narrator",
+      "wort": "Spanien"
+    },
+    {
+      "id": "L1_wort_italien",
+      "lektion": 1,
+      "text": "Italien",
+      "speaker": "narrator",
+      "wort": "Italien"
+    },
+    {
+      "id": "L1_wort_frankreich",
+      "lektion": 1,
+      "text": "Frankreich",
+      "speaker": "narrator",
+      "wort": "Frankreich"
+    },
+    {
+      "id": "L1_wort_syrien",
+      "lektion": 1,
+      "text": "Syrien",
+      "speaker": "narrator",
+      "wort": "Syrien"
+    },
+    {
+      "id": "L1_wort_deutsch",
+      "lektion": 1,
+      "text": "Deutsch",
+      "speaker": "narrator",
+      "wort": "Deutsch"
+    },
+    {
+      "id": "L1_wort_polnisch",
+      "lektion": 1,
+      "text": "Polnisch",
+      "speaker": "narrator",
+      "wort": "Polnisch"
+    },
+    {
+      "id": "L1_wort_tuerkisch",
+      "lektion": 1,
+      "text": "Türkisch",
+      "speaker": "narrator",
+      "wort": "Türkisch"
+    },
+    {
+      "id": "L1_wort_spanisch",
+      "lektion": 1,
+      "text": "Spanisch",
+      "speaker": "narrator",
+      "wort": "Spanisch"
+    },
+    {
+      "id": "L1_wort_italienisch",
+      "lektion": 1,
+      "text": "Italienisch",
+      "speaker": "narrator",
+      "wort": "Italienisch"
+    },
+    {
+      "id": "L1_wort_franzoesisch",
+      "lektion": 1,
+      "text": "Französisch",
+      "speaker": "narrator",
+      "wort": "Französisch"
+    },
+    {
+      "id": "L1_wort_arabisch",
+      "lektion": 1,
+      "text": "Arabisch",
+      "speaker": "narrator",
+      "wort": "Arabisch"
+    },
+    {
+      "id": "L1_wort_buchstabe",
+      "lektion": 1,
+      "text": "der Buchstabe",
+      "speaker": "narrator",
+      "wort": "Buchstabe"
+    },
+    {
+      "id": "L1_wort_alphabet",
+      "lektion": 1,
+      "text": "das Alphabet",
+      "speaker": "narrator",
+      "wort": "Alphabet"
+    },
+    {
+      "id": "L1_wort_buchstabieren",
+      "lektion": 1,
+      "text": "buchstabieren",
+      "speaker": "narrator",
+      "wort": "buchstabieren"
+    },
+    {
+      "id": "L1_wort_wie_bitte",
+      "lektion": 1,
+      "text": "Wie bitte?",
+      "speaker": "narrator",
+      "wort": "Wie bitte?"
+    },
+    {
+      "id": "L1_wort_firma",
+      "lektion": 1,
+      "text": "die Firma",
+      "speaker": "narrator",
+      "wort": "Firma"
+    },
+    {
+      "id": "L1_wort_telefon",
+      "lektion": 1,
+      "text": "das Telefon",
+      "speaker": "narrator",
+      "wort": "Telefon"
+    },
+    {
+      "id": "L1_wort_adresse",
+      "lektion": 1,
+      "text": "die Adresse",
+      "speaker": "narrator",
+      "wort": "Adresse"
+    },
+    {
+      "id": "L1_wort_visitenkarte",
+      "lektion": 1,
+      "text": "die Visitenkarte",
+      "speaker": "narrator",
+      "wort": "Visitenkarte"
+    },
+    {
+      "id": "L1_wort_vorname",
+      "lektion": 1,
+      "text": "der Vorname",
+      "speaker": "narrator",
+      "wort": "Vorname"
+    },
+    {
+      "id": "L1_wort_familienname",
+      "lektion": 1,
+      "text": "der Familienname",
+      "speaker": "narrator",
+      "wort": "Familienname"
+    },
+    {
+      "id": "L1_wort_strasse",
+      "lektion": 1,
+      "text": "die Straße",
+      "speaker": "narrator",
+      "wort": "Straße"
+    },
+    {
+      "id": "L1_wort_stadt",
+      "lektion": 1,
+      "text": "die Stadt",
+      "speaker": "narrator",
+      "wort": "Stadt"
+    },
+    {
+      "id": "L1_wort_land",
+      "lektion": 1,
+      "text": "das Land",
+      "speaker": "narrator",
+      "wort": "Land"
+    },
+    {
+      "id": "L1_wort_postleitzahl",
+      "lektion": 1,
+      "text": "die Postleitzahl",
+      "speaker": "narrator",
+      "wort": "Postleitzahl"
+    },
+    {
+      "id": "L1_wort_formular",
+      "lektion": 1,
+      "text": "das Formular",
+      "speaker": "narrator",
+      "wort": "Formular"
+    }
+  ]
+}

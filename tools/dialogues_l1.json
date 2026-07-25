@@ -1,0 +1,97 @@
+{
+  "_note": "Lektion 1 ElevenLabs girdisi. de-DE. Üretim: python tools/elevenlabs_tts.py --input tools/dialogues_l1.json",
+  "items": [
+    {
+      "id": "L1_folge1",
+      "lektion": 1,
+      "vocab_domain": "Das bin ich",
+      "lines": [
+        {
+          "speaker": "walter",
+          "text": "Guten Tag. Mein Name ist Walter Baumann."
+        },
+        {
+          "speaker": "lara",
+          "text": "Hallo. Ich heiße Lara Nowak."
+        },
+        {
+          "speaker": "walter",
+          "text": "Woher kommen Sie, Frau Nowak?"
+        },
+        {
+          "speaker": "lara",
+          "text": "Ich komme aus Polen. Und ich spreche ein bisschen Deutsch."
+        },
+        {
+          "speaker": "lili",
+          "text": "Ich bin Lili. Ich bin vier."
+        },
+        {
+          "speaker": "lara",
+          "text": "Hallo Lili!"
+        }
+      ]
+    },
+    {
+      "id": "L1_A3_tageszeit",
+      "lektion": 1,
+      "lines": [
+        {
+          "speaker": "walter",
+          "text": "Guten Abend, Frau Nowak."
+        },
+        {
+          "speaker": "lara",
+          "text": "Guten Abend, Herr Baumann."
+        }
+      ]
+    },
+    {
+      "id": "L1_D1_buchstabe_m",
+      "lektion": 1,
+      "lines": [
+        {
+          "speaker": "narrator",
+          "text": "Em"
+        }
+      ]
+    },
+    {
+      "id": "L1_D4_buchstabieren",
+      "lektion": 1,
+      "lines": [
+        {
+          "speaker": "walter",
+          "text": "Wie heißt die Firma, bitte?"
+        },
+        {
+          "speaker": "lara",
+          "text": "Nowak. N-O-W-A-K."
+        }
+      ]
+    },
+    {
+      "id": "L1_E4_anmeldung",
+      "lektion": 1,
+      "lines": [
+        {
+          "speaker": "walter",
+          "text": "Guten Tag. Mein Vorname ist Omar."
+        },
+        {
+          "speaker": "lara",
+          "text": "Und der Familienname?"
+        },
+        {
+          "speaker": "walter",
+          "text": "Hassan. Ich wohne in Köln."
+        }
+      ]
+    },
+    {
+      "id": "L1_vocab_narration",
+      "lektion": 1,
+      "text": "Guten Tag. Hallo. Tschüss. Auf Wiedersehen. der Name. die Frau. der Herr. Deutschland. Polen. Deutsch. Polnisch. die Adresse. die Straße. die Stadt."
+    }
+  ]
+}

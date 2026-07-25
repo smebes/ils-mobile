@@ -29,5 +29,17 @@
   "sofia": {
     "voice_id": "EXAVITQu4vr4xnSDxMaL",
     "settings": { "stability": 0.5, "style": 0.2 }
+  },
+  "walter": {
+    "voice_id": "ErXwobaYiN019PkySvjV",
+    "settings": { "stability": 0.65 }
+  },
+  "lara": {
+    "voice_id": "21m00Tcm4TlvDq8ikWAM",
+    "settings": { "stability": 0.6 }
+  },
+  "lili": {
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "settings": { "stability": 0.45, "style": 0.25 }
   }
 }

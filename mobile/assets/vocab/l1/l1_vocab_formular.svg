@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Formular">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="45" y="35" width="110" height="130" rx="8" fill="#E9C46A"/>
+    <path d="M60 60 H140 M60 85 H140 M60 110 H120 M60 135 H130" stroke="#264653" stroke-width="5"/>
+  </g>
+</svg>

@@ -3,6 +3,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import '../audio_service.dart';
+import '../tts_service.dart';
 
 /// Her egzersiz widget'ı kendi kontrol → geri bildirim → Weiter döngüsünü
 /// yönetir ve bitince onComplete(correct) çağırır.
@@ -214,6 +215,18 @@ class _FillBlankWidgetState extends State<FillBlankWidget> with CheckFlow {
           child: ListView(
             children: [
               exerciseHeader(widget.exercise.instruction),
+              if (widget.exercise.payload['hint'] != null)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                  child: Text(
+                    widget.exercise.payload['hint'] as String,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppColors.navy.withValues(alpha: 0.65),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: _renderSentence(sentence),
@@ -355,7 +368,33 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
   final Map<String, String> answers = {}; // qId -> optionId
 
   List<String> _audioList(String speed) => AssetPaths.resolveList(
-      (widget.exercise.payload['audio'] as Map)[speed] as List?);
+      (widget.exercise.payload['audio'] as Map?)?[speed] as List?);
+
+  List<String> get _transcriptLines {
+    final lines = widget.exercise.payload['lines'] as List?;
+    if (lines == null) return const [];
+    return lines
+        .map((e) => (e as Map)['text']?.toString() ?? '')
+        .where((t) => t.isNotEmpty)
+        .toList();
+  }
+
+  Future<void> _play(String speed) async {
+    final files = _audioList(speed);
+    if (files.isNotEmpty) {
+      await _audio.playSequence(files);
+      return;
+    }
+    // ElevenLabs henüz yoksa: satırları TTS ile oku (de-DE).
+    final lines = _transcriptLines;
+    if (lines.isEmpty) return;
+    for (final t in lines) {
+      TtsService.speak(t);
+      await Future<void>.delayed(
+        Duration(milliseconds: 600 + t.length * 55),
+      );
+    }
+  }
 
   @override
   void dispose() {
@@ -400,10 +439,8 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
                     Column(
                       children: [
                         SpeedButtons(
-                          onSlow: () =>
-                              _audio.playSequence(_audioList('slow')),
-                          onNormal: () =>
-                              _audio.playSequence(_audioList('normal')),
+                          onSlow: () => _play('slow'),
+                          onNormal: () => _play('normal'),
                         ),
                         const SizedBox(height: 6),
                         Text(
@@ -617,8 +654,12 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
     return ListView(
       children: right.map((item) {
         final id = item['id'] as String;
+        final pairedLeftIds = pairs.entries
+            .where((e) => e.value == id)
+            .map((e) => e.key)
+            .toList();
         final pairedLeftId =
-            pairs.entries.where((e) => e.value == id).firstOrNull?.key;
+            pairedLeftIds.isEmpty ? null : pairedLeftIds.first;
         final assigned = pairedLeftId != null;
         final pairColor = assigned ? _colorForLeft(pairedLeftId) : null;
         final leftIdx = assigned
@@ -629,7 +670,12 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
               ? null
               : () => setState(() {
                     final target = activeLeft!;
-                    pairs.removeWhere((k, v) => v == id);
+                    final manyToOne =
+                        widget.exercise.payload['many_to_one'] == true;
+                    if (!manyToOne) {
+                      // 1:1 — aynı sağ seçenek başka sola bağlıysa kopar
+                      pairs.removeWhere((k, v) => v == id);
+                    }
                     pairs[target] = id;
                     final remaining = _unassignedLeft;
                     activeLeft = remaining.isEmpty

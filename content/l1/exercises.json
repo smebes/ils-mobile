@@ -1,0 +1,1213 @@
+{
+  "_meta": {
+    "note": "Lektion 1 egzersizleri. Schritt sırası folge→A→B→C→D→E. Yapı kitaptan, içerik özgün (telifsiz). de-DE.",
+    "schema": {
+      "matching": "payload{left[{id,image?,text?}], right[{id,text}]}  solution{leftId:rightId}",
+      "fill_blank": "payload{sentence, blanks[{id,options?}]}            solution{blankId:{answer,accept[]}}",
+      "listening": "payload{audio{slow[],normal[]}, lines?, questions[{id,q,options}]}  solution{qId:optionId}",
+      "quiz": "payload{question, options[{id,text}]}               solution{answer, explanation}"
+    },
+    "validation": {
+      "case_sensitive": false,
+      "trim": true,
+      "ignore_punctuation": true
+    }
+  },
+  "items": [
+    {
+      "id": "L1_F1",
+      "lektion_id": 1,
+      "schritt": "folge",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Foto-Hörgeschichte",
+      "vocab_domain": "Das bin ich",
+      "payload": {
+        "instruction": "Hör die Geschichte: neue Nachbarn. Beantworte die Fragen.",
+        "scene_image": "public/img/l1_scene_nachbarn.svg",
+        "audio_ref": "L1_folge1",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "walter",
+            "text": "Guten Tag. Mein Name ist Walter Baumann."
+          },
+          {
+            "speaker": "lara",
+            "text": "Hallo. Ich heiße Lara Nowak."
+          },
+          {
+            "speaker": "walter",
+            "text": "Woher kommen Sie, Frau Nowak?"
+          },
+          {
+            "speaker": "lara",
+            "text": "Ich komme aus Polen. Und ich spreche ein bisschen Deutsch."
+          },
+          {
+            "speaker": "lili",
+            "text": "Ich bin Lili. Ich bin vier."
+          },
+          {
+            "speaker": "lara",
+            "text": "Hallo Lili!"
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_folge1_slow_01_walter_b75d4ec1de.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_02_lara_a69bd4dda9.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_03_walter_a44c838a6f.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_04_lara_dc12bad85f.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_05_lili_210abe556b.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_06_lara_11eb6669e6.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_folge1_normal_01_walter_015fea9458.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_02_lara_cb8444c76a.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_03_walter_46b0032b9c.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_04_lara_00faf25b4c.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_05_lili_8b3433051b.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_06_lara_cffc571ecf.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Wer kommt aus Polen?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Lara"
+              },
+              {
+                "id": "o2",
+                "text": "Walter"
+              },
+              {
+                "id": "o3",
+                "text": "Lili"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Wie alt ist Lili?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "vier"
+              },
+              {
+                "id": "o2",
+                "text": "fünf"
+              },
+              {
+                "id": "o3",
+                "text": "sechs"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1",
+        "q2": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_A1",
+      "lektion_id": 1,
+      "schritt": "A",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Begrüßung",
+      "vocab_domain": "Begrüßung/Abschied",
+      "payload": {
+        "instruction": "Ordne die Bilder den Begrüßungen zu.",
+        "left": [
+          {
+            "id": "a",
+            "image": "assets/vocab/l1/l1_vocab_guten_morgen.svg"
+          },
+          {
+            "id": "b",
+            "image": "assets/vocab/l1/l1_vocab_guten_tag.svg"
+          },
+          {
+            "id": "c",
+            "image": "assets/vocab/l1/l1_vocab_guten_abend.svg"
+          },
+          {
+            "id": "d",
+            "image": "assets/vocab/l1/l1_vocab_gute_nacht.svg"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Guten Morgen"
+          },
+          {
+            "id": "2",
+            "text": "Guten Tag"
+          },
+          {
+            "id": "3",
+            "text": "Guten Abend"
+          },
+          {
+            "id": "4",
+            "text": "Gute Nacht"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_A2",
+      "lektion_id": 1,
+      "schritt": "A",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Begrüßung vs Abschied",
+      "vocab_domain": "Begrüßung/Abschied",
+      "payload": {
+        "instruction": "Ordne zu: Begrüßung oder Abschied?",
+        "many_to_one": true,
+        "left": [
+          {
+            "id": "a",
+            "text": "Guten Tag"
+          },
+          {
+            "id": "b",
+            "text": "Hallo"
+          },
+          {
+            "id": "c",
+            "text": "Tschüss"
+          },
+          {
+            "id": "d",
+            "text": "Auf Wiedersehen"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Begrüßung"
+          },
+          {
+            "id": "2",
+            "text": "Abschied"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "1",
+        "c": "2",
+        "d": "2"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_A3",
+      "lektion_id": 1,
+      "schritt": "A",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen — Tageszeit",
+      "vocab_domain": "Begrüßung/Abschied",
+      "payload": {
+        "instruction": "Hör den Dialog. Welche Tageszeit ist es?",
+        "scene_image": "public/img/l1_scene_abend.svg",
+        "audio_ref": "L1_A3_tageszeit",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "walter",
+            "text": "Guten Abend, Frau Nowak."
+          },
+          {
+            "speaker": "lara",
+            "text": "Guten Abend, Herr Baumann."
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_a3_tageszeit_slow_01_walter_294506bdef.mp3",
+            "storage/audio/l1/slow/l1_a3_tageszeit_slow_02_lara_10d1da40ce.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_a3_tageszeit_normal_01_walter_b0c2faec69.mp3",
+            "storage/audio/l1/normal/l1_a3_tageszeit_normal_02_lara_80047f3800.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Welche Tageszeit ist es?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Abend"
+              },
+              {
+                "id": "o2",
+                "text": "Morgen"
+              },
+              {
+                "id": "o3",
+                "text": "Nacht"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_A4",
+      "lektion_id": 1,
+      "schritt": "A",
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Begrüßung zur Tageszeit",
+      "vocab_domain": "Begrüßung/Abschied",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Es ist Abend. Was sagt man?",
+        "image": "public/img/l1_scene_abend.svg",
+        "options": [
+          {
+            "id": "o1",
+            "text": "Guten Abend"
+          },
+          {
+            "id": "o2",
+            "text": "Guten Morgen"
+          },
+          {
+            "id": "o3",
+            "text": "Gute Nacht"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "Am Abend sagt man „Guten Abend“. „Gute Nacht“ sagt man zum Schlafen."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_B1",
+      "lektion_id": 1,
+      "schritt": "B",
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "W-Frage + Verbkonjugation heißen",
+      "vocab_domain": "Personalien",
+      "payload": {
+        "instruction": "Ergänze.",
+        "sentence": "{{b1}} heißen Sie? — Ich {{b2}} Lara.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "Wie",
+              "Wer",
+              "Wo"
+            ]
+          },
+          {
+            "id": "b2",
+            "options": [
+              "heiße",
+              "heißt",
+              "heißen"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "Wie",
+          "accept": [
+            "wie",
+            "Wie"
+          ]
+        },
+        "b2": {
+          "answer": "heiße",
+          "accept": [
+            "heiße",
+            "heisse"
+          ]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_B2",
+      "lektion_id": 1,
+      "schritt": "B",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Frage ↔ Antwort",
+      "vocab_domain": "Personalien",
+      "payload": {
+        "instruction": "Ordne Frage und Antwort.",
+        "left": [
+          {
+            "id": "a",
+            "text": "Wie heißen Sie?"
+          },
+          {
+            "id": "b",
+            "text": "Wie heißt du?"
+          },
+          {
+            "id": "c",
+            "text": "Wer ist das?"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Ich heiße Walter Baumann."
+          },
+          {
+            "id": "2",
+            "text": "Ich heiße Lili."
+          },
+          {
+            "id": "3",
+            "text": "Das ist Lara Nowak."
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_B3",
+      "lektion_id": 1,
+      "schritt": "B",
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Aussage vs W-Frage",
+      "vocab_domain": "Personalien",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Welche Satz ist eine W-Frage?",
+        "options": [
+          {
+            "id": "o1",
+            "text": "Wie heißen Sie?"
+          },
+          {
+            "id": "o2",
+            "text": "Ich heiße Lara."
+          },
+          {
+            "id": "o3",
+            "text": "Mein Name ist Walter."
+          }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "W-Fragen beginnen oft mit wie, wer, wo… und enden mit Fragezeichen."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_B4",
+      "lektion_id": 1,
+      "schritt": "B",
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Aussage: Mein Name ist …",
+      "vocab_domain": "Personalien",
+      "payload": {
+        "instruction": "Ergänze den Dialog.",
+        "sentence": "Guten Tag. {{b1}} ist Lara. — Freut mich.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "Mein Name",
+              "Wie",
+              "Ich heiße"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "Mein Name",
+          "accept": [
+            "mein name",
+            "Mein Name"
+          ]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_C1",
+      "lektion_id": 1,
+      "schritt": "C",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Länder",
+      "vocab_domain": "Länder, Sprachen",
+      "payload": {
+        "instruction": "Ordne die Flaggen den Ländern zu.",
+        "left": [
+          {
+            "id": "a",
+            "image": "assets/vocab/l1/l1_vocab_deutschland.svg"
+          },
+          {
+            "id": "b",
+            "image": "assets/vocab/l1/l1_vocab_polen.svg"
+          },
+          {
+            "id": "c",
+            "image": "assets/vocab/l1/l1_vocab_tuerkei.svg"
+          },
+          {
+            "id": "d",
+            "image": "assets/vocab/l1/l1_vocab_italien.svg"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Deutschland"
+          },
+          {
+            "id": "2",
+            "text": "Polen"
+          },
+          {
+            "id": "3",
+            "text": "die Türkei"
+          },
+          {
+            "id": "4",
+            "text": "Italien"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_C2",
+      "lektion_id": 1,
+      "schritt": "C",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Land ↔ Sprache",
+      "vocab_domain": "Länder, Sprachen",
+      "payload": {
+        "instruction": "Ordne Land und Sprache.",
+        "left": [
+          {
+            "id": "a",
+            "text": "Deutschland",
+            "image": "assets/vocab/l1/l1_vocab_deutschland.svg"
+          },
+          {
+            "id": "b",
+            "text": "Polen",
+            "image": "assets/vocab/l1/l1_vocab_polen.svg"
+          },
+          {
+            "id": "c",
+            "text": "die Türkei",
+            "image": "assets/vocab/l1/l1_vocab_tuerkei.svg"
+          },
+          {
+            "id": "d",
+            "text": "Spanien",
+            "image": "assets/vocab/l1/l1_vocab_spanien.svg"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Deutsch"
+          },
+          {
+            "id": "2",
+            "text": "Polnisch"
+          },
+          {
+            "id": "3",
+            "text": "Türkisch"
+          },
+          {
+            "id": "4",
+            "text": "Spanisch"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_C3",
+      "lektion_id": 1,
+      "schritt": "C",
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Präposition aus",
+      "vocab_domain": "Länder, Sprachen",
+      "payload": {
+        "instruction": "Ergänze: aus / aus der …",
+        "sentence": "Ich komme {{b1}} Polen. Ich komme {{b2}} der Schweiz.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "aus",
+              "in",
+              "von"
+            ]
+          },
+          {
+            "id": "b2",
+            "options": [
+              "aus",
+              "in",
+              "von"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "aus",
+          "accept": [
+            "aus"
+          ]
+        },
+        "b2": {
+          "answer": "aus",
+          "accept": [
+            "aus"
+          ]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_C4",
+      "lektion_id": 1,
+      "schritt": "C",
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "du vs Sie — Verbkonjugation",
+      "vocab_domain": "Personalpronomen",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Woher ___ du? / Woher ___ Sie?",
+        "options": [
+          {
+            "id": "o1",
+            "text": "kommst / kommen"
+          },
+          {
+            "id": "o2",
+            "text": "kommen / kommst"
+          },
+          {
+            "id": "o3",
+            "text": "kommt / komme"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "du → kommst; Sie (Höflichkeit) → kommen (wie Plural)."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_C5",
+      "lektion_id": 1,
+      "schritt": "C",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Hörverstehen — Herkunft",
+      "vocab_domain": "Länder, Sprachen",
+      "payload": {
+        "instruction": "Hör den Dialog. Woher kommt die Person?",
+        "scene_image": "public/img/l1_scene_nachbarn.svg",
+        "audio_ref": "L1_folge1",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "walter",
+            "text": "Guten Tag. Mein Name ist Walter Baumann."
+          },
+          {
+            "speaker": "lara",
+            "text": "Hallo. Ich heiße Lara Nowak."
+          },
+          {
+            "speaker": "walter",
+            "text": "Woher kommen Sie, Frau Nowak?"
+          },
+          {
+            "speaker": "lara",
+            "text": "Ich komme aus Polen. Und ich spreche ein bisschen Deutsch."
+          },
+          {
+            "speaker": "lili",
+            "text": "Ich bin Lili. Ich bin vier."
+          },
+          {
+            "speaker": "lara",
+            "text": "Hallo Lili!"
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_folge1_slow_01_walter_b75d4ec1de.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_02_lara_a69bd4dda9.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_03_walter_a44c838a6f.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_04_lara_dc12bad85f.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_05_lili_210abe556b.mp3",
+            "storage/audio/l1/slow/l1_folge1_slow_06_lara_11eb6669e6.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_folge1_normal_01_walter_015fea9458.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_02_lara_cb8444c76a.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_03_walter_46b0032b9c.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_04_lara_00faf25b4c.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_05_lili_8b3433051b.mp3",
+            "storage/audio/l1/normal/l1_folge1_normal_06_lara_cffc571ecf.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Woher kommt Lara?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "aus Polen"
+              },
+              {
+                "id": "o2",
+                "text": "aus der Türkei"
+              },
+              {
+                "id": "o3",
+                "text": "aus Spanien"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "Wie heißt das Kind?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Lili"
+              },
+              {
+                "id": "o2",
+                "text": "Sofia"
+              },
+              {
+                "id": "o3",
+                "text": "Lara"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1",
+        "q2": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_D1",
+      "lektion_id": 1,
+      "schritt": "D",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Alphabet hören",
+      "vocab_domain": "Alphabet",
+      "payload": {
+        "instruction": "Hör den Buchstaben. Welcher Buchstabe ist das?",
+        "audio_ref": "L1_D1_buchstabe_m",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "narrator",
+            "text": "M"
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_d1_buchstabe_m_slow_01_narrator_b1cc8ca092.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_d1_buchstabe_m_normal_01_narrator_206ae47fb8.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Welchen Buchstaben hörst du?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "M"
+              },
+              {
+                "id": "o2",
+                "text": "N"
+              },
+              {
+                "id": "o3",
+                "text": "W"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_D2",
+      "lektion_id": 1,
+      "schritt": "D",
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Verbkonjugation sein",
+      "vocab_domain": "Verbkonjugation",
+      "payload": {
+        "instruction": "Ergänze: sein.",
+        "sentence": "ich {{b1}} — du {{b2}} — er {{b3}}",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "bin",
+              "bist",
+              "ist"
+            ]
+          },
+          {
+            "id": "b2",
+            "options": [
+              "bin",
+              "bist",
+              "ist"
+            ]
+          },
+          {
+            "id": "b3",
+            "options": [
+              "bin",
+              "bist",
+              "ist"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "bin",
+          "accept": [
+            "bin"
+          ]
+        },
+        "b2": {
+          "answer": "bist",
+          "accept": [
+            "bist"
+          ]
+        },
+        "b3": {
+          "answer": "ist",
+          "accept": [
+            "ist"
+          ]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_D3",
+      "lektion_id": 1,
+      "schritt": "D",
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Verbkonjugation heißen",
+      "vocab_domain": "Verbkonjugation",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Wie ___ du?",
+        "options": [
+          {
+            "id": "o1",
+            "text": "heißt"
+          },
+          {
+            "id": "o2",
+            "text": "heiße"
+          },
+          {
+            "id": "o3",
+            "text": "heißen"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "du → heißt (2. Person Singular)."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_D4",
+      "lektion_id": 1,
+      "schritt": "D",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Namen buchstabieren",
+      "vocab_domain": "Alphabet",
+      "payload": {
+        "instruction": "Hör zu. Wie schreibt man den Namen?",
+        "scene_image": "public/img/l1_scene_telefon.svg",
+        "audio_ref": "L1_D4_buchstabieren",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "walter",
+            "text": "Wie heißt die Firma, bitte?"
+          },
+          {
+            "speaker": "lara",
+            "text": "Nowak. N-O-W-A-K."
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_d4_buchstabieren_slow_01_walter_14ec4edd0a.mp3",
+            "storage/audio/l1/slow/l1_d4_buchstabieren_slow_02_lara_31a86be007.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_d4_buchstabieren_normal_01_walter_9294aaeff7.mp3",
+            "storage/audio/l1/normal/l1_d4_buchstabieren_normal_02_lara_4688973ac1.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Wie schreibt man den Namen?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Nowak"
+              },
+              {
+                "id": "o2",
+                "text": "Novak"
+              },
+              {
+                "id": "o3",
+                "text": "Nowack"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_E1",
+      "lektion_id": 1,
+      "schritt": "E",
+      "mechanic": "matching",
+      "cefr": "A1",
+      "grammar_topic": "Formularfelder",
+      "vocab_domain": "Adresse",
+      "payload": {
+        "instruction": "Ordne Formularfeld und Wert.",
+        "left": [
+          {
+            "id": "a",
+            "text": "Vorname"
+          },
+          {
+            "id": "b",
+            "text": "Familienname"
+          },
+          {
+            "id": "c",
+            "text": "Stadt"
+          },
+          {
+            "id": "d",
+            "text": "Postleitzahl"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "Lara"
+          },
+          {
+            "id": "2",
+            "text": "Nowak"
+          },
+          {
+            "id": "3",
+            "text": "München"
+          },
+          {
+            "id": "4",
+            "text": "80331"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_E2",
+      "lektion_id": 1,
+      "schritt": "E",
+      "mechanic": "fill_blank",
+      "cefr": "A1",
+      "grammar_topic": "Visitenkarte lesen",
+      "vocab_domain": "Adresse",
+      "payload": {
+        "instruction": "Lies die Visitenkarte und ergänze.",
+        "sentence": "Vorname: {{b1}} — Familienname: {{b2}} — Stadt: {{b3}}",
+        "hint": "Visitenkarte: Mira Keller · Berlin · Keller Design",
+        "blanks": [
+          {
+            "id": "b1"
+          },
+          {
+            "id": "b2"
+          },
+          {
+            "id": "b3"
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "Mira",
+          "accept": [
+            "mira",
+            "Mira"
+          ]
+        },
+        "b2": {
+          "answer": "Keller",
+          "accept": [
+            "keller",
+            "Keller"
+          ]
+        },
+        "b3": {
+          "answer": "Berlin",
+          "accept": [
+            "berlin",
+            "Berlin"
+          ]
+        }
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_E3",
+      "lektion_id": 1,
+      "schritt": "E",
+      "mechanic": "quiz",
+      "cefr": "A1",
+      "grammar_topic": "Postleitzahl lesen",
+      "vocab_domain": "Adresse",
+      "payload": {
+        "instruction": "Was ist richtig?",
+        "question": "Visitenkarte: Mira Keller, Friedrichstraße 12, 10117 Berlin. Wie ist die Postleitzahl?",
+        "options": [
+          {
+            "id": "o1",
+            "text": "10117"
+          },
+          {
+            "id": "o2",
+            "text": "80331"
+          },
+          {
+            "id": "o3",
+            "text": "12"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "o1",
+        "explanation": "Die Postleitzahl steht vor der Stadt: 10117 Berlin."
+      },
+      "quality_pass": true,
+      "reviewed": false
+    },
+    {
+      "id": "L1_E4",
+      "lektion_id": 1,
+      "schritt": "E",
+      "mechanic": "listening",
+      "cefr": "A1",
+      "grammar_topic": "Anmeldung — Formular",
+      "vocab_domain": "Adresse",
+      "payload": {
+        "instruction": "Hör zu und ordne die Informationen.",
+        "scene_image": "public/img/l1_scene_telefon.svg",
+        "audio_ref": "L1_E4_anmeldung",
+        "default_speed": "slow",
+        "lines": [
+          {
+            "speaker": "walter",
+            "text": "Guten Tag. Mein Vorname ist Omar."
+          },
+          {
+            "speaker": "lara",
+            "text": "Und der Familienname?"
+          },
+          {
+            "speaker": "walter",
+            "text": "Hassan. Ich wohne in Köln."
+          }
+        ],
+        "audio": {
+          "slow": [
+            "storage/audio/l1/slow/l1_e4_anmeldung_slow_01_walter_0ff806ce18.mp3",
+            "storage/audio/l1/slow/l1_e4_anmeldung_slow_02_lara_28144c3ec7.mp3",
+            "storage/audio/l1/slow/l1_e4_anmeldung_slow_03_walter_ef7e4e4f0c.mp3"
+          ],
+          "normal": [
+            "storage/audio/l1/normal/l1_e4_anmeldung_normal_01_walter_490580ff8c.mp3",
+            "storage/audio/l1/normal/l1_e4_anmeldung_normal_02_lara_61b23eabcf.mp3",
+            "storage/audio/l1/normal/l1_e4_anmeldung_normal_03_walter_970b02db48.mp3"
+          ]
+        },
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Wie ist der Vorname?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Omar"
+              },
+              {
+                "id": "o2",
+                "text": "Hassan"
+              },
+              {
+                "id": "o3",
+                "text": "Walter"
+              }
+            ]
+          },
+          {
+            "id": "q2",
+            "q": "In welcher Stadt wohnt er?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "Köln"
+              },
+              {
+                "id": "o2",
+                "text": "Berlin"
+              },
+              {
+                "id": "o3",
+                "text": "München"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1",
+        "q2": "o1"
+      },
+      "quality_pass": true,
+      "reviewed": false
+    }
+  ]
+}

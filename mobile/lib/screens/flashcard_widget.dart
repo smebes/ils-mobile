@@ -60,7 +60,26 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    MediaImage(v.image, height: 160),
+                    if (v.image != null)
+                      MediaImage(v.image!, height: 160)
+                    else
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: AppColors.cream,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Text(
+                          v.beispiel ?? v.display,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -94,6 +113,18 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                         ),
                       ],
                     ),
+                    if (v.beispiel != null && v.image != null) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        v.beispiel!,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.navy.withValues(alpha: 0.55),
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
                     if (v.plural != null) ...[
                       const SizedBox(height: 4),
                       Text('Plural: die ${v.plural}',

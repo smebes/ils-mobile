@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Telefon">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="70" y="35" width="60" height="120" rx="12" fill="#264653"/>
+    <rect x="78" y="50" width="44" height="70" rx="4" fill="#2A9D8F"/>
+    <circle cx="100" cy="140" r="8" fill="#E9C46A" stroke="none"/>
+  </g>
+</svg>

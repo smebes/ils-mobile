@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Firma">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="70" width="120" height="90" rx="6" fill="#2A9D8F"/>
+    <rect x="55" y="85" width="25" height="25" fill="#E9C46A"/>
+    <rect x="90" y="85" width="25" height="25" fill="#E9C46A"/>
+    <rect x="125" y="85" width="20" height="50" fill="#E76F51"/>
+  </g>
+</svg>

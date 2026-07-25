@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Visitenkarte">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="35" y="60" width="130" height="80" rx="8" fill="#2A9D8F"/>
+    <circle cx="65" cy="100" r="16" fill="#E9C46A"/>
+    <path d="M95 85 H150 M95 105 H140 M95 125 H130" stroke="#FAF3E7" stroke-width="5"/>
+  </g>
+</svg>

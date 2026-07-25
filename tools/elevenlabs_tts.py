@@ -44,10 +44,10 @@ OUTPUT_FORMAT = "mp3_44100_128"
 
 # ElevenLabs voice_settings — A1 öğrenci için ayarlandı.
 #   stability yüksek  -> tutarlı, sakin, net anlatım
-#   speed 0.85        -> yavaş ama doğal (aralık 0.7–1.2 güvenli)
+#   speed 0.72        -> belirgin yavaş (A1; 0.7–1.2 güvenli aralık)
 SPEED_PRESETS = {
-    "slow": 0.85,     # A1 öğrenme hızı
-    "normal": 1.0,    # doğal hız (aynı diyalogun 2. versiyonu)
+    "slow": 0.72,     # A1 öğrenme hızı (önceki 0.85 → daha yavaş)
+    "normal": 0.95,   # doğal ama hafif yavaş (1.0 → 0.95)
 }
 BASE_SETTINGS = {
     "stability": 0.65,
@@ -239,9 +239,17 @@ def process(args) -> None:
     if not args.dry_run:
         man_path = out_root / "manifest.json"
         man_path.parent.mkdir(parents=True, exist_ok=True)
-        man_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2),
+        # Mevcut manifest'i koru (L3 varken L1 üretince silinmesin)
+        existing: dict = {}
+        if man_path.exists():
+            try:
+                existing = json.loads(man_path.read_text(encoding="utf-8"))
+            except Exception:
+                existing = {}
+        existing.update(manifest)
+        man_path.write_text(json.dumps(existing, ensure_ascii=False, indent=2),
                             encoding="utf-8")
-        print(f"\n📄 manifest → {man_path}")
+        print(f"\n📄 manifest → {man_path} ({len(existing)} kayıt)")
 
     print(f"\nÖzet: {total} klip · üretildi {made} · atlandı {skipped}"
           + (" · [DRY-RUN]" if args.dry_run else ""))

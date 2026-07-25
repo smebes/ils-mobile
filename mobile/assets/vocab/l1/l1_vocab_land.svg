@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Land">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="100" cy="100" r="55" fill="#2A9D8F"/>
+    <path d="M100 45 V155 M45 100 H155" stroke="#FAF3E7" stroke-width="4"/>
+    <ellipse cx="100" cy="100" rx="25" ry="55" stroke="#FAF3E7" stroke-width="4"/>
+  </g>
+</svg>

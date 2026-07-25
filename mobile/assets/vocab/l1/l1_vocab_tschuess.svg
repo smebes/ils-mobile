@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Tschüss">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="80" cy="75" r="24" fill="#E9C46A"/>
+    <path d="M55 110 Q80 95 105 110 L115 165 H50 Z" fill="#E76F51"/>
+    <path d="M110 90 Q140 70 155 100"/>
+  </g>
+</svg>

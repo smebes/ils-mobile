@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Guten Tag">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="140" cy="50" r="22" fill="#E9C46A"/>
+    <path d="M30 140 Q70 100 110 120 Q140 140 170 110" stroke="#2A9D8F" fill="#2A9D8F" fill-opacity="0.25"/>
+    <path d="M50 170 H150" stroke="#E76F51"/>
+  </g>
+</svg>

@@ -16,6 +16,16 @@ class _HomeScreenState extends State<HomeScreen> {
   Lektion? _lektion;
   String? _error;
 
+  static const _catalog = [
+    (1, 'Guten Tag. Mein Name ist …'),
+    (2, 'Meine Familie'),
+    (3, 'Einkaufen'),
+    (4, 'Meine Wohnung'),
+    (5, 'Tagesabläufe'),
+    (6, 'Freizeit'),
+    (7, 'Kinder und Schule'),
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   _topBar(),
                   const SizedBox(height: 24),
-                  const Text('Guten Tag! 👋',
+                  const Text('Guten Tag!',
                       style: TextStyle(
                           fontSize: 28, fontWeight: FontWeight.w800)),
                   const SizedBox(height: 4),
@@ -73,9 +83,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: AppColors.navy.withValues(alpha: 0.6))),
                   const SizedBox(height: 24),
                   _lektionCard(l, mastery, mastered),
-                  const SizedBox(height: 24),
-                  _mainCta(l),
                   const SizedBox(height: 16),
+                  _mainCta(l),
+                  const SizedBox(height: 28),
+                  Text('Lehrplan',
+                      style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.navy.withValues(alpha: 0.8))),
+                  const SizedBox(height: 10),
+                  ..._catalog.map((e) => _catalogTile(e.$1, e.$2, mastery)),
+                  const SizedBox(height: 24),
                   _secondaryActions(),
                 ],
               ),
@@ -177,9 +195,47 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text('HEUTE LERNEN'),
             const SizedBox(height: 2),
-            Text('${l.titel} · $queueSize Wörter',
+            Text('Lektion ${l.id} · $queueSize Wörter',
                 style:
                     const TextStyle(fontSize: 13, fontWeight: FontWeight.w400)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _catalogTile(int id, String title, double l1Mastery) {
+    final unlocked = contentRepo.isUnlocked(id, l1Mastery);
+    final isActive = id == _lektion?.id;
+    return Opacity(
+      opacity: unlocked ? 1 : 0.45,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        decoration: cardDecoration(
+          border: isActive ? AppColors.teal : null,
+        ),
+        child: Row(
+          children: [
+            Text(
+              unlocked ? (isActive ? '▶' : '○') : '🔒',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'L$id · $title',
+                style: const TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            if (!unlocked)
+              Text(
+                id == 2 ? '80% L1' : 'Bald',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: AppColors.navy.withValues(alpha: 0.5),
+                ),
+              ),
           ],
         ),
       ),

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Postleitzahl">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="40" y="70" width="120" height="60" rx="8" fill="#2A9D8F"/>
+    <path d="M55 100 H85 M100 100 H130 M145 90 V110" stroke="#FAF3E7" stroke-width="6"/>
+  </g>
+</svg>

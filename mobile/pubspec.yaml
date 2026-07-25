@@ -24,8 +24,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/content/l1/
     - assets/content/l3/
     - assets/vocab/
+    - assets/vocab/l1/
     - assets/img/
+    - assets/audio/l1/slow/
+    - assets/audio/l1/normal/
     - assets/audio/l3/slow/
     - assets/audio/l3/normal/
