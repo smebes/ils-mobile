@@ -548,10 +548,9 @@ def write_svgs():
     for key, fn in SVG_MAP.items():
         (VOCAB_DIR / f"l1_vocab_{key}.svg").write_text(fn(), encoding="utf-8")
     // SVG yüzde offset bazı web sürümlerinde sorun çıkarabiliyor
-  (IMG_DIR / "l1_cover.svg").write_text(svg_cover().replace('0%', '0').replace('100%', '1'), encoding="utf-8")
-    (IMG_DIR / "l1_scene_abend.svg").write_text(svg_evening(), encoding="utf-8")
-    (IMG_DIR / "l1_scene_nachbarn.svg").write_text(svg_wave(), encoding="utf-8")
-    (IMG_DIR / "l1_scene_telefon.svg").write_text(svg_phone(), encoding="utf-8")
+    # Foto sahneler masters/l1/*.png → webp; SVG placeholder üretme (üzerine yazma)
+    # (IMG_DIR / "l1_cover.svg") — arşiv; kapak artık l1_cover.webp
+    pass  # sahneler GenerateImage + magick ile üretilir
 
 
 def build_lektion() -> dict:
@@ -578,7 +577,7 @@ def build_lektion() -> dict:
                 "Verbkonjugation (heißen, kommen, sprechen, sein)",
                 "Präposition aus",
             ],
-            "cover_image": "public/img/l1_cover.svg",
+            "cover_image": "public/img/l1_cover.webp",
             "vocab_narration": {"audio_ref": "L1_vocab_narration"},
         },
         "schritte": [
@@ -666,7 +665,7 @@ def build_exercises() -> dict:
         "L1_A3", "A", "listening", "Hörverstehen — Tageszeit", "Begrüßung/Abschied",
         {
             "instruction": "Hör den Dialog. Welche Tageszeit ist es?",
-            "scene_image": "public/img/l1_scene_abend.svg",
+            "scene_image": "public/img/l1_scene_abend.webp",
             "audio_ref": "L1_A3_tageszeit",
             "default_speed": "slow",
             "lines": [
@@ -693,7 +692,7 @@ def build_exercises() -> dict:
         {
             "instruction": "Was ist richtig?",
             "question": "Es ist Abend. Was sagt man?",
-            "image": "public/img/l1_scene_abend.svg",
+            "image": "public/img/l1_scene_abend.webp",
             "options": [
                 {"id": "o1", "text": "Guten Abend"},
                 {"id": "o2", "text": "Guten Morgen"},
@@ -843,7 +842,7 @@ def build_exercises() -> dict:
         "L1_C5", "C", "listening", "Hörverstehen — Herkunft", "Länder, Sprachen",
         {
             "instruction": "Hör den Dialog. Woher kommt die Person?",
-            "scene_image": "public/img/l1_scene_nachbarn.svg",
+            "scene_image": "public/img/l1_scene_nachbarn.webp",
             "audio_ref": "L1_folge1",
             "default_speed": "slow",
             "lines": [
@@ -939,7 +938,7 @@ def build_exercises() -> dict:
         "L1_D4", "D", "listening", "Namen buchstabieren", "Alphabet",
         {
             "instruction": "Hör zu. Wie schreibt man den Namen?",
-            "scene_image": "public/img/l1_scene_telefon.svg",
+            "scene_image": "public/img/l1_scene_telefon.webp",
             "audio_ref": "L1_D4_buchstabieren",
             "default_speed": "slow",
             "lines": [
@@ -1020,7 +1019,7 @@ def build_exercises() -> dict:
         "L1_E4", "E", "listening", "Anmeldung — Formular", "Adresse",
         {
             "instruction": "Hör zu und ordne die Informationen.",
-            "scene_image": "public/img/l1_scene_telefon.svg",
+            "scene_image": "public/img/l1_scene_telefon.webp",
             "audio_ref": "L1_E4_anmeldung",
             "default_speed": "slow",
             "lines": [
@@ -1058,7 +1057,7 @@ def build_exercises() -> dict:
         "L1_F1", "folge", "listening", "Foto-Hörgeschichte", "Das bin ich",
         {
             "instruction": "Hör die Geschichte: neue Nachbarn. Beantworte die Fragen.",
-            "scene_image": "public/img/l1_scene_nachbarn.svg",
+            "scene_image": "public/img/l1_scene_nachbarn.webp",
             "audio_ref": "L1_folge1",
             "default_speed": "slow",
             "lines": [

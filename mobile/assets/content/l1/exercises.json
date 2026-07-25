@@ -24,7 +24,7 @@
       "vocab_domain": "Das bin ich",
       "payload": {
         "instruction": "Hör die Geschichte: neue Nachbarn. Beantworte die Fragen.",
-        "scene_image": "public/img/l1_scene_nachbarn.svg",
+        "scene_image": "public/img/l1_scene_nachbarn.webp",
         "audio_ref": "L1_folge1",
         "default_speed": "slow",
         "lines": [
@@ -232,7 +232,7 @@
       "vocab_domain": "Begrüßung/Abschied",
       "payload": {
         "instruction": "Hör den Dialog. Welche Tageszeit ist es?",
-        "scene_image": "public/img/l1_scene_abend.svg",
+        "scene_image": "public/img/l1_scene_abend.webp",
         "audio_ref": "L1_A3_tageszeit",
         "default_speed": "slow",
         "lines": [
@@ -293,7 +293,7 @@
       "payload": {
         "instruction": "Was ist richtig?",
         "question": "Es ist Abend. Was sagt man?",
-        "image": "public/img/l1_scene_abend.svg",
+        "image": "public/img/l1_scene_abend.webp",
         "options": [
           {
             "id": "o1",
@@ -685,7 +685,7 @@
       "vocab_domain": "Länder, Sprachen",
       "payload": {
         "instruction": "Hör den Dialog. Woher kommt die Person?",
-        "scene_image": "public/img/l1_scene_nachbarn.svg",
+        "scene_image": "public/img/l1_scene_nachbarn.webp",
         "audio_ref": "L1_folge1",
         "default_speed": "slow",
         "lines": [
@@ -935,7 +935,7 @@
       "vocab_domain": "Alphabet",
       "payload": {
         "instruction": "Hör zu. Wie schreibt man den Namen?",
-        "scene_image": "public/img/l1_scene_telefon.svg",
+        "scene_image": "public/img/l1_scene_telefon.webp",
         "audio_ref": "L1_D4_buchstabieren",
         "default_speed": "slow",
         "lines": [
@@ -1134,7 +1134,7 @@
       "vocab_domain": "Adresse",
       "payload": {
         "instruction": "Hör zu und ordne die Informationen.",
-        "scene_image": "public/img/l1_scene_telefon.svg",
+        "scene_image": "public/img/l1_scene_telefon.webp",
         "audio_ref": "L1_E4_anmeldung",
         "default_speed": "slow",
         "lines": [
