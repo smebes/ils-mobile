@@ -547,7 +547,8 @@ def write_svgs():
     IMG_DIR.mkdir(parents=True, exist_ok=True)
     for key, fn in SVG_MAP.items():
         (VOCAB_DIR / f"l1_vocab_{key}.svg").write_text(fn(), encoding="utf-8")
-    (IMG_DIR / "l1_cover.svg").write_text(svg_cover(), encoding="utf-8")
+    // SVG yüzde offset bazı web sürümlerinde sorun çıkarabiliyor
+  (IMG_DIR / "l1_cover.svg").write_text(svg_cover().replace('0%', '0').replace('100%', '1'), encoding="utf-8")
     (IMG_DIR / "l1_scene_abend.svg").write_text(svg_evening(), encoding="utf-8")
     (IMG_DIR / "l1_scene_nachbarn.svg").write_text(svg_wave(), encoding="utf-8")
     (IMG_DIR / "l1_scene_telefon.svg").write_text(svg_phone(), encoding="utf-8")

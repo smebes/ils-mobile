@@ -34,9 +34,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _load() async {
     try {
+      debugPrint('Home: loading Lektion…');
       final l = await contentRepo.loadLektion();
+      debugPrint('Home: loaded L${l.id} · ${l.vocab.length} Wörter · ${l.coverImage}');
       if (mounted) setState(() => _lektion = l);
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('Home: load error $e\n$st');
       if (mounted) setState(() => _error = e.toString());
     }
   }
@@ -59,8 +62,21 @@ class _HomeScreenState extends State<HomeScreen> {
         }
         final l = _lektion;
         if (l == null) {
-          return const Scaffold(
-              body: Center(child: CircularProgressIndicator()));
+          return Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const CircularProgressIndicator(color: AppColors.teal),
+                  const SizedBox(height: 16),
+                  Text('Lektion wird geladen…',
+                      style: TextStyle(
+                          color: AppColors.navy.withValues(alpha: 0.7),
+                          fontWeight: FontWeight.w600)),
+                ],
+              ),
+            ),
+          );
         }
         final mastery = progressStore.masteryPct(l.vocab.length);
         final mastered = progressStore.masteredCount(l.vocab.length);
@@ -139,7 +155,23 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           AspectRatio(
             aspectRatio: 16 / 9,
-            child: MediaImage(l.coverImage, fit: BoxFit.cover),
+            // SVG kapak web'de bazen sessizce boş bırakıyordu — önce boyalı
+            // gradient; üstüne SVG (başarısız olsa bile kart dolu kalır).
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                const DecoratedBox(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [AppColors.teal, AppColors.navy],
+                    ),
+                  ),
+                ),
+                MediaImage(l.coverImage, fit: BoxFit.cover),
+              ],
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
@@ -171,6 +203,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                       fontSize: 12,
                       color: AppColors.navy.withValues(alpha: 0.55)),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${progressStore.srEntries.length} im SR · ${progressStore.xp} XP',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.teal.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w600),
                 ),
               ],
             ),

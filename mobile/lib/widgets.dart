@@ -6,9 +6,10 @@ import 'theme.dart';
 class MediaImage extends StatelessWidget {
   final String assetPath;
   final double? height;
+  final double? width;
   final BoxFit fit;
   const MediaImage(this.assetPath,
-      {super.key, this.height, this.fit = BoxFit.contain});
+      {super.key, this.height, this.width, this.fit = BoxFit.contain});
 
   @override
   Widget build(BuildContext context) {
@@ -16,13 +17,16 @@ class MediaImage extends StatelessWidget {
       return SvgPicture.asset(
         assetPath,
         height: height,
+        width: width ?? (height == null ? double.infinity : null),
         fit: fit,
+        allowDrawingOutsideViewBox: true,
         placeholderBuilder: (_) => _placeholder(),
       );
     }
     return Image.asset(
       assetPath,
       height: height,
+      width: width,
       fit: fit,
       errorBuilder: (_, e, st) => _placeholder(),
     );
@@ -30,6 +34,7 @@ class MediaImage extends StatelessWidget {
 
   Widget _placeholder() => SizedBox(
         height: height ?? 80,
+        width: width,
         child: const Center(
           child: Icon(Icons.image_not_supported_outlined,
               size: 40, color: AppColors.navy),
