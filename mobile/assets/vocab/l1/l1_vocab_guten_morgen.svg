@@ -1,8 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Guten Morgen">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="100" cy="90" r="36" fill="#E9C46A"/>
-    <path d="M100 30 V48 M100 132 V150 M40 90 H58 M142 90 H160 M55 45 L68 58 M132 122 L145 135 M145 45 L132 58 M55 135 L68 122"/>
-    <path d="M40 170 Q100 140 160 170" stroke="#2A9D8F"/>
+  <circle cx="100" cy="88" r="34" fill="#E9C46A" stroke="#264653" stroke-width="6"/>
+  <g stroke="#264653" stroke-width="6" stroke-linecap="round" fill="none">
+    <line x1="100" y1="28" x2="100" y2="44"/>
+    <line x1="100" y1="132" x2="100" y2="148"/>
+    <line x1="40" y1="88" x2="56" y2="88"/>
+    <line x1="144" y1="88" x2="160" y2="88"/>
+    <line x1="58" y1="46" x2="70" y2="58"/>
+    <line x1="130" y1="118" x2="142" y2="130"/>
+    <line x1="142" y1="46" x2="130" y2="58"/>
+    <line x1="58" y1="130" x2="70" y2="118"/>
   </g>
+  <path d="M44 168 Q100 142 156 168" fill="none" stroke="#2A9D8F" stroke-width="6" stroke-linecap="round"/>
 </svg>

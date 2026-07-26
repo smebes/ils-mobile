@@ -51,12 +51,23 @@ def svg_base(label: str, body: str) -> str:
 
 
 def svg_sun() -> str:
-    return svg_base(
-        "Guten Morgen",
-        f'    <circle cx="100" cy="90" r="36" fill="{MUSTARD}"/>\n'
-        f'    <path d="M100 30 V48 M100 132 V150 M40 90 H58 M142 90 H160 M55 45 L68 58 M132 122 L145 135 M145 45 L132 58 M55 135 L68 122"/>\n'
-        f'    <path d="M40 170 Q100 140 160 170" stroke="{TEAL}"/>',
-    )
+    """Guten Morgen — flutter_svg uyumlu basit güneş."""
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Guten Morgen">
+  <rect width="200" height="200" rx="32" fill="{CREAM}"/>
+  <circle cx="100" cy="88" r="34" fill="{MUSTARD}" stroke="{NAVY}" stroke-width="6"/>
+  <g stroke="{NAVY}" stroke-width="6" stroke-linecap="round" fill="none">
+    <line x1="100" y1="28" x2="100" y2="44"/>
+    <line x1="100" y1="132" x2="100" y2="148"/>
+    <line x1="40" y1="88" x2="56" y2="88"/>
+    <line x1="144" y1="88" x2="160" y2="88"/>
+    <line x1="58" y1="46" x2="70" y2="58"/>
+    <line x1="130" y1="118" x2="142" y2="130"/>
+    <line x1="142" y1="46" x2="130" y2="58"/>
+    <line x1="58" y1="130" x2="70" y2="118"/>
+  </g>
+  <path d="M44 168 Q100 142 156 168" fill="none" stroke="{TEAL}" stroke-width="6" stroke-linecap="round"/>
+</svg>
+'''
 
 
 def svg_day() -> str:
@@ -256,8 +267,22 @@ def svg_language() -> str:
     )
 
 
-def svg_flag(c1: str, c2: str, c3: str | None, label: str) -> str:
-    if c3:
+def svg_flag(c1: str, c2: str, c3: str | None, label: str, *, vertical: bool = False) -> str:
+    if vertical and c3:
+        body = (
+            f'    <rect x="40" y="50" width="40" height="100" fill="{c1}" stroke="none"/>\n'
+            f'    <rect x="80" y="50" width="40" height="100" fill="{c2}" stroke="none"/>\n'
+            f'    <rect x="120" y="50" width="40" height="100" fill="{c3}" stroke="none"/>\n'
+            f'    <rect x="40" y="50" width="120" height="100" rx="6"/>'
+        )
+    elif c3 and label == "Spanien":
+        body = (
+            f'    <rect x="40" y="50" width="120" height="25" fill="{c1}" stroke="none"/>\n'
+            f'    <rect x="40" y="75" width="120" height="50" fill="{c2}" stroke="none"/>\n'
+            f'    <rect x="40" y="125" width="120" height="25" fill="{c3}" stroke="none"/>\n'
+            f'    <rect x="40" y="50" width="120" height="100" rx="6"/>'
+        )
+    elif c3:
         body = (
             f'    <rect x="40" y="50" width="120" height="33" fill="{c1}" stroke="none"/>\n'
             f'    <rect x="40" y="83" width="120" height="34" fill="{c2}" stroke="none"/>\n'
@@ -514,7 +539,7 @@ SVG_MAP = {
     "polen": lambda: svg_flag("#FFFFFF", "#DC143C", None, "Polen"),
     "tuerkei": svg_tr,
     "spanien": lambda: svg_flag("#AA151B", "#F1BF00", "#AA151B", "Spanien"),
-    "italien": lambda: svg_flag("#009246", "#FFFFFF", "#CE2B37", "Italien"),
+    "italien": lambda: svg_flag("#009246", "#FFFFFF", "#CE2B37", "Italien", vertical=True),
     "frankreich": lambda: svg_flag("#0055A4", "#FFFFFF", "#EF4135", "Frankreich"),
     "syrien": lambda: svg_flag("#CE1126", "#FFFFFF", "#000000", "Syrien"),
     "deutsch": lambda: svg_bubble("Deutsch"),

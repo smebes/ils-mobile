@@ -33,21 +33,27 @@ void main() {
 
       expect(store.srEntries['Name']!.box, 2);
       expect(store.srEntries['Name']!.isMastered, isFalse);
-      // 60 kelimelik L1'de tek kelime kutu 2 → Meisterschaft %0
       expect(store.masteryPct(60), 0.0);
       expect(store.masteredCount(60), 0);
     });
 
-    test('üç doğru terfi → kutu 4 → hakimiyet artar', () async {
-      await store.introduceWord('danke'); // box 1
-      await store.recordAnswer('danke', true); // → 2
-      await store.recordAnswer('danke', true); // → 3
-      await store.recordAnswer('danke', true); // → 4 = mastered
+    test('aynı oturumda tekrar doğru → box artmaz', () async {
+      await store.introduceWord('heißen');
+      await store.recordAnswer('heißen', true); // →2
+      await store.recordAnswer('heißen', true); // aynı gün, kutu kalır
+      await store.recordAnswer('heißen', true);
+      expect(store.srEntries['heißen']!.box, 2);
+      expect(store.srEntries['heißen']!.totalAttempts, 3);
+    });
 
-      expect(store.srEntries['danke']!.box, 4);
-      expect(store.srEntries['danke']!.isMastered, isTrue);
-      expect(store.masteryPct(60), closeTo(1 / 60, 0.0001));
-      expect(store.masteredCount(60), 1);
+    test('üç ayrı günde terfi → kutu 4 (sr_engine)', () {
+      final d0 = DateTime(2026, 7, 1);
+      var e = SrEntry.introduced(d0);
+      e = applyAnswer(e, true, d0); // →2
+      e = applyAnswer(e, true, d0.add(const Duration(days: 3))); // due →3
+      e = applyAnswer(e, true, d0.add(const Duration(days: 10))); // due →4
+      expect(e.box, 4);
+      expect(e.isMastered, isTrue);
     });
 
     test('XP oturum sonunda artar', () async {

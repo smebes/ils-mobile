@@ -11,6 +11,25 @@ void main() {
     expect(up.nextReview, today.add(const Duration(days: 3)));
   });
 
+  test('aynı gün ikinci doğru cevap kutuyu TERFİ ETTİRMEZ', () {
+    final e = SrEntry.introduced(today);
+    final once = applyAnswer(e, true, today); // 1→2, nextReview = +3 gün
+    expect(once.box, 2);
+    final twice = applyAnswer(once, true, today);
+    expect(twice.box, 2); // aynı gün tekrar terfi yok
+    expect(twice.totalAttempts, 2);
+    expect(twice.correctStreak, 2);
+  });
+
+  test('yanlış sonrası aynı gün doğru tekrar terfi edebilir', () {
+    final e = SrEntry(box: 3, nextReview: today, totalAttempts: 2);
+    final down = applyAnswer(e, false, today);
+    expect(down.box, 1);
+    expect(down.nextReview, today); // hemen due
+    final up = applyAnswer(down, true, today);
+    expect(up.box, 2);
+  });
+
   test('yanlış cevap kutuyu 1\'e düşürür', () {
     final e = SrEntry(box: 3, nextReview: today);
     final down = applyAnswer(e, false, today);

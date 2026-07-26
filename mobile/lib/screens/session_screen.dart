@@ -24,6 +24,7 @@ class SessionScreen extends StatefulWidget {
 class _SessionScreenState extends State<SessionScreen> {
   List<_Step>? _steps;
   List<String> _sessionWords = [];
+  List<String> _allWords = [];
   int _index = 0;
   int _correct = 0;
   int _answerable = 0;
@@ -38,10 +39,10 @@ class _SessionScreenState extends State<SessionScreen> {
   Future<void> _build() async {
     final lektion = await contentRepo.loadLektion();
     final exercises = await contentRepo.loadExercises();
-    final allWorts = lektion.vocab.map((v) => v.wort).toList();
+    _allWords = lektion.vocab.map((v) => v.wort).toList();
 
-    _sessionWords = progressStore.dailyWordQueue(allWorts, size: 15);
-    _reviewsScheduled = progressStore.dueReviewCount(allWorts);
+    _sessionWords = progressStore.dailyWordQueue(_allWords, size: 15);
+    _reviewsScheduled = progressStore.dueReviewCount(_allWords);
 
     final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
     final cards = _sessionWords
@@ -79,11 +80,13 @@ class _SessionScreenState extends State<SessionScreen> {
     }
   }
 
+  /// Egzersiz metninde geçen Lektion kelimeleri (sadece flashcard kuyruğu değil).
   List<String> _wordsTouchedByExercise(Exercise ex) {
     final blob = json.encode(ex.payload).toLowerCase();
-    return _sessionWords
-        .where((w) => blob.contains(w.toLowerCase()))
-        .toList();
+    final candidates = _allWords.isNotEmpty ? _allWords : _sessionWords;
+    final sorted = [...candidates]
+      ..sort((a, b) => b.length.compareTo(a.length));
+    return sorted.where((w) => blob.contains(w.toLowerCase())).toList();
   }
 
   Future<void> _finish() async {

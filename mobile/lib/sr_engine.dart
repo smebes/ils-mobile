@@ -61,9 +61,18 @@ class SrEntry {
 }
 
 /// Doğru cevap → bir üst kutu; yanlış → kutu 1.
+/// Aynı gün içinde (nextReview henüz gelmeden) tekrar doğru → kutu TERFİ ETMEZ
+/// (sadece attempt sayacı artar). Böylece tek oturumda box 1→5 olmaz.
 SrEntry applyAnswer(SrEntry e, bool correct, DateTime today) {
   final attempts = e.totalAttempts + 1;
   if (correct) {
+    // Daha önce cevaplanmış ve vade gelmemişse: pratik say, terfi etme.
+    if (e.totalAttempts > 0 && !e.isDue(today)) {
+      return e.copyWith(
+        totalAttempts: attempts,
+        correctStreak: e.correctStreak + 1,
+      );
+    }
     final newBox = (e.box + 1).clamp(1, 5);
     final days = kBoxIntervals[newBox - 1];
     return e.copyWith(
@@ -73,9 +82,10 @@ SrEntry applyAnswer(SrEntry e, bool correct, DateTime today) {
       totalAttempts: attempts,
     );
   }
+  // Yanlış → kutu 1; aynı gün tekrar denenebilsin diye today'e due yap.
   return e.copyWith(
     box: 1,
-    nextReview: today.add(Duration(days: kBoxIntervals[0])),
+    nextReview: today,
     correctStreak: 0,
     totalAttempts: attempts,
     wrongCount: e.wrongCount + 1,

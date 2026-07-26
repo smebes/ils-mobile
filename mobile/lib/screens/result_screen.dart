@@ -44,49 +44,56 @@ class _ResultScreenState extends State<ResultScreen> {
         alignment: Alignment.topCenter,
         children: [
           SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('🎉', style: TextStyle(fontSize: 72)),
-                  const SizedBox(height: 12),
-                  const Text('Geschafft!',
-                      style: TextStyle(
-                          fontSize: 30, fontWeight: FontWeight.w800)),
-                  const SizedBox(height: 8),
-                  Text('Tägliches Ziel erreicht',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: AppColors.navy.withValues(alpha: 0.6))),
-                  const SizedBox(height: 32),
-                  _statRow('Übungen', '${widget.correct} / ${widget.total}'),
-                  const SizedBox(height: 12),
-                  _statRow('Erfolg', '${(pct * 100).round()}%'),
-                  const SizedBox(height: 12),
-                  _statRow('XP', '+${widget.xp}'),
-                  if (widget.reviewsSaved > 0) ...[
-                    const SizedBox(height: 20),
-                    Text(
-                      'Wörter zur Wiederholung gespeichert 📚\n'
-                      '(${widget.reviewsSaved} im SR-Plan)',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.navy.withValues(alpha: 0.65)),
-                    ),
-                  ],
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton(
-                      onPressed: () => Navigator.of(context)
-                          .popUntil((route) => route.isFirst),
-                      child: const Text('Weiter lernen'),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight - 48),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('🎉', style: TextStyle(fontSize: 72)),
+                        const SizedBox(height: 12),
+                        const Text('Geschafft!',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.w800)),
+                        const SizedBox(height: 8),
+                        Text('Tägliches Ziel erreicht',
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.navy.withValues(alpha: 0.6))),
+                        const SizedBox(height: 32),
+                        _statRow('Übungen', '${widget.correct} / ${widget.total}'),
+                        const SizedBox(height: 12),
+                        _statRow('Erfolg', '${(pct * 100).round()}%'),
+                        const SizedBox(height: 12),
+                        _statRow('XP', '+${widget.xp}'),
+                        if (widget.reviewsSaved > 0) ...[
+                          const SizedBox(height: 20),
+                          Text(
+                            'Wörter zur Wiederholung gespeichert 📚\n'
+                            '(${widget.reviewsSaved} im SR-Plan)',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: AppColors.navy.withValues(alpha: 0.65)),
+                          ),
+                        ],
+                        const SizedBox(height: 40),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton(
+                            onPressed: () => Navigator.of(context)
+                                .popUntil((route) => route.isFirst),
+                            child: const Text('Weiter lernen'),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
           ),
           ConfettiWidget(
@@ -106,15 +113,26 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   Widget _statRow(String label, String value) => Container(
+        width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: cardDecoration(),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(label, style: const TextStyle(fontSize: 16)),
-            Text(value,
+            Expanded(
+              child: Text(label,
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow.ellipsis),
+            ),
+            const SizedBox(width: 12),
+            Flexible(
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
                 style: const TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.w800)),
+                    fontSize: 18, fontWeight: FontWeight.w800),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       );
