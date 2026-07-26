@@ -12,7 +12,9 @@ class LearningMapTab extends StatelessWidget {
   final String greeting;
   final double mastery;
   final List<VocabItem> vocab;
+  final List<VocabItem> l2Vocab;
   final VoidCallback onStart;
+  final void Function(int lektionId) onStartLektion;
   final void Function(int lektionN) onLockedLesson;
 
   const LearningMapTab({
@@ -20,14 +22,22 @@ class LearningMapTab extends StatelessWidget {
     required this.greeting,
     required this.mastery,
     required this.vocab,
+    this.l2Vocab = const [],
     required this.onStart,
+    required this.onStartLektion,
     required this.onLockedLesson,
   });
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final leks = buildLektionMap(l10n, progressStore, mastery, vocab);
+    final leks = buildLektionMap(
+      l10n,
+      progressStore,
+      mastery,
+      vocab,
+      l2Vocab: l2Vocab,
+    );
     final bands = buildMapBands(l10n, leks);
     final doneTotal = totalSlicesDone(leks);
     final overall = l10n.mapOverallProgress(doneTotal, 35);
@@ -119,8 +129,7 @@ class LearningMapTab extends StatelessWidget {
                 final band = bands[index];
                 return _BandSection(
                   band: band,
-                  onNodeTap: (node) =>
-                      _handleNode(context, node, onStart, onLockedLesson),
+                  onNodeTap: (node) => _handleNode(context, node),
                 );
               },
               childCount: bands.length,
@@ -131,16 +140,11 @@ class LearningMapTab extends StatelessWidget {
     );
   }
 
-  void _handleNode(
-    BuildContext context,
-    MapNode node,
-    VoidCallback onStart,
-    void Function(int) onLockedLesson,
-  ) {
+  void _handleNode(BuildContext context, MapNode node) {
     final l10n = context.l10n;
     if (node.lektionN == 1) {
       if (node.kind == MapNodeKind.active || node.kind == MapNodeKind.done) {
-        onStart();
+        onStartLektion(1);
         return;
       }
       if (node.kind == MapNodeKind.next || node.kind == MapNodeKind.reward) {
@@ -150,12 +154,21 @@ class LearningMapTab extends StatelessWidget {
               ? l10n.mapSectionReward
               : l10n.finishTodayFirst,
           cta: l10n.startTodaysLesson,
-          onCta: onStart,
+          onCta: () => onStartLektion(1),
         );
         return;
       }
     }
-    if (node.lektionN >= 2) {
+    if (node.lektionN == 2) {
+      if (node.kind == MapNodeKind.locked) {
+        onLockedLesson(2);
+        return;
+      }
+      // Açık / sıradaki / tamamlanan L2 dilimleri
+      onStartLektion(2);
+      return;
+    }
+    if (node.lektionN >= 3) {
       onLockedLesson(node.lektionN);
     }
   }
@@ -297,6 +310,7 @@ class _OverviewStrip extends StatelessWidget {
   }
 
   double _cellH(LektionMapInfo l, int i) {
+    if (i >= l.sliceCount) return 8;
     if (l.state == LektionMapState.active ||
         l.state == LektionMapState.complete) {
       if (i < l.slicesDone) return 34;
@@ -312,6 +326,10 @@ class _OverviewStrip extends StatelessWidget {
   }
 
   Color _cellColor(LektionMapInfo l, int i) {
+    // Bu lektion'da olmayan dilim hücreleri soluk
+    if (i >= l.sliceCount) {
+      return AppColors.navy.withValues(alpha: 0.06);
+    }
     if (l.state == LektionMapState.active ||
         l.state == LektionMapState.complete) {
       if (i < l.slicesDone || l.state == LektionMapState.complete) {

@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'motion.dart';
 import 'theme.dart';
@@ -99,6 +101,7 @@ class _PulseRingState extends State<PulseRing>
     vsync: this,
     duration: AppMotion.ring,
   );
+  Timer? _stopTimer;
 
   @override
   void initState() {
@@ -108,7 +111,7 @@ class _PulseRingState extends State<PulseRing>
       if (!AppMotion.reduce(context)) {
         _c.repeat(reverse: false);
         // Spec: 2 tur sonra dur
-        Future<void>.delayed(AppMotion.ring * 2, () {
+        _stopTimer = Timer(AppMotion.ring * 2, () {
           if (mounted) _c.stop();
         });
       }
@@ -117,6 +120,7 @@ class _PulseRingState extends State<PulseRing>
 
   @override
   void dispose() {
+    _stopTimer?.cancel();
     _c.dispose();
     super.dispose();
   }

@@ -9,7 +9,8 @@
 > **Tester doğrulama (2026-07-26 akşam):** 6 kritik madde (sheet, dilim uzunluğu, caught-up, profil, donma, Welche/Frankreich/chip) yeni build’de geçti. Büyük dilimlerde “~N ders kaldı” ipucu eklendi.  
 > **S1 not:** Result `XpFlightBurst` → `Positioned(right)` içinde `width: infinity` layout crash + mouse_tracker (Keep learning tepkisiz) — düzeltildi (`left`+`right` bound).  
 > **Sprint A kapanış (2026-07-26 gece):** Result Keep learning widget test ile doğrulandı (`result_screen_test.dart`). S2 mechanic smoke (`mechanic_smoke_test.dart`). S4 soft placeholder — cream + nötr çerçeve, `Icons.broken_image*` yok (`SoftMediaPlaceholder` / `media_image_test.dart`).  
-> **Tester (opsiyonel):** kısa ders → Result → Öğrenmeye devam; bir flashcard’da eksik görselde kırık ikon flaşı olmamalı.
+> **M3 L2 (2026-07-26):** `Meine Familie` — 3 dilim (A/B/C), 25 kelime, 12 egzersiz; L1 mastery ≥ %80 ile açılır; harita + Session `lektionId: 2`. Test: `l2_content_test.dart`.  
+> **Tester (opsiyonel):** kısa ders → Result → Öğrenmeye devam; bir flashcard’da eksik görselde kırık ikon flaşı olmamalı. L2 için: L1’i %80’e getir (veya debug) → L2 bandı tıkla → aile kelimeleri.
 
 ## Sistem hazırlığı (özet)
 
@@ -75,9 +76,10 @@
 | T2.2 | Üst CTA | “Bugünkü derse devam” (veya dil karşılığı) |
 | T2.3 | Sabit özet şerit | 7 bölüm × 5 sütun (35 hücre); aktif dilim daha yüksek |
 | T2.4 | Yılan yol L1 | 5 dilim node + bölüm sonu yıldız; aktif node büyük + halkalı |
-| T2.5 | L2–L7 bantları | Soluk ama görünür; kilit ikonu |
-| T2.6 | Aktif node / CTA | Session açılır |
-| T2.7 | Kilitli Lektion 2+ | Bottom sheet: kilit açıklaması + ilerleme |
+| T2.5 | L2–L7 bantları | L2: L1 <%80 iken kilit; ≥%80 açılır (Meine Familie, 3 dilim). L3–L7 kilit |
+| T2.6 | Aktif node / CTA | Session açılır (L1 veya L2) |
+| T2.7 | Kilitli Lektion 2 | Bottom sheet: %80 ilerleme + L1’e dön |
+| T2.8 | L2 oturumu (açıkken) | Aile kelimeleri + quiz/fill/match; Result → Home |
 
 ---
 

@@ -5,12 +5,13 @@ import 'models.dart';
 /// İçeriği asset bundle'dan okur (offline-first).
 /// Müfredat sırası: L1 → L2 → … → L7 (kitap birebir).
 class ContentRepository {
-  static const int activeLektionId = 1;
+  /// Yüklü lektionen (içerik dosyası olanlar).
+  static const List<int> bundledLektionIds = [1, 2];
 
   final Map<int, Lektion> _lektionen = {};
   final Map<int, List<Exercise>> _exercises = {};
 
-  Future<Lektion> loadLektion({int id = activeLektionId}) async {
+  Future<Lektion> loadLektion({int id = 1}) async {
     if (_lektionen.containsKey(id)) return _lektionen[id]!;
     final raw =
         await rootBundle.loadString('assets/content/l$id/lektion.json');
@@ -19,7 +20,7 @@ class ContentRepository {
     return lektion;
   }
 
-  Future<List<Exercise>> loadExercises({int id = activeLektionId}) async {
+  Future<List<Exercise>> loadExercises({int id = 1}) async {
     if (_exercises.containsKey(id)) return _exercises[id]!;
     final raw =
         await rootBundle.loadString('assets/content/l$id/exercises.json');
@@ -31,11 +32,12 @@ class ContentRepository {
     return items;
   }
 
+  bool hasContent(int lektionId) => bundledLektionIds.contains(lektionId);
+
   /// Lektion kilidi: önceki Lektion %80 hakimiyet → sonrakisi açılır.
   bool isUnlocked(int lektionId, double previousMastery) {
     if (lektionId <= 1) return true;
-    // Henüz sadece L1 içerik yüklü; L2+ kilitli kalır.
-    if (lektionId > activeLektionId) return false;
+    if (!hasContent(lektionId)) return false;
     return previousMastery >= 0.8;
   }
 }

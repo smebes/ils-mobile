@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
+import '../curriculum.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
@@ -45,6 +46,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   Lektion? _lektion;
+  Lektion? _l2;
   String? _error;
   int _tab = 0; // 0 öğren · 1 tekrar · 2 profil
 
@@ -58,18 +60,51 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _load() async {
     try {
-      final l = await contentRepo.loadLektion();
-      if (mounted) setState(() => _lektion = l);
+      final l = await contentRepo.loadLektion(id: 1);
+      Lektion? l2;
+      try {
+        l2 = await contentRepo.loadLektion(id: 2);
+      } catch (e) {
+        debugPrint('Home: L2 load skipped: $e');
+      }
+      if (mounted) {
+        setState(() {
+          _lektion = l;
+          _l2 = l2;
+        });
+      }
     } catch (e, st) {
       debugPrint('Home: load error $e\n$st');
       if (mounted) setState(() => _error = e.toString());
     }
   }
 
-  void _startSession({bool reviewMode = false}) {
+  void _startSession({bool reviewMode = false, int? lektionId}) {
+    final id = lektionId ??
+        (reviewMode ? 1 : progressStore.activeLektionId);
+    // L1 bitince ve L2 açıksa CTA L2'ye gitsin
+    final resolved = () {
+      if (reviewMode) return 1;
+      if (lektionId != null) return lektionId;
+      final l1 = _lektion;
+      if (l1 == null) return id;
+      final words = l1.vocab.map((v) => v.wort).toList();
+      final mastery = progressStore.masteryOfWords(words);
+      final l1Done = l1SlicesDone(progressStore, l1.vocab) >= 5;
+      if (l1Done &&
+          contentRepo.isUnlocked(2, mastery) &&
+          _l2 != null) {
+        return 2;
+      }
+      return progressStore.activeLektionId;
+    }();
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (_) => SessionScreen(reviewMode: reviewMode)),
+        builder: (_) => SessionScreen(
+          reviewMode: reviewMode,
+          lektionId: resolved,
+        ),
+      ),
     );
   }
 
@@ -127,8 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
         final words = l.vocab.map((v) => v.wort).toList();
         final due = progressStore.dueReviewCount(words);
-        final mastery = progressStore.masteryPct(l.vocab.length);
-        final mastered = progressStore.masteredCount(l.vocab.length);
+        final mastery = progressStore.masteryOfWords(words);
+        final mastered = progressStore.masteredAmong(words);
 
         return Listener(
           behavior: HitTestBehavior.translucent,
@@ -142,7 +177,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     greeting: _greeting(l10n),
                     mastery: mastery,
                     vocab: l.vocab,
+                    l2Vocab: _l2?.vocab ?? const [],
                     onStart: _startSession,
+                    onStartLektion: (id) => _startSession(lektionId: id),
                     onLockedLesson: (n) =>
                         _showLockSheet(n, mastery, mastered),
                   ),
@@ -272,7 +309,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       SessionProgressBar(mastery.clamp(0, 1)),
                       const SizedBox(height: 10),
                       Text(
-                        l10n.wordsLeftApprox((48 - mastered).clamp(0, 60)),
+                        l10n.wordsLeftApprox(
+                            ((_lektion?.vocab.length ?? 48) - mastered)
+                                .clamp(0, 60)),
                         style: TextStyle(
                             fontSize: 12.5,
                             color: AppColors.navy.withValues(alpha: 0.55)),
@@ -287,7 +326,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: FilledButton(
                   onPressed: () {
                     Navigator.pop(ctx);
-                    if (isL2) _startSession();
+                    if (isL2) {
+                      // Hâlâ kilitliyse bugünkü L1 dersine dön
+                      _startSession(lektionId: 1);
+                    }
                   },
                   child: Text(isL2 ? l10n.backToTodayLesson : l10n.ok),
                 ),

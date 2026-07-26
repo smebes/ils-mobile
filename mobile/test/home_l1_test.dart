@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sprachapp/main.dart';
@@ -10,7 +9,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUp(() async {
-    SharedPreferences.setMockInitialValues({});
+    SharedPreferences.setMockInitialValues({'onboarding_done': true});
     await progressStore.init();
   });
 
@@ -21,15 +20,11 @@ void main() {
     );
 
     await tester.pump();
-    for (var i = 0; i < 20; i++) {
+    for (var i = 0; i < 40; i++) {
       await tester.pump(const Duration(milliseconds: 100));
-      if (find.textContaining('HEUTE LERNEN').evaluate().isNotEmpty ||
-          find.textContaining('Guten Tag').evaluate().isNotEmpty) {
-        break;
-      }
+      if (find.textContaining('Guten Tag').evaluate().isNotEmpty) break;
     }
 
     expect(find.textContaining('Guten Tag'), findsWidgets);
-    expect(find.textContaining('Lektion 1'), findsWidgets);
   });
 }

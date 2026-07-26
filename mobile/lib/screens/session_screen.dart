@@ -26,7 +26,13 @@ class _Step {
 class SessionScreen extends StatefulWidget {
   /// true = sadece due tekrarlar (Tekrar sekmesi).
   final bool reviewMode;
-  const SessionScreen({super.key, this.reviewMode = false});
+  /// 1 = L1, 2 = L2 …
+  final int lektionId;
+  const SessionScreen({
+    super.key,
+    this.reviewMode = false,
+    this.lektionId = 1,
+  });
   @override
   State<SessionScreen> createState() => _SessionScreenState();
 }
@@ -51,25 +57,35 @@ class _SessionScreenState extends State<SessionScreen> {
   }
 
   Future<void> _build() async {
-    final lektion = await contentRepo.loadLektion();
-    final exercises = await contentRepo.loadExercises();
+    final lektionId = widget.lektionId;
+    final maxSlice = maxSlicesForLektion(lektionId);
+    final lektion = await contentRepo.loadLektion(id: lektionId);
+    final exercises = await contentRepo.loadExercises(id: lektionId);
     _allWords = lektion.vocab.map((v) => v.wort).toList();
-    _slice = progressStore.activeSlice;
+    if (!widget.reviewMode) {
+      if (progressStore.activeLektionId != lektionId) {
+        await progressStore.setActiveLektion(lektionId);
+        await progressStore.setActiveSlice(1, maxSlice: maxSlice);
+      } else {
+        await progressStore.setActiveLektion(lektionId);
+      }
+    }
+    _slice = progressStore.activeSlice.clamp(1, maxSlice);
     // Tamamlanmış dilimleri atla (SR ile activeSlice senkronu).
-    for (var guard = 0; guard < 5; guard++) {
-      final tags = schritteForSlice(_slice);
+    for (var guard = 0; guard < maxSlice; guard++) {
+      final tags = schritteForSlice(_slice, lektionId: lektionId);
       final words = lektion.vocab
           .where((v) => tags.contains(v.schritt))
           .map((v) => v.wort)
           .toList();
       if (words.isEmpty) break;
       final allSeen = words.every((w) => progressStore.srEntries.containsKey(w));
-      if (!allSeen || _slice >= 5) break;
-      await progressStore.setActiveSlice(_slice + 1);
+      if (!allSeen || _slice >= maxSlice) break;
+      await progressStore.setActiveSlice(_slice + 1, maxSlice: maxSlice);
       _slice = progressStore.activeSlice;
     }
-    final tags = schritteForSlice(_slice);
-    final unlocked = schritteThroughSlice(_slice);
+    final tags = schritteForSlice(_slice, lektionId: lektionId);
+    final unlocked = schritteThroughSlice(_slice, lektionId: lektionId);
     final sliceVocab =
         lektion.vocab.where((v) => tags.contains(v.schritt)).toList();
     final reviewVocab =
@@ -109,7 +125,10 @@ class _SessionScreenState extends State<SessionScreen> {
     final sliceExercises = widget.reviewMode
         ? <Exercise>[]
         : _pickDailyExercises(
-            exercises.where((e) => schrittInSlice(e.schritt, _slice)).toList(),
+            exercises
+                .where((e) =>
+                    schrittInSlice(e.schritt, _slice, lektionId: lektionId))
+                .toList(),
             max: 4,
           );
 
@@ -264,7 +283,10 @@ class _SessionScreenState extends State<SessionScreen> {
       await progressStore.addXp(xpGained);
       if (!widget.reviewMode) {
         await progressStore.completeDailyGoal();
-        await progressStore.maybeAdvanceSlice(_sliceWords);
+        await progressStore.maybeAdvanceSlice(
+          _sliceWords,
+          maxSlice: maxSlicesForLektion(widget.lektionId),
+        );
       }
     } catch (e) {
       debugPrint('finish persist: $e');

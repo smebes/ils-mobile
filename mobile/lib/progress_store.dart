@@ -14,6 +14,7 @@ class ProgressStore extends ChangeNotifier {
   static const _kDailyGoalMin = 'daily_goal_min';
   static const _kOnboarding = 'onboarding_done';
   static const _kActiveSlice = 'active_slice';
+  static const _kActiveLektion = 'active_lektion';
   static const _kUiLocale = 'ui_locale';
   static const _kActiveDays = 'active_days_v1';
   static const _kReminderHour = 'reminder_hour';
@@ -80,8 +81,16 @@ class ProgressStore extends ChangeNotifier {
 
   bool get onboardingDone => _p?.getBool(_kOnboarding) ?? false;
 
-  /// 1..5 — L1 Schritt dilimi (Folge+A = 1 … E = 5)
+  /// Aktif lektion (1 = L1, 2 = L2 …).
+  int get activeLektionId => (_p?.getInt(_kActiveLektion) ?? 1).clamp(1, 7);
+
+  /// 1..5 — aktif lektion içindeki Schritt dilimi
   int get activeSlice => (_p?.getInt(_kActiveSlice) ?? 1).clamp(1, 5);
+
+  Future<void> setActiveLektion(int id) async {
+    await _p?.setInt(_kActiveLektion, id.clamp(1, 7));
+    notifyListeners();
+  }
 
   /// Günlük hatırlatma saati (0–23). null = kapalı.
   int? get reminderHour {
@@ -129,8 +138,8 @@ class ProgressStore extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setActiveSlice(int slice) async {
-    await _p?.setInt(_kActiveSlice, slice.clamp(1, 5));
+  Future<void> setActiveSlice(int slice, {int maxSlice = 5}) async {
+    await _p?.setInt(_kActiveSlice, slice.clamp(1, maxSlice));
     notifyListeners();
   }
 
@@ -187,8 +196,19 @@ class ProgressStore extends ChangeNotifier {
   /// Hakimiyet = kutu 4–5'teki kelimeler / toplam (PRODUCT.md — "görüldü" değil).
   double masteryPct(int totalVocab) => masteryFraction(_sr, totalVocab);
 
+  /// Belirli kelime listesi üzerinde hakimiyet (L1 unlock için doğru kapsam).
+  double masteryOfWords(List<String> words) {
+    if (words.isEmpty) return 0;
+    final mastered =
+        words.where((w) => _sr[w] != null && _sr[w]!.isMastered).length;
+    return mastered / words.length;
+  }
+
   int masteredCount(int totalVocab) =>
       _sr.values.where((e) => e.isMastered).length;
+
+  int masteredAmong(List<String> words) =>
+      words.where((w) => _sr[w] != null && _sr[w]!.isMastered).length;
 
   /// Bugün tekrar kuyruğunda kaç kelime var (sonuç ekranı metni için).
   int dueReviewCount(List<String> allWords) {
@@ -220,13 +240,14 @@ class ProgressStore extends ChangeNotifier {
       );
 
   /// Dilim kelimelerinin hepsi tanıtıldıysa sıradaki dilime geç (bugün zorlamaz).
-  Future<void> maybeAdvanceSlice(List<String> sliceWords) async {
+  Future<void> maybeAdvanceSlice(List<String> sliceWords,
+      {int maxSlice = 5}) async {
     if (sliceWords.isEmpty) return;
     final allSeen = sliceWords.every((w) => _sr.containsKey(w));
     if (!allSeen) return;
-    final next = (activeSlice + 1).clamp(1, 5);
+    final next = (activeSlice + 1).clamp(1, maxSlice);
     if (next == activeSlice) return;
-    await setActiveSlice(next);
+    await setActiveSlice(next, maxSlice: maxSlice);
   }
 
   /// Zayıf kelimeler (ilerleme ekranı için).

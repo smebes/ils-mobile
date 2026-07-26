@@ -1,0 +1,455 @@
+{
+  "_meta": {
+    "note": "L2 Meine Familie — 3 dilim (A/B/C), her dilimde quiz+fill+matching. Listening TTS satırları (audio boş).",
+    "schema": "L1/L3 ile aynı"
+  },
+  "items": [
+    {
+      "id": "L2_A_Q1",
+      "lektion_id": 2,
+      "schritt": "A",
+      "mechanic": "quiz",
+      "grammar_topic": "Nomen Familie",
+      "payload": {
+        "instruction": "Wähle die richtige Antwort.",
+        "question": "Wer ist die Mutter von der Mutter?",
+        "options": [
+          {
+            "id": "a",
+            "text": "die Oma"
+          },
+          {
+            "id": "b",
+            "text": "der Vater"
+          },
+          {
+            "id": "c",
+            "text": "der Bruder"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "a",
+        "explanation": "Die Mutter der Mutter ist die Oma / Großmutter."
+      }
+    },
+    {
+      "id": "L2_A_F1",
+      "lektion_id": 2,
+      "schritt": "A",
+      "mechanic": "fill_blank",
+      "grammar_topic": "Artikel",
+      "payload": {
+        "instruction": "Ergänze den Artikel.",
+        "sentence": "{{b1}} Mutter heißt Anna.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "Die",
+              "Der",
+              "Das"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "Die",
+          "accept": [
+            "die",
+            "Die"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L2_A_M1",
+      "lektion_id": 2,
+      "schritt": "A",
+      "mechanic": "matching",
+      "grammar_topic": "Familienwörter",
+      "payload": {
+        "instruction": "Ordne zu.",
+        "left": [
+          {
+            "id": "a",
+            "image": "assets/vocab/l2/l2_vocab_mutter.svg"
+          },
+          {
+            "id": "b",
+            "image": "assets/vocab/l2/l2_vocab_vater.svg"
+          },
+          {
+            "id": "c",
+            "image": "assets/vocab/l2/l2_vocab_schwester.svg"
+          },
+          {
+            "id": "d",
+            "image": "assets/vocab/l2/l2_vocab_bruder.svg"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "die Mutter"
+          },
+          {
+            "id": "2",
+            "text": "der Vater"
+          },
+          {
+            "id": "3",
+            "text": "die Schwester"
+          },
+          {
+            "id": "4",
+            "text": "der Bruder"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      }
+    },
+    {
+      "id": "L2_A_Q2",
+      "lektion_id": 2,
+      "schritt": "A",
+      "mechanic": "quiz",
+      "grammar_topic": "Artikel",
+      "payload": {
+        "instruction": "Welcher Artikel?",
+        "question": "___ Kind spielt im Garten.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Das"
+          },
+          {
+            "id": "b",
+            "text": "Die"
+          },
+          {
+            "id": "c",
+            "text": "Der"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "a",
+        "explanation": "das Kind (sächlich)."
+      }
+    },
+    {
+      "id": "L2_B_F1",
+      "lektion_id": 2,
+      "schritt": "B",
+      "mechanic": "fill_blank",
+      "grammar_topic": "Possessivartikel",
+      "payload": {
+        "instruction": "Ergänze: mein oder meine?",
+        "sentence": "Das ist {{b1}} Mutter. Das ist {{b2}} Vater.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "meine",
+              "mein"
+            ]
+          },
+          {
+            "id": "b2",
+            "options": [
+              "mein",
+              "meine"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "meine",
+          "accept": [
+            "meine"
+          ]
+        },
+        "b2": {
+          "answer": "mein",
+          "accept": [
+            "mein"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L2_B_Q1",
+      "lektion_id": 2,
+      "schritt": "B",
+      "mechanic": "quiz",
+      "grammar_topic": "haben",
+      "payload": {
+        "instruction": "Wähle die richtige Form.",
+        "question": "Ich ___ eine Schwester.",
+        "options": [
+          {
+            "id": "a",
+            "text": "habe"
+          },
+          {
+            "id": "b",
+            "text": "hast"
+          },
+          {
+            "id": "c",
+            "text": "hat"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "a",
+        "explanation": "ich habe"
+      }
+    },
+    {
+      "id": "L2_B_M1",
+      "lektion_id": 2,
+      "schritt": "B",
+      "mechanic": "matching",
+      "grammar_topic": "Possessiv",
+      "payload": {
+        "instruction": "Ordne zu.",
+        "left": [
+          {
+            "id": "a",
+            "text": "die Mutter"
+          },
+          {
+            "id": "b",
+            "text": "der Vater"
+          },
+          {
+            "id": "c",
+            "text": "die Oma"
+          },
+          {
+            "id": "d",
+            "text": "der Opa"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "meine Mutter"
+          },
+          {
+            "id": "2",
+            "text": "mein Vater"
+          },
+          {
+            "id": "3",
+            "text": "meine Oma"
+          },
+          {
+            "id": "4",
+            "text": "mein Opa"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      }
+    },
+    {
+      "id": "L2_B_L1",
+      "lektion_id": 2,
+      "schritt": "B",
+      "mechanic": "listening",
+      "grammar_topic": "Hörverstehen",
+      "payload": {
+        "instruction": "Hör den Text (TTS) und antworte.",
+        "audio": {
+          "slow": [],
+          "normal": []
+        },
+        "lines": [
+          {
+            "text": "Das ist meine Familie."
+          },
+          {
+            "text": "Ich habe eine Schwester und einen Bruder."
+          }
+        ],
+        "questions": [
+          {
+            "id": "q1",
+            "q": "Was hat die Person?",
+            "options": [
+              {
+                "id": "o1",
+                "text": "eine Schwester und einen Bruder"
+              },
+              {
+                "id": "o2",
+                "text": "nur eine Katze"
+              },
+              {
+                "id": "o3",
+                "text": "zwei Autos"
+              }
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "q1": "o1"
+      }
+    },
+    {
+      "id": "L2_C_F1",
+      "lektion_id": 2,
+      "schritt": "C",
+      "mechanic": "fill_blank",
+      "grammar_topic": "Alter",
+      "payload": {
+        "instruction": "Ergänze.",
+        "sentence": "Meine Schwester ist 12 {{b1}} alt.",
+        "blanks": [
+          {
+            "id": "b1",
+            "options": [
+              "Jahre",
+              "Jahr",
+              "alt"
+            ]
+          }
+        ]
+      },
+      "solution": {
+        "b1": {
+          "answer": "Jahre",
+          "accept": [
+            "jahre",
+            "Jahre"
+          ]
+        }
+      }
+    },
+    {
+      "id": "L2_C_Q1",
+      "lektion_id": 2,
+      "schritt": "C",
+      "mechanic": "quiz",
+      "grammar_topic": "W-Frage",
+      "payload": {
+        "instruction": "Welche Frage passt?",
+        "question": "___ ist das? — Das ist meine Tante.",
+        "options": [
+          {
+            "id": "a",
+            "text": "Wer"
+          },
+          {
+            "id": "b",
+            "text": "Wo"
+          },
+          {
+            "id": "c",
+            "text": "Was"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "a",
+        "explanation": "Wer? für Personen."
+      }
+    },
+    {
+      "id": "L2_C_M1",
+      "lektion_id": 2,
+      "schritt": "C",
+      "mechanic": "matching",
+      "grammar_topic": "Familie erweitern",
+      "payload": {
+        "instruction": "Ordne zu.",
+        "left": [
+          {
+            "id": "a",
+            "text": "der Bruder der Mutter"
+          },
+          {
+            "id": "b",
+            "text": "die Schwester des Vaters"
+          },
+          {
+            "id": "c",
+            "text": "die Mutter der Mutter"
+          },
+          {
+            "id": "d",
+            "text": "der Vater des Vaters"
+          }
+        ],
+        "right": [
+          {
+            "id": "1",
+            "text": "der Onkel"
+          },
+          {
+            "id": "2",
+            "text": "die Tante"
+          },
+          {
+            "id": "3",
+            "text": "die Oma"
+          },
+          {
+            "id": "4",
+            "text": "der Opa"
+          }
+        ]
+      },
+      "solution": {
+        "a": "1",
+        "b": "2",
+        "c": "3",
+        "d": "4"
+      }
+    },
+    {
+      "id": "L2_C_Q2",
+      "lektion_id": 2,
+      "schritt": "C",
+      "mechanic": "quiz",
+      "grammar_topic": "Adjektiv",
+      "payload": {
+        "instruction": "Wähle das Gegenteil von „alt“.",
+        "question": "Mein Bruder ist nicht alt. Er ist …",
+        "options": [
+          {
+            "id": "a",
+            "text": "jung"
+          },
+          {
+            "id": "b",
+            "text": "nett"
+          },
+          {
+            "id": "c",
+            "text": "meine"
+          }
+        ]
+      },
+      "solution": {
+        "answer": "a",
+        "explanation": "alt ↔ jung"
+      }
+    }
+  ]
+}

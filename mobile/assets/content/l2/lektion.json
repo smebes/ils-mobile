@@ -1,0 +1,346 @@
+{
+  "_meta": {
+    "note": "Lektion 2 (Meine Familie) — A1 açılış, 3 dilim. Özgün telifsiz içerik. Ses yoksa TTS.",
+    "media": {
+      "vocab_base": "assets/vocab/l2/",
+      "scene_base": "public/img/"
+    }
+  },
+  "lektion": {
+    "id": 2,
+    "nummer": 2,
+    "titel": "Meine Familie",
+    "thema": "Aile üyeleri, iyelik (mein/meine), tanıtma",
+    "cefr": "A1",
+    "folge": {
+      "id": 1,
+      "titel": "Das ist meine Familie."
+    },
+    "grammar_focus": [
+      "Possessivartikel (mein/meine)",
+      "W-Frage (Wer?)",
+      "sein / haben",
+      "Nomen mit Artikel (Familie)"
+    ],
+    "cover_image": "public/img/l1_cover.webp"
+  },
+  "schritte": [
+    {
+      "id": "A",
+      "titel": "Meine Familie",
+      "ziel": "Familienmitglieder nennen"
+    },
+    {
+      "id": "B",
+      "titel": "Mein / Meine",
+      "ziel": "Possessivartikel und haben"
+    },
+    {
+      "id": "C",
+      "titel": "Wer ist das?",
+      "ziel": "Personen vorstellen und beschreiben"
+    }
+  ],
+  "vocab": [
+    {
+      "wort": "Familie",
+      "artikel": "die",
+      "plural": "Familien",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "aile",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Das ist meine Familie.",
+      "image": "assets/vocab/l2/l2_vocab_familie.svg",
+      "audio": null
+    },
+    {
+      "wort": "Mutter",
+      "artikel": "die",
+      "plural": "Mütter",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "anne",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Meine Mutter heißt Anna.",
+      "image": "assets/vocab/l2/l2_vocab_mutter.svg",
+      "audio": null
+    },
+    {
+      "wort": "Vater",
+      "artikel": "der",
+      "plural": "Väter",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "baba",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Mein Vater heißt Tom.",
+      "image": "assets/vocab/l2/l2_vocab_vater.svg",
+      "audio": null
+    },
+    {
+      "wort": "Eltern",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "ebeveynler",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Meine Eltern wohnen in Berlin.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Schwester",
+      "artikel": "die",
+      "plural": "Schwestern",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "kız kardeş",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Ich habe eine Schwester.",
+      "image": "assets/vocab/l2/l2_vocab_schwester.svg",
+      "audio": null
+    },
+    {
+      "wort": "Bruder",
+      "artikel": "der",
+      "plural": "Brüder",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "erkek kardeş",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Ich habe einen Bruder.",
+      "image": "assets/vocab/l2/l2_vocab_bruder.svg",
+      "audio": null
+    },
+    {
+      "wort": "Kind",
+      "artikel": "das",
+      "plural": "Kinder",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "çocuk",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Das Kind heißt Mia.",
+      "image": "assets/vocab/l2/l2_vocab_kind.svg",
+      "audio": null
+    },
+    {
+      "wort": "Tochter",
+      "artikel": "die",
+      "plural": "Töchter",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "kız çocuk",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Sie ist meine Tochter.",
+      "image": "assets/vocab/l2/l2_vocab_tochter.svg",
+      "audio": null
+    },
+    {
+      "wort": "Sohn",
+      "artikel": "der",
+      "plural": "Söhne",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "oğul",
+      "schritt": "A",
+      "typ": "somut",
+      "beispiel": "Er ist mein Sohn.",
+      "image": "assets/vocab/l2/l2_vocab_sohn.svg",
+      "audio": null
+    },
+    {
+      "wort": "haben",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "sahip olmak",
+      "schritt": "B",
+      "typ": "funktion",
+      "beispiel": "Ich habe eine Schwester.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "mein",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "benim (eril/nötr)",
+      "schritt": "B",
+      "typ": "funktion",
+      "beispiel": "Das ist mein Vater.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "meine",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "benim (dişil/çoğul)",
+      "schritt": "B",
+      "typ": "funktion",
+      "beispiel": "Das ist meine Mutter.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Oma",
+      "artikel": "die",
+      "plural": "Omas",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "büyükanne",
+      "schritt": "B",
+      "typ": "somut",
+      "beispiel": "Meine Oma ist nett.",
+      "image": "assets/vocab/l2/l2_vocab_oma.svg",
+      "audio": null
+    },
+    {
+      "wort": "Opa",
+      "artikel": "der",
+      "plural": "Opas",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "büyükbaba",
+      "schritt": "B",
+      "typ": "somut",
+      "beispiel": "Mein Opa ist 70.",
+      "image": "assets/vocab/l2/l2_vocab_opa.svg",
+      "audio": null
+    },
+    {
+      "wort": "Großeltern",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "büyükanne ve büyükbaba",
+      "schritt": "B",
+      "typ": "somut",
+      "beispiel": "Meine Großeltern wohnen hier.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Freund",
+      "artikel": "der",
+      "plural": "Freunde",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "erkek arkadaş / dost",
+      "schritt": "B",
+      "typ": "somut",
+      "beispiel": "Das ist mein Freund.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Freundin",
+      "artikel": "die",
+      "plural": "Freundinnen",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "kız arkadaş / dost",
+      "schritt": "B",
+      "typ": "somut",
+      "beispiel": "Das ist meine Freundin.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "alt",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "yaşlı / yaşında",
+      "schritt": "C",
+      "typ": "funktion",
+      "beispiel": "Meine Oma ist alt.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "jung",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "genç",
+      "schritt": "C",
+      "typ": "funktion",
+      "beispiel": "Mein Bruder ist jung.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Jahr",
+      "artikel": "das",
+      "plural": "Jahre",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "yıl",
+      "schritt": "C",
+      "typ": "somut",
+      "beispiel": "Ich bin 20 Jahre alt.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "wohnen",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "oturmak / yaşamak",
+      "schritt": "C",
+      "typ": "funktion",
+      "beispiel": "Wir wohnen in Köln.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "heißen",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "adında olmak",
+      "schritt": "C",
+      "typ": "funktion",
+      "beispiel": "Meine Schwester heißt Lea.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "nett",
+      "artikel": null,
+      "plural": null,
+      "wortart": "Verb",
+      "uebersetzung_tr": "sevimli / nazik",
+      "schritt": "C",
+      "typ": "funktion",
+      "beispiel": "Mein Onkel ist nett.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Onkel",
+      "artikel": "der",
+      "plural": "Onkel",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "amca / dayı",
+      "schritt": "C",
+      "typ": "somut",
+      "beispiel": "Das ist mein Onkel.",
+      "image": null,
+      "audio": null
+    },
+    {
+      "wort": "Tante",
+      "artikel": "die",
+      "plural": "Tanten",
+      "wortart": "Nomen",
+      "uebersetzung_tr": "hala / teyze",
+      "schritt": "C",
+      "typ": "somut",
+      "beispiel": "Das ist meine Tante.",
+      "image": null,
+      "audio": null
+    }
+  ]
+}

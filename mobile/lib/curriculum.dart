@@ -22,6 +22,18 @@ const kCurriculumSlices = [
   CurriculumSlice(5, 'E'),
 ];
 
+const kL2CurriculumSlices = [
+  CurriculumSlice(1, 'A'),
+  CurriculumSlice(2, 'B'),
+  CurriculumSlice(3, 'C'),
+];
+
+const kL2SliceTitlesDe = [
+  'Meine Familie',
+  'Mein / Meine',
+  'Wer ist das?',
+];
+
 /// Zigzag yatay ofset (px) — prototip 1a.
 const kMapZigzag = [0.0, 52.0, 84.0, 52.0, 0.0, -56.0];
 
@@ -30,8 +42,9 @@ class LektionMapInfo {
   final String titleDe;
   final String titleTr;
   final LektionMapState state;
-  final int slicesDone; // 0..5 tamamlanan dilim
-  final int activeSliceN; // 1..5 sıradaki dilim (aktifken)
+  final int slicesDone; // tamamlanan dilim
+  final int sliceCount; // bu lektion'daki dilim sayısı (L1:5, L2:3)
+  final int activeSliceN; // sıradaki dilim (aktifken)
   final int activeSeen; // aktif dilimde görülen kelime
   final int activeTotal; // aktif dilim kelime sayısı
   const LektionMapInfo({
@@ -40,6 +53,7 @@ class LektionMapInfo {
     required this.titleTr,
     required this.state,
     required this.slicesDone,
+    this.sliceCount = 5,
     this.activeSliceN = 1,
     this.activeSeen = 0,
     this.activeTotal = 0,
@@ -165,30 +179,99 @@ int l1SlicesDone(ProgressStore store, List<VocabItem> vocab) {
   return (seen: seen, total: words.length, sliceN: sliceN);
 }
 
+int slicesDoneForLektion(
+  ProgressStore store,
+  List<VocabItem> vocab,
+  int lektionId,
+) {
+  final max = maxSlicesForLektion(lektionId);
+  var done = 0;
+  for (var i = 1; i <= max; i++) {
+    final tags = schritteForSlice(i, lektionId: lektionId);
+    final words =
+        vocab.where((v) => tags.contains(v.schritt)).map((v) => v.wort);
+    if (words.isEmpty) break;
+    if (words.every((w) => store.srEntries.containsKey(w))) {
+      done = i;
+    } else {
+      break;
+    }
+  }
+  return done;
+}
+
+({int seen, int total, int sliceN}) activeSliceWordsFor(
+  ProgressStore store,
+  List<VocabItem> vocab,
+  int lektionId,
+) {
+  final max = maxSlicesForLektion(lektionId);
+  final done = slicesDoneForLektion(store, vocab, lektionId);
+  final sliceN = (done + 1).clamp(1, max);
+  final tags = schritteForSlice(sliceN, lektionId: lektionId);
+  final words =
+      vocab.where((v) => tags.contains(v.schritt)).map((v) => v.wort).toList();
+  final seen = words.where((w) => store.srEntries.containsKey(w)).length;
+  return (seen: seen, total: words.length, sliceN: sliceN);
+}
+
 List<LektionMapInfo> buildLektionMap(
   AppLocalizations l10n,
   ProgressStore store,
   double l1Mastery,
-  List<VocabItem> vocab,
-) {
-  final done = l1SlicesDone(store, vocab);
-  final activeWords = l1ActiveSliceWords(store, vocab);
+  List<VocabItem> l1Vocab, {
+  List<VocabItem> l2Vocab = const [],
+}) {
+  final done = l1SlicesDone(store, l1Vocab);
+  final activeWords = l1ActiveSliceWords(store, l1Vocab);
   final l1Complete = done >= 5;
+  final l2Unlocked = l1Mastery >= 0.8 && l2Vocab.isNotEmpty;
+  final l2Done = l2Vocab.isEmpty
+      ? 0
+      : slicesDoneForLektion(store, l2Vocab, 2);
+  final l2Active = l2Vocab.isEmpty
+      ? (seen: 0, total: 0, sliceN: 1)
+      : activeSliceWordsFor(store, l2Vocab, 2);
+  final l2Complete = l2Vocab.isNotEmpty && l2Done >= 3;
+
   final out = <LektionMapInfo>[];
   for (var n = 1; n <= 7; n++) {
     late LektionMapState state;
     var slicesDone = 0;
+    var sliceCount = 5;
     var activeSliceN = 1;
     var activeSeen = 0;
     var activeTotal = 0;
     if (n == 1) {
       state = l1Complete ? LektionMapState.complete : LektionMapState.active;
+      // L2 aktifken L1 complete kalır; incomplete L1 her zaman active öncelikli
+      if (!l1Complete && store.activeLektionId == 2 && l2Unlocked) {
+        state = LektionMapState.active;
+      }
       slicesDone = done;
       activeSliceN = activeWords.sliceN;
       activeSeen = activeWords.seen;
       activeTotal = activeWords.total;
     } else if (n == 2) {
-      state = l1Mastery >= 0.8 ? LektionMapState.next : LektionMapState.locked;
+      sliceCount = 3;
+      if (!l2Unlocked) {
+        state = LektionMapState.locked;
+      } else if (l2Complete) {
+        state = LektionMapState.complete;
+        slicesDone = 3;
+      } else if (l1Complete || store.activeLektionId == 2) {
+        state = LektionMapState.active;
+        slicesDone = l2Done;
+        activeSliceN = l2Active.sliceN;
+        activeSeen = l2Active.seen;
+        activeTotal = l2Active.total;
+      } else {
+        state = LektionMapState.next;
+        slicesDone = l2Done;
+        activeSliceN = l2Active.sliceN;
+        activeSeen = l2Active.seen;
+        activeTotal = l2Active.total;
+      }
     } else {
       state = LektionMapState.locked;
     }
@@ -198,6 +281,7 @@ List<LektionMapInfo> buildLektionMap(
       titleTr: _lektionTr(l10n, n),
       state: state,
       slicesDone: slicesDone,
+      sliceCount: sliceCount,
       activeSliceN: activeSliceN,
       activeSeen: activeSeen,
       activeTotal: activeTotal,
@@ -209,7 +293,8 @@ List<LektionMapInfo> buildLektionMap(
 List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
   return leks.map((l) {
     final nodes = <MapNode>[];
-    for (var i = 0; i < 5; i++) {
+    final sliceCount = l.sliceCount;
+    for (var i = 0; i < sliceCount; i++) {
       final MapNodeKind kind;
       if (l.state == LektionMapState.active ||
           l.state == LektionMapState.complete) {
@@ -228,16 +313,19 @@ List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
         kind = MapNodeKind.locked;
       }
       final sliceN = i + 1;
+      final label = l.n == 2
+          ? '$sliceN. ${kL2SliceTitlesDe[i]} · ${kL2CurriculumSlices[i].schrittCode}'
+          : '$sliceN. ${sliceLabel(l10n, sliceN)} · ${kCurriculumSlices[i].schrittCode}';
       nodes.add(MapNode(
         kind: kind,
-        label: '$sliceN. ${sliceLabel(l10n, sliceN)} · ${kCurriculumSlices[i].schrittCode}',
-        x: kMapZigzag[i],
+        label: label,
+        x: kMapZigzag[i.clamp(0, kMapZigzag.length - 1)],
         lektionN: l.n,
         sliceIndex: sliceN,
       ));
     }
     final rewardDone =
-        l.state == LektionMapState.complete || l.slicesDone >= 5;
+        l.state == LektionMapState.complete || l.slicesDone >= sliceCount;
     final rewardKind = rewardDone
         ? MapNodeKind.reward
         : (l.state == LektionMapState.active
@@ -246,7 +334,7 @@ List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
     nodes.add(MapNode(
       kind: rewardKind,
       label: '${l10n.mapSectionReward} · ${l.titleDe}',
-      x: kMapZigzag[5],
+      x: kMapZigzag[(sliceCount).clamp(0, kMapZigzag.length - 1)],
       lektionN: l.n,
       isReward: true,
       celebrate: rewardDone,
@@ -258,7 +346,7 @@ List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
 int totalSlicesDone(List<LektionMapInfo> leks) {
   var t = 0;
   for (final l in leks) {
-    t += l.slicesDone.clamp(0, 5);
+    t += l.slicesDone.clamp(0, l.sliceCount);
   }
   return t;
 }

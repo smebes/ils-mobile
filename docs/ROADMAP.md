@@ -37,7 +37,7 @@
 |---|-----|-----|
 | M1 | Gerçek push (FCM/APNs) | Soft-ask UI hazır; tercih → gerçek bildirim |
 | M2 | Placement test | Onboarding “yakında” → 4 soru + dilim atlama kuralı |
-| M3 | İçerik: L1 tamam + L2 açılış | En az 2–3 bölüm dolu; kilit %80 mastery ile |
+| M3 | İçerik: L1 tamam + L2 açılış | ✅ Meine Familie — 3 dilim, 25 vocab, 12 egzersiz; kilit %80 mastery |
 | M4 | Streak dondurma / nazik kaçırma akışı | Can sistemi *yok* (bilinçli); streak koruma sade |
 | M5 | Result cesur animasyonlar (seçmeli) | XP jeton + takvim flip yapıldı; kart destesi orta öncelik |
 
@@ -68,8 +68,9 @@
 
 ## Şimdi sıradaki sprint (öneri)
 
-**Sprint A — Stabilite:** S1 + S2 + S4 ✅ (Result Keep learning widget doğrulandı; mechanic smoke; soft placeholder).  
+**Sprint A — Stabilite:** S1 + S2 + S4 ✅  
+**M3 — L2 içerik:** ✅ Meine Familie (3 dilim) + unlock + oturum.  
 Sonra **Sprint B — S3 responsive** (360/390/414).  
-Sonra orta vade M1 veya M3 (ürün tercihine göre: push mu, L2 içerik mi).
+Sonra orta vade M1 (push) veya L3 doldurma.
 
 Tester ile: her sprint sonrası kısa E2E; donma görülürse yeni özellik dondurulur.

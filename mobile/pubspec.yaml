@@ -30,7 +30,9 @@ flutter:
   uses-material-design: true
   assets:
     - assets/content/l1/
+    - assets/content/l2/
     - assets/content/l3/
+    - assets/vocab/l2/
     - assets/vocab/
     - assets/vocab/l1/
     - assets/img/
