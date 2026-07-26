@@ -2,7 +2,7 @@
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
   <!-- Dikey: yeşil | beyaz | kırmızı -->
   <rect x="40" y="50" width="40" height="100" fill="#009246"/>
-  <rect x="80" y="50" width="40" height="100" fill="#FFFFFF"/>
+  <rect x="80" y="50" width="40" height="100" fill="#EEF1F4"/>
   <rect x="120" y="50" width="40" height="100" fill="#CE2B37"/>
   <rect x="40" y="50" width="120" height="100" rx="8" fill="none" stroke="#264653" stroke-width="6"/>
 </svg>

@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-<rect width="200" height="200" rx="32" fill="#FAF3E7"></rect>
-<path d="M44 120 L42 154 L78 120 Z" fill="#2A9D8F" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path><rect x="28" y="40" width="144" height="88" rx="20" fill="#2A9D8F" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></rect>
-<circle cx="92" cy="84" r="32" fill="#E9C46A" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></circle>
-<circle cx="112" cy="78" r="27" fill="#2A9D8F" stroke="none"></circle>
-<path d="M132 100 l6 -13 l6 13 l14 2 l-10 10 l3 14 l-13 -7 l-13 7 l3 -14 l-10 -10 z" fill="#E9C46A" stroke="none"></path>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Türkisch">
+  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
+  <rect x="40" y="50" width="120" height="100" rx="6" fill="#E63946"/>
+  <circle cx="86" cy="100" r="24" fill="#EEF1F4"/>
+  <circle cx="94" cy="100" r="18" fill="#E63946"/>
+  <polygon points="118,88 124,100 136,100 126,108 130,120 118,112 106,120 110,108 100,100 112,100" fill="#EEF1F4"/>
+  <rect x="40" y="50" width="120" height="100" rx="6" fill="none" stroke="#264653" stroke-width="6"/>
 </svg>
