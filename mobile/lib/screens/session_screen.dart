@@ -321,7 +321,12 @@ class _SessionScreenState extends State<SessionScreen> {
     return Scaffold(
       body: Listener(
         behavior: HitTestBehavior.translucent,
-        onPointerDown: (_) => AudioService.shared.stopIfPlaying(),
+        onPointerDown: (_) {
+          // Yalnızca ses çalarken durdur — her tıkta DOM taraması UI kilidi riski.
+          if (AudioService.shared.isPlaying) {
+            AudioService.shared.stopIfPlaying();
+          }
+        },
         child: SafeArea(
           child: Column(
             children: [

@@ -494,7 +494,8 @@ class _BandSection extends StatelessWidget {
       return l10n.mapBandProgress(info.slicesDone * 20, info.slicesDone);
     }
     final leftSessions = ((remaining + 5) ~/ 6).clamp(1, 99);
-    if (leftSessions <= 1) {
+    // "son ders" yalnız dilimde ilerleme varken (0/6'da yanıltıcı)
+    if (leftSessions <= 1 && info.activeSeen > 0) {
       return l10n.mapBandSliceAlmost(
           info.activeSliceN, info.activeSeen, info.activeTotal);
     }

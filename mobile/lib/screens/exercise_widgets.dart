@@ -212,6 +212,34 @@ class _FillBlankWidgetState extends State<FillBlankWidget> with CheckFlow {
   }
 
   @override
+  Widget buildBottom(ExerciseDone onComplete) {
+    final l10n = context.l10n;
+    if (checked) {
+      return FeedbackBar(
+        correct: correct,
+        message: feedbackMessage,
+        cta: l10n.continueBtn,
+        onNext: () => onComplete(correct),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          onPressed: canCheck
+              ? () {
+                  // Ses durdurmayı Check yolundan çıkar — fill blank'te ses yok.
+                  doCheck();
+                }
+              : null,
+          child: Text(l10n.checkAnswer),
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final sentence = widget.exercise.payload['sentence'] as String;
     return Column(
@@ -256,10 +284,7 @@ class _FillBlankWidgetState extends State<FillBlankWidget> with CheckFlow {
                           borderRadius: BorderRadius.circular(16),
                           onTap: checked
                               ? null
-                              : () {
-                                  AudioService.shared.stopIfPlaying();
-                                  setState(() => answers[id] = o);
-                                },
+                              : () => setState(() => answers[id] = o),
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 14, vertical: 11),
