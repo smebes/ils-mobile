@@ -31,17 +31,15 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
     }
   }
 
-  Future<void> _goNext() async {
-    try {
-      await _audio.stop();
-    } catch (_) {}
-    if (!mounted) return;
+  void _goNext() {
+    // stop await etme — web'de player.stop UI'yı kilitleyebiliyor
+    _audio.stopIfPlaying();
     widget.onNext();
   }
 
   @override
   void dispose() {
-    _audio.dispose();
+    _audio.stopIfPlaying();
     super.dispose();
   }
 
@@ -162,7 +160,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: () => unawaited(_goNext()),
+              onPressed: _goNext,
               child: const Text('Weiter'),
             ),
           ),

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
 import '../main.dart';
@@ -30,6 +32,7 @@ class _SessionScreenState extends State<SessionScreen> {
   int _correct = 0;
   int _answerable = 0;
   int _reviewsScheduled = 0;
+  bool _advancing = false;
 
   @override
   void initState() {
@@ -58,42 +61,104 @@ class _SessionScreenState extends State<SessionScreen> {
     if (mounted) setState(() => _steps = steps);
   }
 
-  Future<void> _advance(bool? correct, {Exercise? exercise}) async {
+  /// UI önce ilerler; SR/disk arka planda — Weiter/X kilitlenmesin.
+  void _advance(bool? correct, {Exercise? exercise}) {
+    if (_advancing || _steps == null) return;
+    _advancing = true;
+
     if (correct == true) _correct++;
-    if (exercise != null && correct != null) {
-      await _updateSrForExercise(exercise, correct);
-    }
+
+    final words = (exercise != null && correct != null)
+        ? _wordsTouchedByExercise(exercise)
+        : const <String>[];
+
     if (_index + 1 >= _steps!.length) {
-      _finish();
-    } else {
-      setState(() => _index++);
+      // Son adım: SR'yi beklemeden finish'e gitme riski düşük; batch hızlı.
+      unawaited(() async {
+        if (words.isNotEmpty && correct != null) {
+          try {
+            await progressStore.recordAnswersBatch(words, correct);
+          } catch (e) {
+            debugPrint('SR batch: $e');
+          }
+        }
+        if (!mounted) return;
+        await _finish();
+        _advancing = false;
+      }());
+      return;
+    }
+
+    setState(() {
+      _index++;
+      _advancing = false;
+    });
+
+    if (words.isNotEmpty && correct != null) {
+      unawaited(
+        progressStore.recordAnswersBatch(words, correct).catchError((e) {
+          debugPrint('SR batch: $e');
+        }),
+      );
     }
   }
 
-  Future<void> _onFlashcardNext(VocabItem v) async {
-    await progressStore.introduceWord(v.wort);
-    _advance(null);
-  }
+  void _onFlashcardNext(VocabItem v) {
+    if (_advancing || _steps == null) return;
+    _advancing = true;
 
-  Future<void> _updateSrForExercise(Exercise ex, bool correct) async {
-    for (final w in _wordsTouchedByExercise(ex)) {
-      await progressStore.recordAnswer(w, correct);
+    // Persist beklenmez — web SharedPreferences Weiter'ı dondurabiliyordu.
+    unawaited(
+      progressStore.introduceWord(v.wort).catchError((e) {
+        debugPrint('introduceWord: $e');
+      }),
+    );
+
+    if (_index + 1 >= _steps!.length) {
+      unawaited(() async {
+        if (!mounted) return;
+        await _finish();
+        _advancing = false;
+      }());
+      return;
     }
+
+    setState(() {
+      _index++;
+      _advancing = false;
+    });
   }
 
-  /// Egzersiz metninde geçen Lektion kelimeleri (sadece flashcard kuyruğu değil).
+  /// Kelime sınırı ile eşle — "kommen" ⊂ "willkommen" olmasın.
+  /// Çok kısa token'lar (≤2) atlanır; en fazla 12 kelime.
   List<String> _wordsTouchedByExercise(Exercise ex) {
     final blob = json.encode(ex.payload).toLowerCase();
     final candidates = _allWords.isNotEmpty ? _allWords : _sessionWords;
     final sorted = [...candidates]
       ..sort((a, b) => b.length.compareTo(a.length));
-    return sorted.where((w) => blob.contains(w.toLowerCase())).toList();
+
+    final hit = <String>[];
+    for (final w in sorted) {
+      final wl = w.toLowerCase().trim();
+      if (wl.length <= 2) continue;
+      final escaped = RegExp.escape(wl);
+      final re = RegExp('(?<![a-zäöüß])$escaped(?![a-zäöüß])');
+      if (re.hasMatch(blob)) {
+        hit.add(w);
+        if (hit.length >= 12) break;
+      }
+    }
+    return hit;
   }
 
   Future<void> _finish() async {
     final xpGained = _correct * 10;
-    await progressStore.addXp(xpGained);
-    await progressStore.completeDailyGoal();
+    try {
+      await progressStore.addXp(xpGained);
+      await progressStore.completeDailyGoal();
+    } catch (e) {
+      debugPrint('finish persist: $e');
+    }
     if (!mounted) return;
     await Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -105,6 +170,11 @@ class _SessionScreenState extends State<SessionScreen> {
         ),
       ),
     );
+  }
+
+  void _closeSession() {
+    AudioService.shared.stopIfPlaying();
+    Navigator.of(context).pop();
   }
 
   @override
@@ -122,10 +192,7 @@ class _SessionScreenState extends State<SessionScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: () {
-                AudioService.shared.dispose();
-                Navigator.of(context).pop();
-              },
+              onPressed: _closeSession,
             ),
             Expanded(child: SessionProgressBar(progress)),
           ],

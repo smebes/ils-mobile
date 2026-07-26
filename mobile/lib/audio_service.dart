@@ -6,10 +6,10 @@ import 'package:flutter/foundation.dart';
 import 'audio_web_guard_stub.dart'
     if (dart.library.html) 'audio_web_guard_web.dart' as web_audio;
 
-/// Tek paylaşımlı player — web'de biriken &lt;audio&gt; katmanlarını önler.
+/// Tek paylaşımlı player.
 ///
-/// Tüm await'ler timeout'lu: web'de stop/getDuration asılı kalınca
-/// UI (Prüfen / X) kilitlenmesin.
+/// Kritik: [stop] UI yolunda asla uzun süre bloklamaz (web'de
+/// `AudioPlayer.stop` event loop'u kilitleyebiliyor → Weiter/X ölür).
 class AudioService {
   AudioService._() {
     unawaited(_player.setReleaseMode(ReleaseMode.stop));
@@ -17,7 +17,6 @@ class AudioService {
 
   static final AudioService shared = AudioService._();
 
-  /// Geriye dönük: yeni instance yerine shared kullan.
   factory AudioService() => shared;
 
   final AudioPlayer _player = AudioPlayer();
@@ -67,21 +66,17 @@ class AudioService {
       debugPrint('AudioService.playSequence: $e');
     } finally {
       if (gen == _generation) _playing = false;
-      // finally içinde uzun stop yok — UI'yı bırak
       unawaited(_safeStop());
       web_audio.neutralizeWebAudioElements();
     }
   }
 
-  /// Sadece onPlayerComplete + sert timeout.
-  /// `stopped` dinlenmez: stop() erken bitirip sırayı bozuyordu.
   Future<void> _waitComplete() async {
     final done = Completer<void>();
     void finish() {
       if (!done.isCompleted) done.complete();
     }
 
-    // Timer ÖNCE — getDuration asılı kalsa bile çıkış var
     Timer? softTimer;
     final hardTimer = Timer(const Duration(seconds: 10), () {
       debugPrint('AudioService: clip timeout — devam');
@@ -117,16 +112,27 @@ class AudioService {
     }
   }
 
+  /// İptal sinyali + arka planda stop. Çağıran taraf await etmemeli (UI).
   Future<void> stop() async {
     _generation++;
     _playing = false;
-    await _safeStop();
+    // await yok — web stop senkron kilitlenebiliyor; timeout arka planda
+    unawaited(_safeStop());
+    web_audio.neutralizeWebAudioElements();
+  }
+
+  /// Sadece gerçekten çalıyorsa durdurmayı dene.
+  void stopIfPlaying() {
+    _generation++;
+    final was = _playing;
+    _playing = false;
+    if (was) unawaited(_safeStop());
     web_audio.neutralizeWebAudioElements();
   }
 
   Future<void> _safeStop() async {
     try {
-      await _player.stop().timeout(const Duration(milliseconds: 400));
+      await _player.stop().timeout(const Duration(milliseconds: 300));
     } on TimeoutException {
       debugPrint('AudioService: stop timeout');
     } catch (e) {
@@ -146,12 +152,8 @@ class AudioService {
     }
   }
 
-  /// Shared player: widget dispose'da yok etme, sadece durdur.
   void dispose() {
-    _generation++;
-    _playing = false;
-    unawaited(_safeStop());
-    web_audio.neutralizeWebAudioElements();
+    stopIfPlaying();
   }
 
   String _strip(String p) {

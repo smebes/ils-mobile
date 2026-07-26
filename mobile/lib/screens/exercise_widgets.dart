@@ -385,7 +385,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
 
   Future<void> _play(String speed) async {
     if (_playing) {
-      await _audio.stop();
+      _audio.stopIfPlaying();
       if (mounted) setState(() => _playing = false);
       return;
     }
@@ -419,25 +419,15 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
         );
       }
     } finally {
-      // Ses bitince player'ı bırak + web audio katmanını etkisizleştir
-      try {
-        await _audio.stop();
-      } catch (_) {}
+      _audio.stopIfPlaying();
       if (mounted) setState(() => _playing = false);
     }
   }
 
-  Future<void> _stopAudioQuietly() async {
-    try {
-      await _audio.stop();
-    } catch (_) {}
-    if (mounted && _playing) setState(() => _playing = false);
-  }
-
   @override
   void doCheck() {
-    // stop'u bekleme — asılı kalırsa Prüfen yine çalışsın
-    unawaited(_stopAudioQuietly());
+    _audio.stopIfPlaying();
+    if (mounted && _playing) setState(() => _playing = false);
     if (!canCheck) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -458,7 +448,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
         message: feedbackMessage,
         cta: 'Weiter',
         onNext: () {
-          unawaited(_stopAudioQuietly());
+          _audio.stopIfPlaying();
           onComplete(correct);
         },
       );
@@ -468,7 +458,6 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
       child: SizedBox(
         width: double.infinity,
         child: FilledButton(
-          // canCheck false olsa bile tap yakala (feedback için)
           onPressed: doCheck,
           child: const Text('Prüfen'),
         ),
@@ -478,7 +467,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
 
   @override
   void dispose() {
-    _audio.dispose();
+    _audio.stopIfPlaying();
     super.dispose();
   }
 

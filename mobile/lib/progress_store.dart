@@ -37,10 +37,10 @@ class ProgressStore extends ChangeNotifier {
 
   Map<String, SrEntry> get srEntries => Map.unmodifiable(_sr);
 
-  Future<void> _persistSr() async {
+  Future<void> _persistSr({bool notify = true}) async {
     final map = _sr.map((k, v) => MapEntry(k, v.toJson()));
     await _p?.setString(_kSr, json.encode(map));
-    notifyListeners();
+    if (notify) notifyListeners();
   }
 
   Future<void> addXp(int amount) async {
@@ -63,11 +63,26 @@ class ProgressStore extends ChangeNotifier {
     await _persistSr();
   }
 
+  /// Birden fazla kelime — tek persist (Weiter gecikmesini önler).
+  Future<void> recordAnswersBatch(List<String> words, bool correct) async {
+    if (words.isEmpty) return;
+    final today = _today();
+    for (final wort in words) {
+      final current = _sr[wort] ?? SrEntry.introduced(today);
+      _sr[wort] = applyAnswer(current, correct, today);
+    }
+    await _persistSr();
+  }
+
   /// Oturum sonunda toplu güncelleme (egzersiz kelimeleri).
   Future<void> recordAnswers(Map<String, bool> results) async {
+    if (results.isEmpty) return;
+    final today = _today();
     for (final e in results.entries) {
-      await recordAnswer(e.key, e.value);
+      final current = _sr[e.key] ?? SrEntry.introduced(today);
+      _sr[e.key] = applyAnswer(current, e.value, today);
     }
+    await _persistSr();
   }
 
   /// Hakimiyet = kutu 4–5'teki kelimeler / toplam (PRODUCT.md — "görüldü" değil).
