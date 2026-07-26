@@ -1,0 +1,348 @@
+{
+  "@@locale": "tr",
+  "appTitle": "SprachApp",
+  "tabLearn": "Öğren",
+  "tabReview": "Tekrar",
+  "tabProfile": "Profil",
+  "greetingMorning": "Günaydın",
+  "greetingHello": "Merhaba",
+  "greetingEvening": "İyi akşamlar",
+  "greetingWithName": "{greeting}, {name}!",
+  "@greetingWithName": {
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMinutesEnough": "Bugün Almanca için yaklaşık {minutes} dakikan yeterli.",
+  "@todayMinutesEnough": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "streakDays": "{count} günlük seri",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "levelLabel": "Seviye {level}",
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "xpLabel": "{xp} XP",
+  "@xpLabel": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyGoal": "GÜNLÜK HEDEF",
+  "dailyGoalProgress": "{done} / {total} ders",
+  "@dailyGoalProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyGoalDoneCheck": "{done} / {total} ders ✓",
+  "@dailyGoalDoneCheck": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "goalHintNew": "Bir kısa ders bugünü tamamlar.",
+  "goalHintProgress": "Neredeyse tamam — derse devam et.",
+  "goalHintDone": "Bugünün hedefi tamam. Seri +1.",
+  "todaysLesson": "BUGÜNKÜ DERS",
+  "lessonNumber": "Lektion {id}",
+  "@lessonNumber": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "lessonTitleL1": "Guten Tag! Mein Name ist …",
+  "slice1Title": "Tanışma ve selamlaşma",
+  "slice2Title": "Adım nedir? / İsim",
+  "slice3Title": "Nerelisin? Ülke ve dil",
+  "slice4Title": "Harfler ve heceleme",
+  "slice5Title": "Adres ve kartvizit",
+  "metaLessonLine": "{words} kelime · 1 kısa konuşma · ~{minutes} dakika",
+  "@metaLessonLine": {
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewWaiting": "Tekrar bekleyen: {count}",
+  "@reviewWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readyToStart": "Başlamaya hazır",
+  "lessonProgressPct": "Ders ilerlemesi: %{pct}",
+  "@lessonProgressPct": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "continueLabel": "devam",
+  "sliceFinishedToday": "bugünkü dilim bitti",
+  "ctaStartToday": "Bugünkü derse başla",
+  "ctaContinue": "Kaldığın yerden devam et",
+  "ctaExtraPractice": "Ek pratik yap",
+  "ctaSubNew": "~7 dk · {words} kelime",
+  "@ctaSubNew": {
+    "placeholders": {
+      "words": {
+        "type": "int"
+      }
+    }
+  },
+  "ctaSubProgress": "~4 dk · devam",
+  "ctaSubDone": "+10 XP · kısa tekrar",
+  "lookAtTomorrow": "Yarınki derse bak",
+  "tomorrowQueued": "Yarınki dilim sıraya girecek.",
+  "learningPath": "ÖĞRENME YOLU",
+  "sliceDoneNote": "Tamamlandı · {de}",
+  "@sliceDoneNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceActiveNew": "Bugünkü ders · {de}",
+  "@sliceActiveNew": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceActiveProgress": "Devam ediyor · {de}",
+  "@sliceActiveProgress": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceLockedNote": "Sırada değil · {de}",
+  "@sliceLockedNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceNextNote": "Sıradaki · {de}",
+  "@sliceNextNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceDoneSnack": "Bu dilimi tamamladın. Tekrar sekmesinden pekiştirebilirsin.",
+  "finishTodayFirst": "Önce bugünkü dersi bitir.",
+  "lektionLockedTitle": "Lektion {n} · {title}",
+  "@lektionLockedTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "pathL2Note": "L1 ilerlemen %80 olunca açılır",
+  "pathSoon": "Yakında",
+  "pathTitleL2": "Meine Familie · Ailem",
+  "pathTitleL3": "Einkaufen · Alışveriş",
+  "pathTitleL4": "Meine Wohnung · Evim",
+  "pathTitleL5": "Tagesabläufe · Günlük rutinler",
+  "pathTitleL6": "Freizeit · Boş zaman",
+  "pathTitleL7": "Kinder und Schule · Çocuklar ve okul",
+  "locked": "Kilitli",
+  "preparing": "Hazırlanıyor",
+  "lockMsgL2": "L1 ilerlemen %80 olunca açılır. Kelimeleri tekrar ettikçe bu oran yükselir.",
+  "lockMsgSoon": "Bu bölüm yakında hazır olacak.",
+  "section1Progress": "1. bölüm ilerlemesi",
+  "wordsLeftApprox": "Yaklaşık {count} kelime daha kaldı.",
+  "@wordsLeftApprox": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backToTodayLesson": "Bugünkü derse dön",
+  "ok": "Tamam",
+  "later": "Daha sonra",
+  "dailyGoalDuration": "Günlük hedef süresi",
+  "goalEasy": "Rahat",
+  "goalNormal": "Normal",
+  "goalIntense": "Yoğun",
+  "goalSerious": "Ciddi",
+  "minutesShort": "{m} dk",
+  "@minutesShort": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "loadError": "Yüklenirken hata: {error}",
+  "@loadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingLesson": "Ders yükleniyor…",
+  "reviewTitle": "Tekrar",
+  "reviewSubtitle": "Öğrendiğin kelimeleri unutmadan tazeliyoruz.",
+  "reviewDueToday": "Bugün tekrar etmen gereken {count} kelime var",
+  "@reviewDueToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDueHint": "~3 dakika · doğru bildiğin kelimeler daha seyrek gelir",
+  "startReview": "Tekrara başla",
+  "noReviewYet": "Henüz tekrar yok",
+  "noReviewHint": "Önce kısa bir ders bitir — öğrendiğin kelimeler yarın tekrar için burada olacak.",
+  "startTodaysLesson": "Bugünkü derse başla",
+  "myMistakes": "Hatalarım",
+  "weakWords": "Zayıf kelimeler",
+  "listeningPractice": "Dinleme pratiği",
+  "pronunciation": "Telaffuz",
+  "comingSoon": "Yakında",
+  "mistakesSoon": "Hata defteri yakında.",
+  "weakSoon": "Zayıf kelime listesi yakında.",
+  "studentFallback": "Öğrenci",
+  "profileA1Streak": "Almanca A1 · {days} gündür aralıksız",
+  "@profileA1Streak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "statStreak": "gün seri",
+  "statXp": "XP",
+  "statUnit1": "1. bölüm",
+  "appLanguage": "Uygulama dili",
+  "learningLanguage": "Öğrenme dili",
+  "learningLanguageValue": "Almanca A1",
+  "speakingPractice": "Konuşma alıştırması",
+  "uiLangTr": "Türkçe",
+  "uiLangEn": "İngilizce",
+  "uiLangFr": "Fransızca",
+  "uiLangDe": "Almanca",
+  "chooseAppLanguage": "Uygulama dili",
+  "langChromeHint": "Menüler senin dilinde kalır. Ders içeriği Almanca kalır.",
+  "onboardingNameTitle": "Sana nasıl hitap edelim?",
+  "onboardingNameSub": "Adını sadece selamlamada kullanıyoruz.",
+  "nameHint": "Adın",
+  "nameOptional": "İstersen boş bırak — “Merhaba!” deriz.",
+  "previewLabel": "BÖYLE GÖRÜNECEK",
+  "onboardingLevelTitle": "Almanca ile aran nasıl?",
+  "onboardingLevelSub": "Buna göre nereden başlayacağını ayarlıyoruz.",
+  "levelZero": "Sıfırdan başlıyorum",
+  "levelZeroSub": "Lektion 1, ilk dilimden başlarız",
+  "levelSome": "Biraz Almanca biliyorum",
+  "levelSomeSub": "Kısa bir test ile yerini bulalım · yakında",
+  "levelCourse": "Daha önce kurs aldım",
+  "levelCourseSub": "Bildiğin kelimeleri hızlı geçeriz",
+  "placementSoon": "Seviye testi yakında.",
+  "a1OnlyNote": "Şu an sadece A1 içeriği var. Seçimini sonra Profil’den değiştirebilirsin.",
+  "onboardingGoalTitle": "Günde ne kadar ayırabilirsin?",
+  "onboardingGoalSub": "Sonra Profil’den değiştirebilirsin.",
+  "goalPicked": "Seçtiğin hedef: {minutes} dk\nGünde 1 kısa ders dilimi ≈ 15 kelime.",
+  "@goalPicked": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingArtikelTitle": "Artikel’i renkle öğren",
+  "onboardingArtikelSub": "Almancanın en zor kısmı burada bir renge dönüşüyor. Uygulamanın her yerinde aynı renkler.",
+  "artikelDer": "eril",
+  "artikelDie": "dişil",
+  "artikelDas": "nötr",
+  "trTipNote": "Türkçe konuşanlara özel not: Türkçede “adım Lara” → Almancada Ich heiße Lara.",
+  "continueBtn": "Devam",
+  "letsStart": "Başlayalım",
+  "newWord": "Yeni kelime",
+  "showTranslation": "Çeviriyi göster",
+  "listenTooltip": "Dinle",
+  "pluralLabel": "Plural: die {plural}",
+  "@pluralLabel": {
+    "placeholders": {
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "checkAnswer": "Kontrol et",
+  "answerAllQuestions": "Lütfen tüm soruları cevapla.",
+  "feedbackCorrectDe": "Richtig!",
+  "feedbackAlmostDe": "Fast!",
+  "feedbackCorrectLocal": "Doğru",
+  "feedbackAlmostLocal": "Neredeyse",
+  "resultTitle": "Tebrikler!",
+  "resultDailyDone": "Günlük hedef tamamlandı",
+  "resultExercises": "Alıştırmalar",
+  "resultSuccess": "Başarı",
+  "resultReviewsSaved": "Tekrar için kelimeler kaydedildi 📚\n({count} kelime planında)",
+  "@resultReviewsSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "keepLearning": "Öğrenmeye devam",
+  "audioFailed": "Ses başarısız — lütfen tekrar dene.",
+  "audioCouldNotLoad": "Ses yüklenemedi."
+}

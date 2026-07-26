@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import '../l10n/l10n_ext.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -35,11 +36,12 @@ mixin CheckFlow<T extends StatefulWidget> on State<T> {
   }
 
   Widget buildBottom(ExerciseDone onComplete) {
+    final l10n = context.l10n;
     if (checked) {
       return FeedbackBar(
         correct: correct,
         message: feedbackMessage,
-        cta: 'Devam',
+        cta: l10n.continueBtn,
         onNext: () => onComplete(correct),
       );
     }
@@ -49,7 +51,7 @@ mixin CheckFlow<T extends StatefulWidget> on State<T> {
         width: double.infinity,
         child: FilledButton(
           onPressed: canCheck ? doCheck : null,
-          child: const Text('Kontrol et'),
+          child: Text(l10n.checkAnswer),
         ),
       ),
     );
@@ -410,11 +412,12 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
     } catch (e) {
       debugPrint('Listening play error: $e');
       if (mounted) {
-        setState(() => _audioError = 'Audio konnte nicht geladen werden.');
+        final l10n = context.l10n;
+        setState(() => _audioError = l10n.audioCouldNotLoad);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Audio fehlgeschlagen — bitte erneut versuchen.'),
-            duration: Duration(seconds: 3),
+          SnackBar(
+            content: Text(l10n.audioFailed),
+            duration: const Duration(seconds: 3),
           ),
         );
       }
@@ -430,9 +433,9 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
     if (mounted && _playing) setState(() => _playing = false);
     if (!canCheck) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Lütfen tüm soruları cevapla.'),
-          duration: Duration(seconds: 2),
+        SnackBar(
+          content: Text(context.l10n.answerAllQuestions),
+          duration: const Duration(seconds: 2),
         ),
       );
       return;
@@ -442,11 +445,12 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
 
   @override
   Widget buildBottom(ExerciseDone onComplete) {
+    final l10n = context.l10n;
     if (checked) {
       return FeedbackBar(
         correct: correct,
         message: feedbackMessage,
-        cta: 'Devam',
+        cta: l10n.continueBtn,
         onNext: () {
           _audio.stopIfPlaying();
           onComplete(correct);
@@ -459,7 +463,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
         width: double.infinity,
         child: FilledButton(
           onPressed: doCheck,
-          child: const Text('Kontrol et'),
+          child: Text(l10n.checkAnswer),
         ),
       ),
     );

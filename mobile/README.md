@@ -1,16 +1,23 @@
-# sprachapp
+# SprachApp (mobile)
 
-A new Flutter project.
+**Asıl hedef:** iOS ve Android telefonlar.  
+**Web (`chrome` / `web-server`):** sadece geliştirme sırasında hızlı UI denemesi — ürün dağıtımı değil.
 
-## Getting Started
+## Çalıştırma
 
-This project is a starting point for a Flutter application.
+```bash
+cd mobile
+flutter pub get
 
-A few resources to get you started if this is your first Flutter project:
+# Telefon / simülatör (tercih edilen)
+flutter devices
+flutter run -d <ios|android_device_id>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Sadece hızlı test (ürün değil)
+flutter run -d web-server --web-port=5281 --web-hostname=localhost
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## i18n
+
+Arayüz dili: `tr` / `en` / `fr` (Profil’den).  
+Öğrenme içeriği her zaman Almanca. Ayrıntı: `../docs/I18N.md`.

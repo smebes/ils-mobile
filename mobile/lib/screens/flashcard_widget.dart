@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
+import '../l10n/l10n_ext.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../tts_service.dart';
@@ -45,15 +46,16 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final v = widget.vocab;
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(20, 8, 20, 4),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text('Yeni kelime',
-                style: TextStyle(fontSize: 15, color: AppColors.teal,
+            child: Text(l10n.newWord,
+                style: const TextStyle(fontSize: 15, color: AppColors.teal,
                     fontWeight: FontWeight.w700)),
           ),
         ),
@@ -116,7 +118,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                             icon: const Icon(Icons.volume_up,
                                 color: AppColors.teal, size: 28),
                             onPressed: _speak,
-                            tooltip: 'Vorlesen',
+                            tooltip: l10n.listenTooltip,
                           ),
                         ),
                       ],
@@ -135,7 +137,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                     ],
                     if (v.plural != null) ...[
                       const SizedBox(height: 4),
-                      Text('Plural: die ${v.plural}',
+                      Text(l10n.pluralLabel(v.plural!),
                           style: TextStyle(
                               color: AppColors.navy.withValues(alpha: 0.5))),
                     ],
@@ -147,7 +149,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                     else
                       TextButton(
                         onPressed: () => setState(() => revealed = true),
-                        child: const Text('Çeviriyi göster'),
+                        child: Text(l10n.showTranslation),
                       ),
                   ],
                 ),
@@ -161,7 +163,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
             width: double.infinity,
             child: FilledButton(
               onPressed: _goNext,
-              child: const Text('Devam'),
+              child: Text(l10n.continueBtn),
             ),
           ),
         ),

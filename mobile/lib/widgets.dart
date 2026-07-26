@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'l10n/l10n_ext.dart';
 import 'theme.dart';
 
 /// Vocab (SVG) veya sahne (webp) görselini yol uzantısına göre render eder.
@@ -148,6 +149,7 @@ class FeedbackBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final color = correct ? AppColors.das : AppColors.coral;
     return Container(
       width: double.infinity,
@@ -169,12 +171,16 @@ class FeedbackBar extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    correct ? 'Richtig!' : 'Fast!',
+                    correct
+                        ? l10n.feedbackCorrectDe
+                        : l10n.feedbackAlmostDe,
                     style: TextStyle(
                         color: color, fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                   Text(
-                    correct ? 'Doğru' : 'Neredeyse',
+                    correct
+                        ? l10n.feedbackCorrectLocal
+                        : l10n.feedbackAlmostLocal,
                     style: TextStyle(
                         color: color.withValues(alpha: 0.85),
                         fontSize: 12,

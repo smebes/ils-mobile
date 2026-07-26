@@ -1,0 +1,348 @@
+{
+  "@@locale": "fr",
+  "appTitle": "SprachApp",
+  "tabLearn": "Apprendre",
+  "tabReview": "Réviser",
+  "tabProfile": "Profil",
+  "greetingMorning": "Bonjour",
+  "greetingHello": "Bonjour",
+  "greetingEvening": "Bonsoir",
+  "greetingWithName": "{greeting}, {name} !",
+  "@greetingWithName": {
+    "placeholders": {
+      "greeting": {
+        "type": "String"
+      },
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "todayMinutesEnough": "Environ {minutes} minutes d’allemand suffisent pour aujourd’hui.",
+  "@todayMinutesEnough": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "streakDays": "Série de {count} jours",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "levelLabel": "Niveau {level}",
+  "@levelLabel": {
+    "placeholders": {
+      "level": {
+        "type": "int"
+      }
+    }
+  },
+  "xpLabel": "{xp} XP",
+  "@xpLabel": {
+    "placeholders": {
+      "xp": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyGoal": "OBJECTIF DU JOUR",
+  "dailyGoalProgress": "{done} / {total} leçon",
+  "@dailyGoalProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "dailyGoalDoneCheck": "{done} / {total} leçon ✓",
+  "@dailyGoalDoneCheck": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "goalHintNew": "Une courte leçon complète la journée.",
+  "goalHintProgress": "Presque fini — continue la leçon.",
+  "goalHintDone": "Objectif du jour atteint. Série +1.",
+  "todaysLesson": "LEÇON DU JOUR",
+  "lessonNumber": "Leçon {id}",
+  "@lessonNumber": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "lessonTitleL1": "Guten Tag! Mein Name ist …",
+  "slice1Title": "Salutations et présentations",
+  "slice2Title": "Comment tu t’appelles ?",
+  "slice3Title": "D’où viens-tu ? Pays et langue",
+  "slice4Title": "Lettres et orthographe",
+  "slice5Title": "Adresse et carte de visite",
+  "metaLessonLine": "{words} mots · 1 court dialogue · ~{minutes} min",
+  "@metaLessonLine": {
+    "placeholders": {
+      "words": {
+        "type": "int"
+      },
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewWaiting": "À réviser : {count}",
+  "@reviewWaiting": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "readyToStart": "Prêt à commencer",
+  "lessonProgressPct": "Progression : {pct} %",
+  "@lessonProgressPct": {
+    "placeholders": {
+      "pct": {
+        "type": "int"
+      }
+    }
+  },
+  "continueLabel": "continuer",
+  "sliceFinishedToday": "tranche du jour terminée",
+  "ctaStartToday": "Commencer la leçon du jour",
+  "ctaContinue": "Reprendre où tu en étais",
+  "ctaExtraPractice": "Pratique supplémentaire",
+  "ctaSubNew": "~7 min · {words} mots",
+  "@ctaSubNew": {
+    "placeholders": {
+      "words": {
+        "type": "int"
+      }
+    }
+  },
+  "ctaSubProgress": "~4 min · continuer",
+  "ctaSubDone": "+10 XP · courte révision",
+  "lookAtTomorrow": "Voir la leçon de demain",
+  "tomorrowQueued": "La tranche de demain sera ajoutée.",
+  "learningPath": "PARCOURS",
+  "sliceDoneNote": "Terminé · {de}",
+  "@sliceDoneNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceActiveNew": "Leçon du jour · {de}",
+  "@sliceActiveNew": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceActiveProgress": "En cours · {de}",
+  "@sliceActiveProgress": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceLockedNote": "Pas encore · {de}",
+  "@sliceLockedNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceNextNote": "À suivre · {de}",
+  "@sliceNextNote": {
+    "placeholders": {
+      "de": {
+        "type": "String"
+      }
+    }
+  },
+  "sliceDoneSnack": "Tranche terminée. Renforce-la dans Réviser.",
+  "finishTodayFirst": "Termine d’abord la leçon du jour.",
+  "lektionLockedTitle": "Leçon {n} · {title}",
+  "@lektionLockedTitle": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "pathL2Note": "S’ouvre à 80 % de progression en L1",
+  "pathSoon": "Bientôt",
+  "pathTitleL2": "Meine Familie · Ma famille",
+  "pathTitleL3": "Einkaufen · Courses",
+  "pathTitleL4": "Meine Wohnung · Chez moi",
+  "pathTitleL5": "Tagesabläufe · Routine",
+  "pathTitleL6": "Freizeit · Temps libre",
+  "pathTitleL7": "Kinder und Schule · Enfants et école",
+  "locked": "Verrouillé",
+  "preparing": "Bientôt",
+  "lockMsgL2": "S’ouvre quand ta progression L1 atteint 80 %. Réviser augmente ce taux.",
+  "lockMsgSoon": "Cette unité sera bientôt prête.",
+  "section1Progress": "Progression unité 1",
+  "wordsLeftApprox": "Environ {count} mots restants.",
+  "@wordsLeftApprox": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "backToTodayLesson": "Retour à la leçon du jour",
+  "ok": "OK",
+  "later": "Plus tard",
+  "dailyGoalDuration": "Durée de l’objectif",
+  "goalEasy": "Tranquille",
+  "goalNormal": "Normal",
+  "goalIntense": "Soutenu",
+  "goalSerious": "Sérieux",
+  "minutesShort": "{m} min",
+  "@minutesShort": {
+    "placeholders": {
+      "m": {
+        "type": "int"
+      }
+    }
+  },
+  "loadError": "Erreur de chargement : {error}",
+  "@loadError": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "loadingLesson": "Chargement de la leçon…",
+  "reviewTitle": "Réviser",
+  "reviewSubtitle": "On rafraîchit les mots pour ne pas les oublier.",
+  "reviewDueToday": "Tu as {count} mots à réviser aujourd’hui",
+  "@reviewDueToday": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "reviewDueHint": "~3 minutes · les mots bien connus reviennent moins souvent",
+  "startReview": "Commencer la révision",
+  "noReviewYet": "Pas encore de révision",
+  "noReviewHint": "Termine d’abord une courte leçon — tes mots apparaîtront ici demain.",
+  "startTodaysLesson": "Commencer la leçon du jour",
+  "myMistakes": "Mes erreurs",
+  "weakWords": "Mots faibles",
+  "listeningPractice": "Écoute",
+  "pronunciation": "Prononciation",
+  "comingSoon": "Bientôt",
+  "mistakesSoon": "Le journal d’erreurs arrive bientôt.",
+  "weakSoon": "La liste des mots faibles arrive bientôt.",
+  "studentFallback": "Apprenant",
+  "profileA1Streak": "Allemand A1 · {days} jours d’affilée",
+  "@profileA1Streak": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "statStreak": "jours de série",
+  "statXp": "XP",
+  "statUnit1": "Unité 1",
+  "appLanguage": "Langue de l’app",
+  "learningLanguage": "Langue apprise",
+  "learningLanguageValue": "Allemand A1",
+  "speakingPractice": "Pratique orale",
+  "uiLangTr": "Turc",
+  "uiLangEn": "Anglais",
+  "uiLangFr": "Français",
+  "uiLangDe": "Allemand",
+  "chooseAppLanguage": "Langue de l’app",
+  "langChromeHint": "Les menus restent dans ta langue. Le contenu des leçons reste en allemand.",
+  "onboardingNameTitle": "Comment t’appeler ?",
+  "onboardingNameSub": "On utilise ton prénom seulement pour te saluer.",
+  "nameHint": "Ton prénom",
+  "nameOptional": "Laisse vide si tu préfères — on dira « Bonjour ! »",
+  "previewLabel": "APERÇU",
+  "onboardingLevelTitle": "Où en es-tu en allemand ?",
+  "onboardingLevelSub": "On ajuste ton point de départ.",
+  "levelZero": "Je commence à zéro",
+  "levelZeroSub": "On démarre à la leçon 1, première tranche",
+  "levelSome": "Je connais un peu l’allemand",
+  "levelSomeSub": "Court test de niveau · bientôt",
+  "levelCourse": "J’ai déjà suivi un cours",
+  "levelCourseSub": "On accélère sur les mots connus",
+  "placementSoon": "Le test de niveau arrive bientôt.",
+  "a1OnlyNote": "Seul le contenu A1 est disponible pour l’instant. Tu pourras changer ça dans Profil.",
+  "onboardingGoalTitle": "Combien de temps par jour ?",
+  "onboardingGoalSub": "Tu pourras changer ça plus tard dans Profil.",
+  "goalPicked": "Ton objectif : {minutes} min\nUne courte tranche ≈ 15 mots.",
+  "@goalPicked": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "onboardingArtikelTitle": "Apprends les articles par couleur",
+  "onboardingArtikelSub": "Le plus dur de l’allemand devient une couleur. Les mêmes partout dans l’app.",
+  "artikelDer": "masculin",
+  "artikelDie": "féminin",
+  "artikelDas": "neutre",
+  "trTipNote": "Astuce : au lieu de traduire mot à mot « je m’appelle… », l’allemand utilise souvent Ich heiße … comme formule entière.",
+  "continueBtn": "Continuer",
+  "letsStart": "C’est parti",
+  "newWord": "Nouveau mot",
+  "showTranslation": "Afficher la traduction",
+  "listenTooltip": "Écouter",
+  "pluralLabel": "Pluriel : die {plural}",
+  "@pluralLabel": {
+    "placeholders": {
+      "plural": {
+        "type": "String"
+      }
+    }
+  },
+  "checkAnswer": "Vérifier",
+  "answerAllQuestions": "Réponds à toutes les questions.",
+  "feedbackCorrectDe": "Richtig!",
+  "feedbackAlmostDe": "Fast!",
+  "feedbackCorrectLocal": "Correct",
+  "feedbackAlmostLocal": "Presque",
+  "resultTitle": "Bravo !",
+  "resultDailyDone": "Objectif du jour atteint",
+  "resultExercises": "Exercices",
+  "resultSuccess": "Réussite",
+  "resultReviewsSaved": "Mots enregistrés pour révision 📚\n({count} dans ton plan)",
+  "@resultReviewsSaved": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "keepLearning": "Continuer à apprendre",
+  "audioFailed": "Audio échoué — réessaie.",
+  "audioCouldNotLoad": "Impossible de charger l’audio."
+}

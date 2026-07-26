@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'sr_engine.dart';
 
@@ -13,6 +14,7 @@ class ProgressStore extends ChangeNotifier {
   static const _kDailyGoalMin = 'daily_goal_min';
   static const _kOnboarding = 'onboarding_done';
   static const _kActiveSlice = 'active_slice';
+  static const _kUiLocale = 'ui_locale';
 
   SharedPreferences? _p;
   final Map<String, SrEntry> _sr = {};
@@ -38,6 +40,24 @@ class ProgressStore extends ChangeNotifier {
   int get streak => _p?.getInt(_kStreak) ?? 0;
   int get xp => _p?.getInt(_kXp) ?? 0;
   int get level => 1 + xp ~/ 100;
+
+  /// UI chrome dili: tr | en | fr (içerik her zaman de-DE).
+  String get uiLocaleCode {
+    final saved = _p?.getString(_kUiLocale);
+    if (saved != null && saved.isNotEmpty) return saved;
+    final platform = PlatformDispatcher.instance.locale.languageCode;
+    if (platform == 'tr' || platform == 'fr' || platform == 'en') {
+      return platform;
+    }
+    return 'en';
+  }
+
+  Locale get uiLocale => Locale(uiLocaleCode);
+
+  Future<void> setUiLocale(String code) async {
+    await _p?.setString(_kUiLocale, code);
+    notifyListeners();
+  }
 
   String? get userName {
     final n = _p?.getString(_kUserName);

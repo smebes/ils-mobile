@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../theme.dart';
 
@@ -40,6 +41,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -69,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 width: double.infinity,
                 child: FilledButton(
                   onPressed: _next,
-                  child: Text(_step == 3 ? 'Başlayalım' : 'Devam'),
+                  child: Text(_step == 3 ? l10n.letsStart : l10n.continueBtn),
                 ),
               ),
             ],
@@ -93,15 +95,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _nameStep() {
-    final preview = _nameCtrl.text.trim().isEmpty
-        ? 'Merhaba!'
-        : 'Günaydın, ${_nameCtrl.text.trim()}!';
+    final l10n = context.l10n;
+    final name = _nameCtrl.text.trim();
+    final preview = name.isEmpty
+        ? '${l10n.greetingHello}!'
+        : l10n.greetingWithName(l10n.greetingMorning, name);
     return ListView(
       children: [
-        const Text('Sana nasıl hitap edelim?',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
+        Text(l10n.onboardingNameTitle,
+            style: const TextStyle(
+                fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
         const SizedBox(height: 8),
-        Text('Adını sadece selamlamada kullanıyoruz.',
+        Text(l10n.onboardingNameSub,
             style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
@@ -112,7 +117,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           onChanged: (_) => setState(() {}),
           style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w800),
           decoration: InputDecoration(
-            hintText: 'Adın',
+            hintText: l10n.nameHint,
             filled: true,
             fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
@@ -127,7 +132,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           ),
         ),
         const SizedBox(height: 10),
-        Text('İstersen boş bırak — “Merhaba!” deriz.',
+        Text(l10n.nameOptional,
             style: TextStyle(
                 fontSize: 13,
                 color: AppColors.navy.withValues(alpha: 0.45))),
@@ -139,7 +144,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('BÖYLE GÖRÜNECEK',
+              Text(l10n.previewLabel,
                   style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
@@ -150,7 +155,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   style: const TextStyle(
                       fontSize: 21, fontWeight: FontWeight.w800)),
               Text(
-                'Bugün Almanca için yaklaşık 7 dakikan yeterli.',
+                l10n.todayMinutesEnough(7),
                 style: TextStyle(
                     fontSize: 14,
                     color: AppColors.navy.withValues(alpha: 0.6)),
@@ -163,6 +168,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _levelStep() {
+    final l10n = context.l10n;
     Widget card(String id, String title, String sub, {bool soon = false}) {
       final sel = _level == id;
       return Padding(
@@ -172,9 +178,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           onTap: soon
               ? () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content: Text('Seviye testi yakında.'),
-                        duration: Duration(seconds: 2)),
+                    SnackBar(
+                        content: Text(l10n.placementSoon),
+                        duration: const Duration(seconds: 2)),
                   );
                 }
               : () => setState(() => _level = id),
@@ -213,22 +219,19 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return ListView(
       children: [
-        const Text('Almanca ile aran nasıl?',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
+        Text(l10n.onboardingLevelTitle,
+            style: const TextStyle(
+                fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
         const SizedBox(height: 8),
-        Text('Buna göre nereden başlayacağını ayarlıyoruz.',
+        Text(l10n.onboardingLevelSub,
             style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
                 color: AppColors.navy.withValues(alpha: 0.6))),
         const SizedBox(height: 22),
-        card('zero', 'Sıfırdan başlıyorum',
-            'Lektion 1, ilk dilimden başlarız'),
-        card('some', 'Biraz Almanca biliyorum',
-            'Kısa bir test ile yerini bulalım · yakında',
-            soon: true),
-        card('course', 'Daha önce kurs aldım',
-            'Bildiğin kelimeleri hızlı geçeriz'),
+        card('zero', l10n.levelZero, l10n.levelZeroSub),
+        card('some', l10n.levelSome, l10n.levelSomeSub, soon: true),
+        card('course', l10n.levelCourse, l10n.levelCourseSub),
         Container(
           margin: const EdgeInsets.only(top: 10),
           padding: const EdgeInsets.all(16),
@@ -237,7 +240,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            'Şu an sadece A1 içeriği var. Seçimini sonra Profil’den değiştirebilirsin.',
+            l10n.a1OnlyNote,
             style: TextStyle(
                 fontSize: 13,
                 height: 1.5,
@@ -249,18 +252,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _goalStep() {
+    final l10n = context.l10n;
     final opts = [
-      (5, 'Rahat'),
-      (10, 'Normal'),
-      (15, 'Yoğun'),
-      (20, 'Ciddi'),
+      (5, l10n.goalEasy),
+      (10, l10n.goalNormal),
+      (15, l10n.goalIntense),
+      (20, l10n.goalSerious),
     ];
     return ListView(
       children: [
-        const Text('Günde ne kadar ayırabilirsin?',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
+        Text(l10n.onboardingGoalTitle,
+            style: const TextStyle(
+                fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
         const SizedBox(height: 8),
-        Text('Sonra Profil’den değiştirebilirsin.',
+        Text(l10n.onboardingGoalSub,
             style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
@@ -292,7 +297,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   child: Column(
                     children: [
-                      Text('${o.$1} dk',
+                      Text(l10n.minutesShort(o.$1),
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w800)),
                       Text(o.$2,
@@ -314,7 +319,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            'Seçtiğin hedef: $_goal dk\nGünde 1 kısa ders dilimi ≈ 15 kelime.',
+            l10n.goalPicked(_goal),
             style: TextStyle(
                 fontSize: 13,
                 height: 1.5,
@@ -326,6 +331,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 
   Widget _artikelStep() {
+    final l10n = context.l10n;
     Widget col(String a, String label, Color c) => Expanded(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
@@ -351,11 +357,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return ListView(
       children: [
-        const Text('Artikel’i renkle öğren',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
+        Text(l10n.onboardingArtikelTitle,
+            style: const TextStyle(
+                fontSize: 28, fontWeight: FontWeight.w800, height: 1.2)),
         const SizedBox(height: 8),
         Text(
-          'Almancanın en zor kısmı burada bir renge dönüşüyor. Uygulamanın her yerinde aynı renkler.',
+          l10n.onboardingArtikelSub,
           style: TextStyle(
               fontSize: 15,
               height: 1.5,
@@ -364,11 +371,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         const SizedBox(height: 22),
         Row(
           children: [
-            col('der', 'eril', AppColors.der),
+            col('der', l10n.artikelDer, AppColors.der),
             const SizedBox(width: 8),
-            col('die', 'dişil', AppColors.die),
+            col('die', l10n.artikelDie, AppColors.die),
             const SizedBox(width: 8),
-            col('das', 'nötr', AppColors.das),
+            col('das', l10n.artikelDas, AppColors.das),
           ],
         ),
         const SizedBox(height: 18),
@@ -413,7 +420,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
-            'Türkçe konuşanlara özel not: Türkçede “adım Lara” → Almancada Ich heiße Lara.',
+            l10n.trTipNote,
             style: TextStyle(
                 fontSize: 13,
                 height: 1.5,

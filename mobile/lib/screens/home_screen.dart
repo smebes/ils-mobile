@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import '../l10n/app_localizations.dart';
+import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -6,23 +8,55 @@ import '../widgets.dart';
 import 'onboarding_screen.dart';
 import 'session_screen.dart';
 
-/// L1 dilimleri — Prototype v2 / Home_v2_Spec
+/// L1 dilimleri — (n, deCode); başlık l10n.sliceNTitle ile çözülür.
 const kL1Slices = [
-  (1, 'Tanışma ve selamlaşma', 'Folge + Schritt A'),
-  (2, 'Adım nedir? / İsim', 'Schritt B'),
-  (3, 'Nerelisin? Ülke ve dil', 'Schritt C'),
-  (4, 'Harfler ve heceleme', 'Schritt D'),
-  (5, 'Adres ve kartvizit', 'Schritt E'),
+  (1, 'Folge + Schritt A'),
+  (2, 'Schritt B'),
+  (3, 'Schritt C'),
+  (4, 'Schritt D'),
+  (5, 'Schritt E'),
 ];
 
-const kLockedPath = [
-  (2, 'Meine Familie · Ailem', 'L1 ilerlemen %80 olunca açılır'),
-  (3, 'Einkaufen · Alışveriş', 'Yakında'),
-  (4, 'Meine Wohnung · Evim', 'Yakında'),
-  (5, 'Tagesabläufe · Günlük rutinler', 'Yakında'),
-  (6, 'Freizeit · Boş zaman', 'Yakında'),
-  (7, 'Kinder und Schule · Çocuklar ve okul', 'Yakında'),
-];
+const kLockedPathNs = [2, 3, 4, 5, 6, 7];
+
+String sliceTitle(AppLocalizations l10n, int n) {
+  switch (n) {
+    case 1:
+      return l10n.slice1Title;
+    case 2:
+      return l10n.slice2Title;
+    case 3:
+      return l10n.slice3Title;
+    case 4:
+      return l10n.slice4Title;
+    case 5:
+      return l10n.slice5Title;
+    default:
+      return '';
+  }
+}
+
+String pathTitle(AppLocalizations l10n, int n) {
+  switch (n) {
+    case 2:
+      return l10n.pathTitleL2;
+    case 3:
+      return l10n.pathTitleL3;
+    case 4:
+      return l10n.pathTitleL4;
+    case 5:
+      return l10n.pathTitleL5;
+    case 6:
+      return l10n.pathTitleL6;
+    case 7:
+      return l10n.pathTitleL7;
+    default:
+      return '';
+  }
+}
+
+String pathNote(AppLocalizations l10n, int n) =>
+    n == 2 ? l10n.pathL2Note : l10n.pathSoon;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,15 +92,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  String _greeting() {
+  String _greeting(AppLocalizations l10n) {
     final name = progressStore.userName;
     final hour = DateTime.now().hour;
     final hi = hour < 12
-        ? 'Günaydın'
+        ? l10n.greetingMorning
         : hour < 18
-            ? 'Merhaba'
-            : 'İyi akşamlar';
-    return name == null ? '$hi!' : '$hi, $name!';
+            ? l10n.greetingHello
+            : l10n.greetingEvening;
+    return name == null ? '$hi!' : l10n.greetingWithName(hi, name);
   }
 
   @override
@@ -74,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListenableBuilder(
       listenable: progressStore,
       builder: (context, _) {
+        final l10n = context.l10n;
         if (!progressStore.onboardingDone) {
           return OnboardingScreen(
             onDone: () => setState(() {}),
@@ -84,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
             body: Center(
               child: Padding(
                 padding: const EdgeInsets.all(32),
-                child: Text('Yüklenirken hata: $_error',
+                child: Text(l10n.loadError(_error!),
                     textAlign: TextAlign.center),
               ),
             ),
@@ -99,7 +134,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const CircularProgressIndicator(color: AppColors.teal),
                   const SizedBox(height: 16),
-                  Text('Ders yükleniyor…',
+                  Text(l10n.loadingLesson,
                       style: TextStyle(
                           color: AppColors.navy.withValues(alpha: 0.7),
                           fontWeight: FontWeight.w600)),
@@ -121,13 +156,13 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 _LearnTab(
                   lektion: l,
-                  greeting: _greeting(),
+                  greeting: _greeting(l10n),
                   dueCount: due,
                   mastery: mastery,
                   mastered: mastered,
                   onStart: _startSession,
-                  onLockedLesson: (n, title, note) =>
-                      _showLockSheet(n, title, note, mastery, mastered),
+                  onLockedLesson: (n) =>
+                      _showLockSheet(n, mastery, mastered),
                 ),
                 _ReviewTab(
                   dueCount: due,
@@ -153,13 +188,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _showLockSheet(
-    int n,
-    String title,
-    String note,
-    double mastery,
-    int mastered,
-  ) {
+  void _showLockSheet(int n, double mastery, int mastered) {
+    final l10n = context.l10n;
+    final title = pathTitle(l10n, n);
     final isL2 = n == 2;
     showModalBottomSheet<void>(
       context: context,
@@ -205,7 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Text('$n. $title',
                             style: const TextStyle(
                                 fontSize: 19, fontWeight: FontWeight.w800)),
-                        Text(isL2 ? 'Kilitli' : 'Hazırlanıyor',
+                        Text(isL2 ? l10n.locked : l10n.preparing,
                             style: TextStyle(
                                 fontSize: 13,
                                 color:
@@ -217,9 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                isL2
-                    ? 'L1 ilerlemen %80 olunca açılır. Kelimeleri tekrar ettikçe bu oran yükselir.'
-                    : 'Bu bölüm yakında hazır olacak.',
+                isL2 ? l10n.lockMsgL2 : l10n.lockMsgSoon,
                 style: TextStyle(
                     fontSize: 14.5,
                     height: 1.5,
@@ -240,8 +269,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('1. bölüm ilerlemesi',
-                              style: TextStyle(
+                          Text(l10n.section1Progress,
+                              style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.w700)),
                           Text(
                             '${(mastery * 100).round()}% / 80%',
@@ -256,7 +285,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       SessionProgressBar(mastery.clamp(0, 1)),
                       const SizedBox(height: 10),
                       Text(
-                        'Yaklaşık ${(48 - mastered).clamp(0, 60)} kelime daha kaldı.',
+                        l10n.wordsLeftApprox((48 - mastered).clamp(0, 60)),
                         style: TextStyle(
                             fontSize: 12.5,
                             color: AppColors.navy.withValues(alpha: 0.55)),
@@ -273,12 +302,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.pop(ctx);
                     if (isL2) _startSession();
                   },
-                  child: Text(isL2 ? 'Bugünkü derse dön' : 'Tamam'),
+                  child: Text(isL2 ? l10n.backToTodayLesson : l10n.ok),
                 ),
               ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
-                child: Text('Daha sonra',
+                child: Text(l10n.later,
                     style: TextStyle(
                         color: AppColors.navy.withValues(alpha: 0.5),
                         fontWeight: FontWeight.w700)),
@@ -291,24 +320,31 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _editGoal() {
+    final l10n = context.l10n;
     showModalBottomSheet<void>(
       context: context,
       builder: (ctx) {
         final options = [5, 10, 15, 20];
-        final labels = ['Rahat', 'Normal', 'Yoğun', 'Ciddi'];
+        final labels = [
+          l10n.goalEasy,
+          l10n.goalNormal,
+          l10n.goalIntense,
+          l10n.goalSerious,
+        ];
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('Günlük hedef süresi',
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(l10n.dailyGoalDuration,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w800)),
               ),
               for (var i = 0; i < options.length; i++)
                 ListTile(
-                  title: Text('${options[i]} dk · ${labels[i]}'),
+                  title: Text(
+                      '${l10n.minutesShort(options[i])} · ${labels[i]}'),
                   trailing: progressStore.dailyGoalMinutes == options[i]
                       ? const Icon(Icons.check, color: AppColors.teal)
                       : null,
@@ -332,10 +368,11 @@ class _BottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const items = [
-      (Icons.school_outlined, 'Öğren'),
-      (Icons.replay_outlined, 'Tekrar'),
-      (Icons.person_outline, 'Profil'),
+    final l10n = context.l10n;
+    final items = [
+      (Icons.school_outlined, l10n.tabLearn),
+      (Icons.replay_outlined, l10n.tabReview),
+      (Icons.person_outline, l10n.tabProfile),
     ];
     return Material(
       elevation: 0,
@@ -397,7 +434,7 @@ class _LearnTab extends StatelessWidget {
   final double mastery;
   final int mastered;
   final VoidCallback onStart;
-  final void Function(int n, String title, String note) onLockedLesson;
+  final void Function(int n) onLockedLesson;
 
   const _LearnTab({
     required this.lektion,
@@ -411,6 +448,7 @@ class _LearnTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final phase = progressStore.homePhase;
     final slice = progressStore.activeSlice;
     final goalDone = phase == 'done';
@@ -419,15 +457,15 @@ class _LearnTab extends StatelessWidget {
         .length;
 
     final ctaLabel = phase == 'new'
-        ? 'Bugünkü derse başla'
+        ? l10n.ctaStartToday
         : phase == 'progress'
-            ? 'Kaldığın yerden devam et'
-            : 'Ek pratik yap';
+            ? l10n.ctaContinue
+            : l10n.ctaExtraPractice;
     final ctaSub = phase == 'new'
-        ? '~7 dk · $queueSize kelime'
+        ? l10n.ctaSubNew(queueSize)
         : phase == 'progress'
-            ? '~4 dk · devam'
-            : '+10 XP · kısa tekrar';
+            ? l10n.ctaSubProgress
+            : l10n.ctaSubDone;
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -436,7 +474,7 @@ class _LearnTab extends StatelessWidget {
             style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
         const SizedBox(height: 4),
         Text(
-          'Bugün Almanca için yaklaşık ${progressStore.dailyGoalMinutes} dakikan yeterli.',
+          l10n.todayMinutesEnough(progressStore.dailyGoalMinutes),
           style: TextStyle(
               fontSize: 14.5,
               height: 1.45,
@@ -447,15 +485,15 @@ class _LearnTab extends StatelessWidget {
           spacing: 7,
           runSpacing: 7,
           children: [
-            _statPill('${progressStore.streak} günlük seri', AppColors.coral),
-            _statPill('Seviye ${progressStore.level}', AppColors.mustard),
-            _statPill('${progressStore.xp} XP', AppColors.teal),
+            _statPill(l10n.streakDays(progressStore.streak), AppColors.coral),
+            _statPill(l10n.levelLabel(progressStore.level), AppColors.mustard),
+            _statPill(l10n.xpLabel(progressStore.xp), AppColors.teal),
           ],
         ),
         const SizedBox(height: 14),
-        _goalCard(goalDone),
+        _goalCard(context, goalDone),
         const SizedBox(height: 14),
-        _todayLessonCard(phase, dueCount),
+        _todayLessonCard(context, phase, dueCount),
         const SizedBox(height: 14),
         SizedBox(
           width: double.infinity,
@@ -477,9 +515,9 @@ class _LearnTab extends StatelessWidget {
           OutlinedButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                    content: Text('Yarınki dilim sıraya girecek.'),
-                    duration: Duration(seconds: 2)),
+                SnackBar(
+                    content: Text(l10n.tomorrowQueued),
+                    duration: const Duration(seconds: 2)),
               );
             },
             style: OutlinedButton.styleFrom(
@@ -489,13 +527,13 @@ class _LearnTab extends StatelessWidget {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18)),
             ),
-            child: const Text('Yarınki derse bak',
-                style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(l10n.lookAtTomorrow,
+                style: const TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
         const SizedBox(height: 24),
         Text(
-          'ÖĞRENME YOLU',
+          l10n.learningPath,
           style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w800,
@@ -505,6 +543,7 @@ class _LearnTab extends StatelessWidget {
         const SizedBox(height: 10),
         ...kL1Slices.map((s) {
           final n = s.$1;
+          final de = s.$2;
           final st = n < slice
               ? 'done'
               : n == slice
@@ -512,14 +551,14 @@ class _LearnTab extends StatelessWidget {
                   : 'next';
           final locked = n > slice + 1;
           final note = st == 'done'
-              ? 'Tamamlandı · ${s.$3}'
+              ? l10n.sliceDoneNote(de)
               : st == 'active'
                   ? (phase == 'new'
-                      ? 'Bugünkü ders · ${s.$3}'
-                      : 'Devam ediyor · ${s.$3}')
+                      ? l10n.sliceActiveNew(de)
+                      : l10n.sliceActiveProgress(de))
                   : locked
-                      ? 'Sırada değil · ${s.$3}'
-                      : 'Sıradaki · ${s.$3}';
+                      ? l10n.sliceLockedNote(de)
+                      : l10n.sliceNextNote(de);
           return Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: InkWell(
@@ -531,8 +570,8 @@ class _LearnTab extends StatelessWidget {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(st == 'done'
-                          ? 'Bu dilimi tamamladın. Tekrar sekmesinden pekiştirebilirsin.'
-                          : 'Önce bugünkü dersi bitir.'),
+                          ? l10n.sliceDoneSnack
+                          : l10n.finishTodayFirst),
                       duration: const Duration(seconds: 2),
                     ),
                   );
@@ -581,7 +620,7 @@ class _LearnTab extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('$n. ${s.$2}',
+                            Text('$n. ${sliceTitle(l10n, n)}',
                                 style: const TextStyle(
                                     fontSize: 15.5,
                                     fontWeight: FontWeight.w800)),
@@ -607,13 +646,13 @@ class _LearnTab extends StatelessWidget {
         const SizedBox(height: 8),
         Divider(color: AppColors.navy.withValues(alpha: 0.08)),
         const SizedBox(height: 8),
-        ...kLockedPath.map((p) => Padding(
+        ...kLockedPathNs.map((n) => Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: InkWell(
                 borderRadius: BorderRadius.circular(20),
-                onTap: () => onLockedLesson(p.$1, p.$2, p.$3),
+                onTap: () => onLockedLesson(n),
                 child: Opacity(
-                  opacity: p.$1 == 2 ? 0.75 : 0.45,
+                  opacity: n == 2 ? 0.75 : 0.45,
                   child: Container(
                     padding: const EdgeInsets.all(15),
                     decoration: cardDecoration(),
@@ -635,11 +674,13 @@ class _LearnTab extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Lektion ${p.$1} · ${p.$2}',
+                              Text(
+                                  l10n.lektionLockedTitle(
+                                      n, pathTitle(l10n, n)),
                                   style: const TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.w800)),
-                              Text(p.$3,
+                              Text(pathNote(l10n, n),
                                   style: TextStyle(
                                       fontSize: 12.5,
                                       color: AppColors.navy
@@ -657,7 +698,8 @@ class _LearnTab extends StatelessWidget {
     );
   }
 
-  Widget _goalCard(bool done) {
+  Widget _goalCard(BuildContext context, bool done) {
+    final l10n = context.l10n;
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 16, 18, 16),
       decoration: cardDecoration(),
@@ -667,14 +709,16 @@ class _LearnTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('GÜNLÜK HEDEF',
+              Text(l10n.dailyGoal,
                   style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.1,
                       color: AppColors.navy.withValues(alpha: 0.5))),
               Text(
-                done ? '1 / 1 ders ✓' : '0 / 1 ders',
+                done
+                    ? l10n.dailyGoalDoneCheck(1, 1)
+                    : l10n.dailyGoalProgress(0, 1),
                 style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: FontWeight.w800,
@@ -705,10 +749,10 @@ class _LearnTab extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             progressStore.homePhase == 'new'
-                ? 'Bir kısa ders bugünü tamamlar.'
+                ? l10n.goalHintNew
                 : progressStore.homePhase == 'progress'
-                    ? 'Neredeyse tamam — derse devam et.'
-                    : 'Bugünün hedefi tamam. Seri +1.',
+                    ? l10n.goalHintProgress
+                    : l10n.goalHintDone,
             style: TextStyle(
                 fontSize: 13,
                 height: 1.4,
@@ -719,8 +763,10 @@ class _LearnTab extends StatelessWidget {
     );
   }
 
-  Widget _todayLessonCard(String phase, int due) {
+  Widget _todayLessonCard(BuildContext context, String phase, int due) {
+    final l10n = context.l10n;
     final pct = phase == 'done' ? 100 : phase == 'progress' ? 60 : 0;
+    final activeTitle = sliceTitle(l10n, progressStore.activeSlice);
     return Container(
       decoration: cardDecoration(),
       clipBehavior: Clip.antiAlias,
@@ -752,8 +798,8 @@ class _LearnTab extends StatelessWidget {
                       color: AppColors.navy.withValues(alpha: 0.45),
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    child: const Text('BUGÜNKÜ DERS',
-                        style: TextStyle(
+                    child: Text(l10n.todaysLesson,
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 11,
                             fontWeight: FontWeight.w800,
@@ -768,32 +814,32 @@ class _LearnTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Lektion ${lektion.id}',
+                Text(l10n.lessonNumber(lektion.id),
                     style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700,
                         color: AppColors.navy.withValues(alpha: 0.5))),
                 const SizedBox(height: 3),
-                const Text('Guten Tag! Mein Name ist …',
-                    style: TextStyle(
+                Text(l10n.lessonTitleL1,
+                    style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
                         height: 1.25)),
                 const SizedBox(height: 5),
-                const Text('Tanışma ve selamlaşma',
-                    style: TextStyle(
+                Text(activeTitle,
+                    style: const TextStyle(
                         fontSize: 14.5,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF1F7268))),
                 const SizedBox(height: 12),
                 Text(
-                  '15 kelime · 1 kısa konuşma · ~${progressStore.dailyGoalMinutes} dakika',
+                  l10n.metaLessonLine(15, progressStore.dailyGoalMinutes),
                   style: TextStyle(
                       fontSize: 14,
                       color: AppColors.navy.withValues(alpha: 0.6)),
                 ),
                 Text(
-                  'Tekrar bekleyen: $due',
+                  l10n.reviewWaiting(due),
                   style: TextStyle(
                       fontSize: 14,
                       color: AppColors.navy.withValues(alpha: 0.6)),
@@ -806,8 +852,8 @@ class _LearnTab extends StatelessWidget {
                   children: [
                     Text(
                       phase == 'new'
-                          ? 'Başlamaya hazır'
-                          : 'Ders ilerlemesi: %$pct',
+                          ? l10n.readyToStart
+                          : l10n.lessonProgressPct(pct),
                       style: TextStyle(
                           fontSize: 13.5,
                           fontWeight: FontWeight.w700,
@@ -816,13 +862,13 @@ class _LearnTab extends StatelessWidget {
                               : AppColors.teal),
                     ),
                     if (phase == 'progress')
-                      Text('devam',
+                      Text(l10n.continueLabel,
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
                               color: AppColors.navy.withValues(alpha: 0.45))),
                     if (phase == 'done')
-                      Text('bugünkü dilim bitti',
+                      Text(l10n.sliceFinishedToday,
                           style: TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -892,15 +938,16 @@ class _ReviewTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final hasReview = dueCount > 0;
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       children: [
-        const Text('Tekrar',
-            style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
+        Text(l10n.reviewTitle,
+            style: const TextStyle(fontSize: 26, fontWeight: FontWeight.w800)),
         const SizedBox(height: 4),
         Text(
-          'Öğrendiğin kelimeleri unutmadan tazeliyoruz.',
+          l10n.reviewSubtitle,
           style: TextStyle(
               fontSize: 14.5, color: AppColors.navy.withValues(alpha: 0.6)),
         ),
@@ -913,13 +960,13 @@ class _ReviewTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Bugün tekrar etmen gereken $dueCount kelime var',
+                  l10n.reviewDueToday(dueCount),
                   style: const TextStyle(
                       fontSize: 19, fontWeight: FontWeight.w800, height: 1.3),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  '~3 dakika · doğru bildiğin kelimeler daha seyrek gelir',
+                  l10n.reviewDueHint,
                   style: TextStyle(
                       fontSize: 13.5,
                       color: AppColors.navy.withValues(alpha: 0.55)),
@@ -929,7 +976,7 @@ class _ReviewTab extends StatelessWidget {
                   width: double.infinity,
                   child: FilledButton(
                     onPressed: onStartReview,
-                    child: const Text('Tekrara başla'),
+                    child: Text(l10n.startReview),
                   ),
                 ),
               ],
@@ -953,12 +1000,12 @@ class _ReviewTab extends StatelessWidget {
                       color: AppColors.navy.withValues(alpha: 0.35)),
                 ),
                 const SizedBox(height: 16),
-                const Text('Henüz tekrar yok',
-                    style:
-                        TextStyle(fontSize: 19, fontWeight: FontWeight.w800)),
+                Text(l10n.noReviewYet,
+                    style: const TextStyle(
+                        fontSize: 19, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 6),
                 Text(
-                  'Önce kısa bir ders bitir — öğrendiğin kelimeler yarın tekrar için burada olacak.',
+                  l10n.noReviewHint,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 14,
@@ -978,8 +1025,8 @@ class _ReviewTab extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),
                     ),
-                    child: const Text('Bugünkü derse başla',
-                        style: TextStyle(fontWeight: FontWeight.w800)),
+                    child: Text(l10n.startTodaysLesson,
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
                   ),
                 ),
               ],
@@ -990,23 +1037,23 @@ class _ReviewTab extends StatelessWidget {
           decoration: cardDecoration(),
           child: Column(
             children: [
-              _row('Hatalarım', 'Yakında', AppColors.coral, () {
+              _row(l10n.myMistakes, l10n.comingSoon, AppColors.coral, () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Hata defteri yakında.'),
-                      duration: Duration(seconds: 2)),
+                  SnackBar(
+                      content: Text(l10n.mistakesSoon),
+                      duration: const Duration(seconds: 2)),
                 );
               }),
-              _row('Zayıf kelimeler', 'Yakında', AppColors.teal, () {
+              _row(l10n.weakWords, l10n.comingSoon, AppColors.teal, () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content: Text('Zayıf kelime listesi yakında.'),
-                      duration: Duration(seconds: 2)),
+                  SnackBar(
+                      content: Text(l10n.weakSoon),
+                      duration: const Duration(seconds: 2)),
                 );
               }),
-              _row('Dinleme pratiği', 'Yakında',
+              _row(l10n.listeningPractice, l10n.comingSoon,
                   AppColors.navy.withValues(alpha: 0.45), () {}),
-              _row('Telaffuz', 'Yakında',
+              _row(l10n.pronunciation, l10n.comingSoon,
                   AppColors.navy.withValues(alpha: 0.45), () {},
                   last: true),
             ],
@@ -1053,9 +1100,67 @@ class _ProfileTab extends StatelessWidget {
   final VoidCallback onEditGoal;
   const _ProfileTab({required this.mastery, required this.onEditGoal});
 
+  String _uiLangLabel(AppLocalizations l10n) {
+    switch (progressStore.uiLocaleCode) {
+      case 'tr':
+        return l10n.uiLangTr;
+      case 'fr':
+        return l10n.uiLangFr;
+      default:
+        return l10n.uiLangEn;
+    }
+  }
+
+  void _pickLanguage(BuildContext context) {
+    final l10n = context.l10n;
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (ctx) {
+        final options = [
+          ('tr', l10n.uiLangTr),
+          ('en', l10n.uiLangEn),
+          ('fr', l10n.uiLangFr),
+        ];
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(l10n.chooseAppLanguage,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w800)),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                child: Text(l10n.langChromeHint,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.navy.withValues(alpha: 0.55))),
+              ),
+              for (final o in options)
+                ListTile(
+                  title: Text(o.$2),
+                  trailing: progressStore.uiLocaleCode == o.$1
+                      ? const Icon(Icons.check, color: AppColors.teal)
+                      : null,
+                  onTap: () async {
+                    await progressStore.setUiLocale(o.$1);
+                    if (ctx.mounted) Navigator.pop(ctx);
+                  },
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final name = progressStore.userName ?? 'Öğrenci';
+    final l10n = context.l10n;
+    final name = progressStore.userName ?? l10n.studentFallback;
     final initial = name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?';
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -1084,7 +1189,7 @@ class _ProfileTab extends StatelessWidget {
                       style: const TextStyle(
                           fontSize: 24, fontWeight: FontWeight.w800)),
                   Text(
-                    'Almanca A1 · ${progressStore.streak} gündür aralıksız',
+                    l10n.profileA1Streak(progressStore.streak),
                     style: TextStyle(
                         fontSize: 13.5,
                         color: AppColors.navy.withValues(alpha: 0.55)),
@@ -1098,16 +1203,16 @@ class _ProfileTab extends StatelessWidget {
         Row(
           children: [
             Expanded(
-                child: _statCard(
-                    '🔥', '${progressStore.streak}', 'gün seri', AppColors.coral)),
+                child: _statCard('🔥', '${progressStore.streak}',
+                    l10n.statStreak, AppColors.coral)),
             const SizedBox(width: 8),
             Expanded(
-                child: _statCard(
-                    '⭐', '${progressStore.xp}', 'XP', const Color(0xFF8A6A16))),
+                child: _statCard('⭐', '${progressStore.xp}', l10n.statXp,
+                    const Color(0xFF8A6A16))),
             const SizedBox(width: 8),
             Expanded(
                 child: _statCard('📈', '${(mastery * 100).round()}%',
-                    '1. bölüm', AppColors.teal)),
+                    l10n.statUnit1, AppColors.teal)),
           ],
         ),
         const SizedBox(height: 12),
@@ -1115,18 +1220,17 @@ class _ProfileTab extends StatelessWidget {
           decoration: cardDecoration(),
           child: Column(
             children: [
-              _settingsRow('Günlük hedef süresi',
-                  '${progressStore.dailyGoalMinutes} dk', onEditGoal),
-              _settingsRow('Uygulama dili', 'Türkçe', () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                      content:
-                          Text('Arayüz Türkçe, içerik Almanca.'),
-                      duration: Duration(seconds: 2)),
-                );
-              }),
-              _settingsRow('Öğrenme dili', 'Almanca A1', () {}),
-              _settingsRow('Konuşma alıştırması', 'Yakında', () {}, last: true),
+              _settingsRow(
+                  l10n.dailyGoalDuration,
+                  l10n.minutesShort(progressStore.dailyGoalMinutes),
+                  onEditGoal),
+              _settingsRow(
+                  l10n.appLanguage, _uiLangLabel(l10n), () => _pickLanguage(context)),
+              _settingsRow(
+                  l10n.learningLanguage, l10n.learningLanguageValue, () {}),
+              _settingsRow(
+                  l10n.speakingPractice, l10n.comingSoon, () {},
+                  last: true),
             ],
           ),
         ),

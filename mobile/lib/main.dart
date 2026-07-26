@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 import 'theme.dart';
 import 'content_repository.dart';
 import 'progress_store.dart';
@@ -13,7 +15,6 @@ Future<void> main() async {
     FlutterError.presentError(details);
     debugPrint('FlutterError: ${details.exceptionAsString()}');
   };
-  // Kompakt tut — eski tam ekran ErrorWidget tıklamaları yutuyordu.
   ErrorWidget.builder = (details) {
     debugPrint('ErrorWidget: ${details.exceptionAsString()}');
     return const SizedBox(
@@ -38,11 +39,24 @@ class SprachApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SprachApp',
-      debugShowCheckedModeBanner: false,
-      theme: buildTheme(),
-      home: const HomeScreen(),
+    return ListenableBuilder(
+      listenable: progressStore,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'SprachApp',
+          debugShowCheckedModeBanner: false,
+          theme: buildTheme(),
+          locale: progressStore.uiLocale,
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          home: const HomeScreen(),
+        );
+      },
     );
   }
 }

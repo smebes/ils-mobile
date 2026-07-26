@@ -11,6 +11,9 @@ storage/
 masters/
 public/img/
 
+# Yerel çalışma notları / designer export (commit edilmez)
+_work/
+
 # Python
 __pycache__/
 *.pyc

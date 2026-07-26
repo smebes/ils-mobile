@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
+import '../l10n/l10n_ext.dart';
 import '../theme.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -37,6 +38,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final pct =
         widget.total == 0 ? 1.0 : widget.correct / widget.total;
     return Scaffold(
@@ -55,25 +57,26 @@ class _ResultScreenState extends State<ResultScreen> {
                       children: [
                         const Text('🎉', style: TextStyle(fontSize: 72)),
                         const SizedBox(height: 12),
-                        const Text('Tebrikler!',
-                            style: TextStyle(
+                        Text(l10n.resultTitle,
+                            style: const TextStyle(
                                 fontSize: 30, fontWeight: FontWeight.w800)),
                         const SizedBox(height: 8),
-                        Text('Günlük hedef tamamlandı',
+                        Text(l10n.resultDailyDone,
                             style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.navy.withValues(alpha: 0.6))),
                         const SizedBox(height: 32),
-                        _statRow('Alıştırmalar', '${widget.correct} / ${widget.total}'),
+                        _statRow(l10n.resultExercises,
+                            '${widget.correct} / ${widget.total}'),
                         const SizedBox(height: 12),
-                        _statRow('Başarı', '${(pct * 100).round()}%'),
+                        _statRow(l10n.resultSuccess,
+                            '${(pct * 100).round()}%'),
                         const SizedBox(height: 12),
-                        _statRow('XP', '+${widget.xp}'),
+                        _statRow(l10n.statXp, '+${widget.xp}'),
                         if (widget.reviewsSaved > 0) ...[
                           const SizedBox(height: 20),
                           Text(
-                            'Tekrar için kelimeler kaydedildi 📚\n'
-                            '(${widget.reviewsSaved} kelime planında)',
+                            l10n.resultReviewsSaved(widget.reviewsSaved),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 14,
@@ -86,7 +89,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           child: FilledButton(
                             onPressed: () => Navigator.of(context)
                                 .popUntil((route) => route.isFirst),
-                            child: const Text('Öğrenmeye devam'),
+                            child: Text(l10n.keepLearning),
                           ),
                         ),
                       ],
