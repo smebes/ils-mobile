@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../theme.dart';
@@ -366,6 +368,8 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
   late final List questions =
       (widget.exercise.payload['questions'] as List).cast<Map>();
   final Map<String, String> answers = {}; // qId -> optionId
+  bool _playing = false;
+  String? _audioError;
 
   List<String> _audioList(String speed) => AssetPaths.resolveList(
       (widget.exercise.payload['audio'] as Map?)?[speed] as List?);
@@ -380,19 +384,42 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
   }
 
   Future<void> _play(String speed) async {
-    final files = _audioList(speed);
-    if (files.isNotEmpty) {
-      await _audio.playSequence(files);
+    if (_playing) {
+      await _audio.stop();
+      if (mounted) setState(() => _playing = false);
       return;
     }
-    // ElevenLabs henüz yoksa: satırları TTS ile oku (de-DE).
-    final lines = _transcriptLines;
-    if (lines.isEmpty) return;
-    for (final t in lines) {
-      TtsService.speak(t);
-      await Future<void>.delayed(
-        Duration(milliseconds: 600 + t.length * 55),
-      );
+    setState(() {
+      _playing = true;
+      _audioError = null;
+    });
+    try {
+      final files = _audioList(speed);
+      if (files.isNotEmpty) {
+        await _audio.playSequence(files);
+      } else {
+        final lines = _transcriptLines;
+        for (final t in lines) {
+          if (!_playing) break;
+          TtsService.speak(t);
+          await Future<void>.delayed(
+            Duration(milliseconds: 600 + t.length * 55),
+          );
+        }
+      }
+    } catch (e) {
+      debugPrint('Listening play error: $e');
+      if (mounted) {
+        setState(() => _audioError = 'Audio konnte nicht geladen werden.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Audio fehlgeschlagen — bitte erneut versuchen.'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _playing = false);
     }
   }
 
@@ -436,20 +463,52 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
                             height: 80, fit: BoxFit.cover),
                       ),
                     if (p['scene_image'] != null) const SizedBox(width: 12),
-                    Column(
-                      children: [
-                        SpeedButtons(
-                          onSlow: () => _play('slow'),
-                          onNormal: () => _play('normal'),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          '${answers.length} / ${questions.length} beantwortet',
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.navy.withValues(alpha: 0.5)),
-                        ),
-                      ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              SpeedButtons(
+                                onSlow: () {
+                                  unawaited(_play('slow'));
+                                },
+                                onNormal: () {
+                                  unawaited(_play('normal'));
+                                },
+                                playing: _playing,
+                              ),
+                              if (_playing) ...[
+                                const SizedBox(width: 8),
+                                const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ],
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _playing
+                                ? 'Wird abgespielt… (tippen zum Stoppen)'
+                                : '🐢 langsam · 🐇 normal',
+                            style: TextStyle(
+                                fontSize: 11,
+                                color: AppColors.navy.withValues(alpha: 0.55)),
+                          ),
+                          if (_audioError != null)
+                            Text(_audioError!,
+                                style: const TextStyle(
+                                    fontSize: 12, color: AppColors.coral)),
+                          Text(
+                            '${answers.length} / ${questions.length} beantwortet',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.navy.withValues(alpha: 0.5)),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -651,6 +710,7 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
       left.where((l) => !pairs.containsKey(l['id'])).toList();
 
   Widget _rightColumn() {
+    final manyToOne = widget.exercise.payload['many_to_one'] == true;
     return ListView(
       children: right.map((item) {
         final id = item['id'] as String;
@@ -668,20 +728,29 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
         return GestureDetector(
           onTap: checked || activeLeft == null
               ? null
-              : () => setState(() {
-                    final target = activeLeft!;
-                    final manyToOne =
-                        widget.exercise.payload['many_to_one'] == true;
+              : () {
+                  final target = activeLeft!;
+                  setState(() {
                     if (!manyToOne) {
-                      // 1:1 — aynı sağ seçenek başka sola bağlıysa kopar
-                      pairs.removeWhere((k, v) => v == id);
+                      pairs.removeWhere((k, v) => v == id && k != target);
                     }
                     pairs[target] = id;
                     final remaining = _unassignedLeft;
                     activeLeft = remaining.isEmpty
                         ? null
                         : remaining.first['id'] as String;
-                  }),
+                  });
+                  if (!manyToOne &&
+                      pairedLeftIds.isNotEmpty &&
+                      !pairedLeftIds.contains(target)) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Vorherige Zuordnung wurde ersetzt.'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+                  }
+                },
           child: Container(
             height: 64,
             margin: const EdgeInsets.only(bottom: 8),
@@ -693,7 +762,10 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
                   CircleAvatar(
                     radius: 12,
                     backgroundColor: pairColor,
-                    child: Text('$leftIdx',
+                    child: Text(
+                        manyToOne && pairedLeftIds.length > 1
+                            ? '${pairedLeftIds.length}'
+                            : '$leftIdx',
                         style: const TextStyle(
                             fontSize: 12,
                             color: Colors.white,
@@ -701,8 +773,21 @@ class _MatchingWidgetState extends State<MatchingWidget> with CheckFlow {
                   ),
                 if (assigned) const SizedBox(width: 8),
                 Expanded(
-                  child: Text(item['text'] as String,
-                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item['text'] as String,
+                          style: const TextStyle(fontWeight: FontWeight.w600)),
+                      if (manyToOne && pairedLeftIds.length > 1)
+                        Text(
+                          '${pairedLeftIds.length} Wörter zugeordnet',
+                          style: TextStyle(
+                              fontSize: 11,
+                              color: AppColors.navy.withValues(alpha: 0.55)),
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),

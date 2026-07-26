@@ -65,31 +65,44 @@ class ArtikelDot extends StatelessWidget {
 class SpeedButtons extends StatelessWidget {
   final VoidCallback onSlow;
   final VoidCallback onNormal;
-  const SpeedButtons({super.key, required this.onSlow, required this.onNormal});
+  final bool playing;
+  const SpeedButtons({
+    super.key,
+    required this.onSlow,
+    required this.onNormal,
+    this.playing = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _btn('🐢', onSlow),
+        _btn('🐢', 'Langsam', onSlow),
         const SizedBox(width: 12),
-        _btn('🐇', onNormal),
+        _btn('🐇', 'Normal', onNormal),
       ],
     );
   }
 
-  Widget _btn(String label, VoidCallback onTap) => InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(30),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-          decoration: BoxDecoration(
-            color: AppColors.cream,
-            borderRadius: BorderRadius.circular(30),
-            border: Border.all(color: AppColors.mustard, width: 2),
+  Widget _btn(String label, String tip, VoidCallback onTap) => Tooltip(
+        message: tip,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+            decoration: BoxDecoration(
+              color: playing
+                  ? AppColors.teal.withValues(alpha: 0.2)
+                  : AppColors.cream,
+              borderRadius: BorderRadius.circular(30),
+              border: Border.all(
+                  color: playing ? AppColors.teal : AppColors.mustard,
+                  width: 2),
+            ),
+            child: Text(label, style: const TextStyle(fontSize: 22)),
           ),
-          child: Text(label, style: const TextStyle(fontSize: 22)),
         ),
       );
 }

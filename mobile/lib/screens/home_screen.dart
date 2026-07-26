@@ -249,34 +249,53 @@ class _HomeScreenState extends State<HomeScreen> {
     final isActive = id == _lektion?.id;
     return Opacity(
       opacity: unlocked ? 1 : 0.45,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: cardDecoration(
-          border: isActive ? AppColors.teal : null,
-        ),
-        child: Row(
-          children: [
-            Text(
-              unlocked ? (isActive ? '▶' : '○') : '🔒',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                'L$id · $title',
-                style: const TextStyle(fontWeight: FontWeight.w700),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () {
+          if (unlocked && id == _lektion?.id) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const SessionScreen()),
+            );
+          } else if (!unlocked) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(id == 2
+                    ? 'L2 öffnet sich bei 80% Meisterschaft in L1.'
+                    : 'Diese Lektion wird bald freigeschaltet.'),
+                duration: const Duration(seconds: 2),
               ),
-            ),
-            if (!unlocked)
+            );
+          }
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: cardDecoration(
+            border: isActive ? AppColors.teal : null,
+          ),
+          child: Row(
+            children: [
               Text(
-                id == 2 ? '80% L1' : 'Bald',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.navy.withValues(alpha: 0.5),
+                unlocked ? (isActive ? '▶' : '○') : '🔒',
+                style: const TextStyle(fontSize: 16),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'L$id · $title',
+                  style: const TextStyle(fontWeight: FontWeight.w700),
                 ),
               ),
-          ],
+              if (!unlocked)
+                Text(
+                  id == 2 ? '80% L1' : 'Bald',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppColors.navy.withValues(alpha: 0.5),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,42 +1,92 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:async';
 
-/// Diyalog satırlarını sırayla çalar (asset mp3). slow/normal hız desteği.
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
+
+/// Diyalog satırlarını sırayla çalar (asset mp3).
+///
+/// Web'de `onPlayerComplete` bazen hiç gelmiyor; timeout + generation
+/// token ile Future asılı kalmaz, UI kilitlenmez.
 class AudioService {
   final AudioPlayer _player = AudioPlayer();
+  int _generation = 0;
   bool _playing = false;
 
   bool get isPlaying => _playing;
 
-  /// Tek asset çal (assets/ önekini AssetSource beklemez).
   Future<void> playOne(String assetPath) async {
-    await _player.stop();
-    await _player.play(AssetSource(_strip(assetPath)));
+    final gen = ++_generation;
+    _playing = true;
+    try {
+      await _player.stop();
+      if (gen != _generation) return;
+      final done = _waitComplete();
+      await _player.play(AssetSource(_strip(assetPath)));
+      if (gen != _generation) return;
+      await done;
+    } catch (e) {
+      debugPrint('AudioService.playOne: $e');
+      rethrow;
+    } finally {
+      if (gen == _generation) _playing = false;
+    }
   }
 
-  /// Bir diziyi sırayla çalar (diyalog).
   Future<void> playSequence(List<String> assetPaths) async {
-    if (_playing) {
-      await stop();
-      return;
-    }
+    final gen = ++_generation;
     _playing = true;
-    for (final p in assetPaths) {
-      if (!_playing) break;
-      await _player.stop();
-      await _player.play(AssetSource(_strip(p)));
-      await _player.onPlayerComplete.first;
+    try {
+      for (final p in assetPaths) {
+        if (gen != _generation) break;
+        await _player.stop();
+        if (gen != _generation) break;
+        final done = _waitComplete();
+        await _player.play(AssetSource(_strip(p)));
+        if (gen != _generation) break;
+        await done;
+      }
+    } catch (e) {
+      debugPrint('AudioService.playSequence: $e');
+      rethrow;
+    } finally {
+      if (gen == _generation) _playing = false;
     }
-    _playing = false;
+  }
+
+  Future<void> _waitComplete() async {
+    try {
+      await _player.onPlayerComplete.first.timeout(
+        const Duration(seconds: 12),
+      );
+    } on TimeoutException {
+      debugPrint('AudioService: onPlayerComplete timeout — devam');
+    } catch (e) {
+      debugPrint('AudioService: waitComplete $e');
+    }
   }
 
   Future<void> stop() async {
+    _generation++;
     _playing = false;
-    await _player.stop();
+    try {
+      await _player.stop();
+    } catch (e) {
+      debugPrint('AudioService.stop: $e');
+    }
   }
 
-  void dispose() => _player.dispose();
+  void dispose() {
+    _generation++;
+    _playing = false;
+    _player.dispose();
+  }
 
-  // AssetSource kök olarak 'assets/' ekler; yolumuz zaten 'assets/...' → çıkar.
-  String _strip(String p) =>
-      p.startsWith('assets/') ? p.substring('assets/'.length) : p;
+  String _strip(String p) {
+    var s = p;
+    if (s.startsWith('storage/audio/')) {
+      s = 'assets/audio/${s.substring('storage/audio/'.length)}';
+    }
+    if (s.startsWith('assets/')) return s.substring('assets/'.length);
+    return s;
+  }
 }
