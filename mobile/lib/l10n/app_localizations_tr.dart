@@ -674,5 +674,10 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String mapBandSliceWords(int slice, int seen, int total) {
+    return 'Dilim $slice · $seen / $total kelime';
+  }
+
+  @override
   String get mapSectionReward => 'Bölüm ödülü';
 }

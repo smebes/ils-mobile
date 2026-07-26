@@ -672,5 +672,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String mapBandSliceWords(int slice, int seen, int total) {
+    return 'Slice $slice · $seen / $total words';
+  }
+
+  @override
   String get mapSectionReward => 'Unit reward';
 }

@@ -55,6 +55,19 @@ class _SessionScreenState extends State<SessionScreen> {
     final exercises = await contentRepo.loadExercises();
     _allWords = lektion.vocab.map((v) => v.wort).toList();
     _slice = progressStore.activeSlice;
+    // Tamamlanmış dilimleri atla (SR ile activeSlice senkronu).
+    for (var guard = 0; guard < 5; guard++) {
+      final tags = schritteForSlice(_slice);
+      final words = lektion.vocab
+          .where((v) => tags.contains(v.schritt))
+          .map((v) => v.wort)
+          .toList();
+      if (words.isEmpty) break;
+      final allSeen = words.every((w) => progressStore.srEntries.containsKey(w));
+      if (!allSeen || _slice >= 5) break;
+      await progressStore.setActiveSlice(_slice + 1);
+      _slice = progressStore.activeSlice;
+    }
     final tags = schritteForSlice(_slice);
     final unlocked = schritteThroughSlice(_slice);
     final sliceVocab =
@@ -349,22 +362,26 @@ class _SessionScreenState extends State<SessionScreen> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: AppColors.teal.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        widget.reviewMode
-                            ? l10n.tabReview
-                            : l10n.sessionSliceChip(
-                                _slice, _sliceTitle(l10n, _slice)),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF1F7268),
+                    Flexible(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.teal.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          widget.reviewMode
+                              ? l10n.tabReview
+                              : l10n.sessionSliceChip(
+                                  _slice, _sliceTitle(l10n, _slice)),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w800,
+                            color: Color(0xFF1F7268),
+                          ),
                         ),
                       ),
                     ),
@@ -378,13 +395,18 @@ class _SessionScreenState extends State<SessionScreen> {
                       ),
                     ),
                     if (showTeaser) ...[
-                      const Spacer(),
-                      Text(
-                        l10n.sessionTeaserDialog,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFFC1502F),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          l10n.sessionTeaserDialog,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFC1502F),
+                          ),
                         ),
                       ),
                     ],

@@ -374,5 +374,13 @@
       "done": {"type": "int"}
     }
   },
+  "mapBandSliceWords": "Slice {slice} · {seen} / {total} words",
+  "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": {"type": "int"},
+      "seen": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
   "mapSectionReward": "Unit reward"
 }

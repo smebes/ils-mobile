@@ -440,5 +440,13 @@
       "done": { "type": "int" }
     }
   },
+  "mapBandSliceWords": "Tranche {slice} · {seen} / {total} mots",
+  "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": { "type": "int" },
+      "seen": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "mapSectionReward": "Récompense d’unité"
 }

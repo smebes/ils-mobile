@@ -1270,6 +1270,12 @@ abstract class AppLocalizations {
   /// **'{pct}% · {done} / 5 slices'**
   String mapBandProgress(int pct, int done);
 
+  /// No description provided for @mapBandSliceWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Slice {slice} · {seen} / {total} words'**
+  String mapBandSliceWords(int slice, int seen, int total);
+
   /// No description provided for @mapSectionReward.
   ///
   /// In en, this message translates to:

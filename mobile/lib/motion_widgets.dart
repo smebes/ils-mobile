@@ -151,6 +151,178 @@ class _PulseRingState extends State<PulseRing>
   }
 }
 
+/// Seri takvim yaprağı flip (2e).
+class StreakCalendarFlip extends StatelessWidget {
+  final int streak;
+  final bool play;
+  const StreakCalendarFlip({
+    super.key,
+    required this.streak,
+    this.play = true,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final prev = (streak - 1).clamp(0, 999);
+
+    Widget card(int n, {required bool accent}) {
+      return Container(
+        width: 64,
+        height: 74,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.navy.withValues(alpha: 0.12),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'GÜN',
+              style: TextStyle(
+                fontSize: 9,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.8,
+                color: accent
+                    ? const Color(0xFFC1502F)
+                    : AppColors.navy.withValues(alpha: 0.4),
+              ),
+            ),
+            Text(
+              '$n',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w800,
+                color: accent ? AppColors.coral : AppColors.navy,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (!play || AppMotion.reduce(context) || streak <= 1) {
+      return card(streak, accent: true);
+    }
+
+    return SizedBox(
+      width: 64,
+      height: 74,
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: 1),
+        duration: const Duration(milliseconds: 640),
+        curve: AppMotion.curve,
+        builder: (context, t, _) {
+          // 0..0.45 eski yaprak çıkar, 0.45..1 yeni gelir
+          if (t < 0.45) {
+            final p = t / 0.45;
+            return Opacity(
+              opacity: 1 - p,
+              child: Transform(
+                alignment: Alignment.topCenter,
+                transform: Matrix4.identity()
+                  ..setEntry(3, 2, 0.002)
+                  ..rotateX(p * 1.2),
+                child: card(prev, accent: false),
+              ),
+            );
+          }
+          final p = (t - 0.45) / 0.55;
+          return Opacity(
+            opacity: p,
+            child: Transform(
+              alignment: Alignment.bottomCenter,
+              transform: Matrix4.identity()
+                ..setEntry(3, 2, 0.002)
+                ..rotateX((1 - p) * -1.2),
+              child: card(streak, accent: true),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// XP jetonlarının üst sağdaki pill'e uçuşu (2h).
+class XpFlightBurst extends StatelessWidget {
+  final int xp;
+  final Widget pill;
+  const XpFlightBurst({super.key, required this.xp, required this.pill});
+
+  @override
+  Widget build(BuildContext context) {
+    if (AppMotion.reduce(context) || xp <= 0) return pill;
+    final coins = (xp / 10).round().clamp(1, 5);
+    return SizedBox(
+      height: 100,
+      width: double.infinity,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          for (var i = 0; i < coins; i++)
+            TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: 1),
+              duration: const Duration(milliseconds: 620),
+              curve: const Cubic(0.4, 0, 0.6, 1),
+              builder: (context, t, _) {
+                final delay = (i * 0.09).clamp(0.0, 0.4);
+                final local = ((t - delay) / (1 - delay)).clamp(0.0, 1.0);
+                final left = 16.0 + i * 36;
+                final tx = 220.0 - left;
+                final ty = -70.0;
+                return Positioned(
+                  left: left + tx * local,
+                  bottom: 8 - ty * local,
+                  child: Opacity(
+                    opacity: local < 0.12
+                        ? local / 0.12
+                        : (1 - local).clamp(0.0, 1.0),
+                    child: Transform.scale(
+                      scale: 1 - 0.55 * local,
+                      child: Container(
+                        width: 28,
+                        height: 28,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: AppColors.mustard,
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: AppColors.navy, width: 2),
+                        ),
+                        child: const Text('+10',
+                            style: TextStyle(
+                                fontSize: 9, fontWeight: FontWeight.w800)),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          Positioned(
+            right: 0,
+            top: 0,
+            child: TweenAnimationBuilder<double>(
+              tween: Tween(begin: 1, end: 1.14),
+              duration: const Duration(milliseconds: 400),
+              curve: AppMotion.curve,
+              builder: (context, s, child) =>
+                  Transform.scale(scale: s > 1.07 ? 2.14 - s : s, child: child),
+              child: pill,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Seri +1 kıvılcımları.
 class StreakBurst extends StatelessWidget {
   final Widget child;

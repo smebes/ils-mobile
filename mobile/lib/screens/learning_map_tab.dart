@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../curriculum.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
+import '../models.dart';
 import '../motion_widgets.dart';
 import '../theme.dart';
 
@@ -9,6 +10,7 @@ import '../theme.dart';
 class LearningMapTab extends StatelessWidget {
   final String greeting;
   final double mastery;
+  final List<VocabItem> vocab;
   final VoidCallback onStart;
   final void Function(int lektionN) onLockedLesson;
 
@@ -16,6 +18,7 @@ class LearningMapTab extends StatelessWidget {
     super.key,
     required this.greeting,
     required this.mastery,
+    required this.vocab,
     required this.onStart,
     required this.onLockedLesson,
   });
@@ -23,7 +26,7 @@ class LearningMapTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final leks = buildLektionMap(l10n, progressStore, mastery);
+    final leks = buildLektionMap(l10n, progressStore, mastery, vocab);
     final bands = buildMapBands(l10n, leks);
     final doneTotal = totalSlicesDone(leks);
     final overall = l10n.mapOverallProgress(doneTotal, 35);
@@ -273,10 +276,10 @@ class _OverviewStrip extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               Wrap(
-                spacing: 14,
-                runSpacing: 6,
+                spacing: 12,
+                runSpacing: 4,
                 children: [
                   _legend(AppColors.teal, l10n.mapLegendDone),
                   _legend(AppColors.teal.withValues(alpha: 0.45),
@@ -297,7 +300,10 @@ class _OverviewStrip extends StatelessWidget {
         l.state == LektionMapState.complete) {
       if (i < l.slicesDone) return 34;
       if (l.state == LektionMapState.complete) return 34;
-      if (i == l.slicesDone) return 26;
+      if (i == l.slicesDone) {
+        // Aktif dilim: kelime ilerlemesine göre yükseklik
+        return 16 + 18 * l.activeFrac;
+      }
       return 16;
     }
     if (l.state == LektionMapState.next) return 14;
@@ -310,7 +316,9 @@ class _OverviewStrip extends StatelessWidget {
       if (i < l.slicesDone || l.state == LektionMapState.complete) {
         return AppColors.teal;
       }
-      if (i == l.slicesDone) return AppColors.teal.withValues(alpha: 0.45);
+      if (i == l.slicesDone) {
+        return AppColors.teal.withValues(alpha: 0.25 + 0.55 * l.activeFrac);
+      }
       return AppColors.navy.withValues(alpha: 0.12);
     }
     if (l.state == LektionMapState.next) {
@@ -346,9 +354,9 @@ class _OverviewHeaderDelegate extends SliverPersistentHeaderDelegate {
   _OverviewHeaderDelegate({required this.child});
 
   @override
-  double get minExtent => 148;
+  double get minExtent => 172;
   @override
-  double get maxExtent => 148;
+  double get maxExtent => 172;
 
   @override
   Widget build(
@@ -382,7 +390,10 @@ class _BandSection extends StatelessWidget {
                 ? l10n.mapPillLocked
                 : l10n.mapPillSoon));
     final sub = active
-        ? l10n.mapBandProgress(info.slicesDone * 20, info.slicesDone)
+        ? (info.activeTotal > 0
+            ? l10n.mapBandSliceWords(
+                info.activeSliceN, info.activeSeen, info.activeTotal)
+            : l10n.mapBandProgress(info.slicesDone * 20, info.slicesDone))
         : (info.state == LektionMapState.next
             ? l10n.pathL2Note
             : (info.state == LektionMapState.complete

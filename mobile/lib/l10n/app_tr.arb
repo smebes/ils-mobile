@@ -440,5 +440,13 @@
       "done": { "type": "int" }
     }
   },
+  "mapBandSliceWords": "Dilim {slice} · {seen} / {total} kelime",
+  "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": { "type": "int" },
+      "seen": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
   "mapSectionReward": "Bölüm ödülü"
 }

@@ -89,50 +89,64 @@ class _ResultScreenState extends State<ResultScreen> {
                             delay: const Duration(milliseconds: 100),
                             child: StreakBurst(
                               play: widget.streakIncreased,
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 9),
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.coral.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text('🔥',
-                                        style: TextStyle(fontSize: 18)),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      l10n.resultStreakKept(widget.streak),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w800,
-                                        color: Color(0xFFC1502F),
-                                      ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  if (widget.streakIncreased)
+                                    StreakCalendarFlip(
+                                      streak: widget.streak,
+                                      play: true,
+                                    )
+                                  else
+                                    const SizedBox.shrink(),
+                                  if (widget.streakIncreased)
+                                    const SizedBox(width: 12),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 9),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.coral
+                                          .withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(30),
                                     ),
-                                    if (widget.streakIncreased) ...[
-                                      const SizedBox(width: 8),
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 3),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.coral,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: const Text(
-                                          '+1',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 12.5,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        const Text('🔥',
+                                            style: TextStyle(fontSize: 18)),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          l10n.resultStreakKept(widget.streak),
+                                          style: const TextStyle(
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w800,
+                                            color: Color(0xFFC1502F),
                                           ),
                                         ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
+                                        if (widget.streakIncreased) ...[
+                                          const SizedBox(width: 8),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              color: AppColors.coral,
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: const Text(
+                                              '+1',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.5,
+                                                fontWeight: FontWeight.w800,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -152,17 +166,20 @@ class _ResultScreenState extends State<ResultScreen> {
                         const SizedBox(height: 10),
                         RiseIn(
                           delay: const Duration(milliseconds: 260),
-                          child: _statRow(
-                            l10n.statXp,
-                            null,
-                            valueColor: AppColors.teal,
-                            valueWidget: CountUpText(
-                              value: widget.xp,
-                              prefix: '+',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.teal,
+                          child: XpFlightBurst(
+                            xp: widget.xp,
+                            pill: _statRow(
+                              l10n.statXp,
+                              null,
+                              valueColor: AppColors.teal,
+                              valueWidget: CountUpText(
+                                value: widget.xp,
+                                prefix: '+',
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                  color: AppColors.teal,
+                                ),
                               ),
                             ),
                           ),

@@ -1,5 +1,7 @@
 import 'l10n/app_localizations.dart';
+import 'models.dart';
 import 'progress_store.dart';
+import 'slice_map.dart';
 
 /// Müfredat haritası: 7 bölüm × 5 dilim (+ bölüm ödülü).
 enum MapNodeKind { done, active, next, locked, reward }
@@ -28,14 +30,26 @@ class LektionMapInfo {
   final String titleDe;
   final String titleTr;
   final LektionMapState state;
-  final int slicesDone; // 0..5
+  final int slicesDone; // 0..5 tamamlanan dilim
+  final int activeSliceN; // 1..5 sıradaki dilim (aktifken)
+  final int activeSeen; // aktif dilimde görülen kelime
+  final int activeTotal; // aktif dilim kelime sayısı
   const LektionMapInfo({
     required this.n,
     required this.titleDe,
     required this.titleTr,
     required this.state,
     required this.slicesDone,
+    this.activeSliceN = 1,
+    this.activeSeen = 0,
+    this.activeTotal = 0,
   });
+
+  /// Aktif dilim içi ilerleme 0..1
+  double get activeFrac {
+    if (activeTotal <= 0) return 0;
+    return (activeSeen / activeTotal).clamp(0.0, 1.0);
+  }
 }
 
 class MapNode {
@@ -121,27 +135,58 @@ String sliceLabel(AppLocalizations l10n, int i) {
   }
 }
 
-/// L1 dilim ilerlemesi: tamamlanan dilim sayısı (0..5).
-int l1SlicesDone(ProgressStore store) {
-  final active = store.activeSlice;
-  // activeSlice = sıradaki çalışılacak dilim → öncekiler bitti.
-  return (active - 1).clamp(0, 5);
+/// L1 dilim ilerlemesi: SR'de tüm kelimeleri görülen dilim sayısı (0..5).
+int l1SlicesDone(ProgressStore store, List<VocabItem> vocab) {
+  var done = 0;
+  for (var i = 1; i <= 5; i++) {
+    final tags = schritteForSlice(i);
+    final words =
+        vocab.where((v) => tags.contains(v.schritt)).map((v) => v.wort);
+    if (words.isEmpty) break;
+    if (words.every((w) => store.srEntries.containsKey(w))) {
+      done = i;
+    } else {
+      break;
+    }
+  }
+  return done;
+}
+
+({int seen, int total, int sliceN}) l1ActiveSliceWords(
+  ProgressStore store,
+  List<VocabItem> vocab,
+) {
+  final done = l1SlicesDone(store, vocab);
+  final sliceN = (done + 1).clamp(1, 5);
+  final tags = schritteForSlice(sliceN);
+  final words =
+      vocab.where((v) => tags.contains(v.schritt)).map((v) => v.wort).toList();
+  final seen = words.where((w) => store.srEntries.containsKey(w)).length;
+  return (seen: seen, total: words.length, sliceN: sliceN);
 }
 
 List<LektionMapInfo> buildLektionMap(
   AppLocalizations l10n,
   ProgressStore store,
   double l1Mastery,
+  List<VocabItem> vocab,
 ) {
-  final done = l1SlicesDone(store);
+  final done = l1SlicesDone(store, vocab);
+  final activeWords = l1ActiveSliceWords(store, vocab);
   final l1Complete = done >= 5;
   final out = <LektionMapInfo>[];
   for (var n = 1; n <= 7; n++) {
     late LektionMapState state;
     var slicesDone = 0;
+    var activeSliceN = 1;
+    var activeSeen = 0;
+    var activeTotal = 0;
     if (n == 1) {
       state = l1Complete ? LektionMapState.complete : LektionMapState.active;
       slicesDone = done;
+      activeSliceN = activeWords.sliceN;
+      activeSeen = activeWords.seen;
+      activeTotal = activeWords.total;
     } else if (n == 2) {
       state = l1Mastery >= 0.8 ? LektionMapState.next : LektionMapState.locked;
     } else {
@@ -153,6 +198,9 @@ List<LektionMapInfo> buildLektionMap(
       titleTr: _lektionTr(l10n, n),
       state: state,
       slicesDone: slicesDone,
+      activeSliceN: activeSliceN,
+      activeSeen: activeSeen,
+      activeTotal: activeTotal,
     ));
   }
   return out;

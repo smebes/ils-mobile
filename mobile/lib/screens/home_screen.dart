@@ -141,6 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   LearningMapTab(
                     greeting: _greeting(l10n),
                     mastery: mastery,
+                    vocab: l.vocab,
                     onStart: _startSession,
                     onLockedLesson: (n) =>
                         _showLockSheet(n, mastery, mastered),
