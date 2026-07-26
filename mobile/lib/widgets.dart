@@ -4,6 +4,67 @@ import 'l10n/l10n_ext.dart';
 import 'motion.dart';
 import 'theme.dart';
 
+/// Soft asset placeholder — kırık ikon flaşı yok.
+/// Yükleniyor: teal→navy gradient; hata: cream + nötr çerçeve.
+class SoftMediaPlaceholder extends StatelessWidget {
+  final double? height;
+  final double? width;
+  final bool loading;
+  const SoftMediaPlaceholder({
+    super.key,
+    this.height,
+    this.width,
+    this.loading = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final h = height ?? 80.0;
+    final w = width;
+    if (loading) {
+      return SizedBox(
+        key: const ValueKey('soft_media_loading'),
+        height: h,
+        width: w,
+        child: const DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(18)),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [AppColors.teal, AppColors.navy],
+            ),
+          ),
+        ),
+      );
+    }
+    return SizedBox(
+      key: const ValueKey('soft_media_error'),
+      height: h,
+      width: w,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: AppColors.cream,
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Center(
+          child: Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: AppColors.navy.withValues(alpha: 0.25),
+                width: 2,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 /// Vocab (SVG) veya sahne (webp) görselini yol uzantısına göre render eder.
 class MediaImage extends StatelessWidget {
   final String assetPath;
@@ -15,6 +76,9 @@ class MediaImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (assetPath.isEmpty) {
+      return SoftMediaPlaceholder(height: height, width: width);
+    }
     if (assetPath.endsWith('.svg')) {
       return SvgPicture.asset(
         assetPath,
@@ -22,10 +86,14 @@ class MediaImage extends StatelessWidget {
         width: width,
         fit: fit,
         allowDrawingOutsideViewBox: true,
-        placeholderBuilder: (_) => _placeholder(),
+        placeholderBuilder: (_) => SoftMediaPlaceholder(
+          height: height,
+          width: width,
+          loading: true,
+        ),
         errorBuilder: (context, error, stackTrace) {
           debugPrint('SVG load failed: $assetPath → $error');
-          return _placeholder();
+          return SoftMediaPlaceholder(height: height, width: width);
         },
       );
     }
@@ -34,23 +102,18 @@ class MediaImage extends StatelessWidget {
       height: height,
       width: width,
       fit: fit,
-      errorBuilder: (_, e, st) => _placeholder(),
+      errorBuilder: (_, e, st) =>
+          SoftMediaPlaceholder(height: height, width: width),
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded || frame != null) return child;
+        return SoftMediaPlaceholder(
+          height: height,
+          width: width,
+          loading: true,
+        );
+      },
     );
   }
-
-  Widget _placeholder() => SizedBox(
-        height: height ?? 80,
-        width: width,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.cream,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: const Center(
-            child: Icon(Icons.image_outlined, size: 36, color: AppColors.navy),
-          ),
-        ),
-      );
 }
 
 /// der/die/das renk kodlu artikel rozeti.

@@ -7,7 +7,9 @@
 > **2026-07-26 (yeniden test turu):** Dilim oturumu sıkılaştırıldı (max ~6 yeni + 5 tekrar kartı + max 4 egzersiz); ileri Schritt SR sızıntısı kesildi; Tekrar caught-up sinyali güçlendirildi; fill chip highlight; session AnimatedSwitcher pointer fix; web audio guard genişletildi.  
 > **Kritik:** `localhost:5281` eski build kalabiliyor — her turda **hard restart** (`flutter run` yeniden) şart. Tarayıcıda hard refresh (Cmd+Shift+R).  
 > **Tester doğrulama (2026-07-26 akşam):** 6 kritik madde (sheet, dilim uzunluğu, caught-up, profil, donma, Welche/Frankreich/chip) yeni build’de geçti. Büyük dilimlerde “~N ders kaldı” ipucu eklendi.  
-> **S1 not:** Result `XpFlightBurst` → `Positioned(right)` içinde `width: infinity` layout crash + mouse_tracker (Keep learning tepkisiz) — düzeltildi (`left`+`right` bound).
+> **S1 not:** Result `XpFlightBurst` → `Positioned(right)` içinde `width: infinity` layout crash + mouse_tracker (Keep learning tepkisiz) — düzeltildi (`left`+`right` bound).  
+> **Sprint A kapanış (2026-07-26 gece):** Result Keep learning widget test ile doğrulandı (`result_screen_test.dart`). S2 mechanic smoke (`mechanic_smoke_test.dart`). S4 soft placeholder — cream + nötr çerçeve, `Icons.broken_image*` yok (`SoftMediaPlaceholder` / `media_image_test.dart`).  
+> **Tester (opsiyonel):** kısa ders → Result → Öğrenmeye devam; bir flashcard’da eksik görselde kırık ikon flaşı olmamalı.
 
 ## Sistem hazırlığı (özet)
 
@@ -113,7 +115,7 @@
 | T4.6 | Frankreich | Mavi–beyaz–kırmızı (dikey) |
 | T4.7 | Schweiz | Kırmızı zemin + beyaz haç |
 | T4.8 | Syrien | Kırmızı–beyaz–siyah |
-| T4.9 | Hata durumu | Kırık ikon yerine krem + nötr placeholder (çökme yok) |
+| T4.9 | Hata durumu | Kırık ikon yerine krem + nötr çerçeve placeholder (`SoftMediaPlaceholder`; çökme yok) |
 
 ---
 

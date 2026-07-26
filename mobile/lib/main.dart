@@ -5,6 +5,7 @@ import 'theme.dart';
 import 'content_repository.dart';
 import 'progress_store.dart';
 import 'screens/home_screen.dart';
+import 'widgets.dart';
 
 final contentRepo = ContentRepository();
 final progressStore = ProgressStore();
@@ -17,14 +18,8 @@ Future<void> main() async {
   };
   ErrorWidget.builder = (details) {
     debugPrint('ErrorWidget: ${details.exceptionAsString()}');
-    return const SizedBox(
-      height: 72,
-      width: 72,
-      child: ColoredBox(
-        color: Color(0xFFFAF3E7),
-        child: Icon(Icons.broken_image_outlined, color: Color(0xFF264653)),
-      ),
-    );
+    // Kırık ikon flaşı yok — SoftMediaPlaceholder ile aynı dil.
+    return const SoftMediaPlaceholder(height: 72, width: 72);
   };
   try {
     await progressStore.init();

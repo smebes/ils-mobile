@@ -20,10 +20,10 @@
 
 | # | İş | Çıktı |
 |---|-----|--------|
-| S1 | Etkileşim donması kök neden | Ortak `InteractionGate` / ses-DOM ayrımı; fill / listen / match / quiz art arda geçiş smoke |
-| S2 | Otomatik regresyon (widget/integration) | Her mechanic için “seç → Check → Continue → sonraki” smoke test |
+| S1 | Etkileşim donması kök neden | ✅ Ortak ses-DOM ayrımı; fill / listen AnimatedSwitcher; Result XP layout |
+| S2 | Otomatik regresyon (widget/integration) | ✅ `mechanic_smoke_test.dart` — quiz / fill / listen / match / flashcard Check→Continue |
 | S3 | Responsive tarama | 360 / 390 / 414px: Home harita, Session, Result, Profil — overflow yok |
-| S4 | Kozmetik pürüzler | Flashcard asset placeholder (kırık ikon flaşı yok); UI diline göre çeviri; “son ders” yalnızca `seen > 0` |
+| S4 | Kozmetik pürüzler | ✅ SoftMediaPlaceholder (kırık ikon yok); “son ders” `seen > 0`; UI dil çevirisi mevcut |
 
 **Kapı:** 2 tam L1 dilim oturumu + 5× fill-blank + 5× listening ardışık, sıfır donma.
 
@@ -68,8 +68,8 @@
 
 ## Şimdi sıradaki sprint (öneri)
 
-**Sprint A — Stabilite:** S1 + S2 + S4 (flashcard placeholder).  
-Sonra Sprint B — S3 responsive.  
+**Sprint A — Stabilite:** S1 + S2 + S4 ✅ (Result Keep learning widget doğrulandı; mechanic smoke; soft placeholder).  
+Sonra **Sprint B — S3 responsive** (360/390/414).  
 Sonra orta vade M1 veya M3 (ürün tercihine göre: push mu, L2 içerik mi).
 
 Tester ile: her sprint sonrası kısa E2E; donma görülürse yeni özellik dondurulur.
