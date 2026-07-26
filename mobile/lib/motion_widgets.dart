@@ -261,59 +261,71 @@ class XpFlightBurst extends StatelessWidget {
     if (AppMotion.reduce(context) || xp <= 0) return pill;
     final coins = (xp / 10).round().clamp(1, 5);
     return SizedBox(
-      height: 100,
+      height: 88,
       width: double.infinity,
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          for (var i = 0; i < coins; i++)
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: 1),
-              duration: const Duration(milliseconds: 620),
-              curve: const Cubic(0.4, 0, 0.6, 1),
-              builder: (context, t, _) {
-                final delay = (i * 0.09).clamp(0.0, 0.4);
-                final local = ((t - delay) / (1 - delay)).clamp(0.0, 1.0);
-                final left = 16.0 + i * 36;
-                final tx = 220.0 - left;
-                final ty = -70.0;
-                return Positioned(
-                  left: left + tx * local,
-                  bottom: 8 - ty * local,
-                  child: Opacity(
-                    opacity: local < 0.12
-                        ? local / 0.12
-                        : (1 - local).clamp(0.0, 1.0),
-                    child: Transform.scale(
-                      scale: 1 - 0.55 * local,
-                      child: Container(
-                        width: 28,
-                        height: 28,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: AppColors.mustard,
-                          shape: BoxShape.circle,
-                          border:
-                              Border.all(color: AppColors.navy, width: 2),
+          // Jetonlar tıklamayı yutmasın
+          IgnorePointer(
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                for (var i = 0; i < coins; i++)
+                  TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: 1),
+                    duration: const Duration(milliseconds: 620),
+                    curve: const Cubic(0.4, 0, 0.6, 1),
+                    builder: (context, t, _) {
+                      final delay = (i * 0.09).clamp(0.0, 0.4);
+                      final local =
+                          ((t - delay) / (1 - delay)).clamp(0.0, 1.0);
+                      final left = 16.0 + i * 36;
+                      final tx = 180.0 - left;
+                      final ty = -56.0;
+                      return Positioned(
+                        left: left + tx * local,
+                        bottom: 8 - ty * local,
+                        child: Opacity(
+                          opacity: local < 0.12
+                              ? local / 0.12
+                              : (1 - local).clamp(0.0, 1.0),
+                          child: Transform.scale(
+                            scale: 1 - 0.55 * local,
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: AppColors.mustard,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color: AppColors.navy, width: 2),
+                              ),
+                              child: const Text('+10',
+                                  style: TextStyle(
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.w800)),
+                            ),
+                          ),
                         ),
-                        child: const Text('+10',
-                            style: TextStyle(
-                                fontSize: 9, fontWeight: FontWeight.w800)),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
+              ],
             ),
+          ),
+          // left+right zorunlu — aksi halde pill width:infinity sonsuz constraint alır
           Positioned(
+            left: 0,
             right: 0,
-            top: 0,
+            bottom: 0,
             child: TweenAnimationBuilder<double>(
-              tween: Tween(begin: 1, end: 1.14),
+              tween: Tween(begin: 1, end: 1.06),
               duration: const Duration(milliseconds: 400),
               curve: AppMotion.curve,
               builder: (context, s, child) =>
-                  Transform.scale(scale: s > 1.07 ? 2.14 - s : s, child: child),
+                  Transform.scale(scale: s, child: child),
               child: pill,
             ),
           ),

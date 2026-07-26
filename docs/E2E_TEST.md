@@ -6,7 +6,8 @@
 
 > **2026-07-26 (yeniden test turu):** Dilim oturumu sıkılaştırıldı (max ~6 yeni + 5 tekrar kartı + max 4 egzersiz); ileri Schritt SR sızıntısı kesildi; Tekrar caught-up sinyali güçlendirildi; fill chip highlight; session AnimatedSwitcher pointer fix; web audio guard genişletildi.  
 > **Kritik:** `localhost:5281` eski build kalabiliyor — her turda **hard restart** (`flutter run` yeniden) şart. Tarayıcıda hard refresh (Cmd+Shift+R).  
-> **Tester doğrulama (2026-07-26 akşam):** 6 kritik madde (sheet, dilim uzunluğu, caught-up, profil, donma, Welche/Frankreich/chip) yeni build’de geçti. Büyük dilimlerde “~N ders kaldı” ipucu eklendi.
+> **Tester doğrulama (2026-07-26 akşam):** 6 kritik madde (sheet, dilim uzunluğu, caught-up, profil, donma, Welche/Frankreich/chip) yeni build’de geçti. Büyük dilimlerde “~N ders kaldı” ipucu eklendi.  
+> **S1 not:** Result `XpFlightBurst` → `Positioned(right)` içinde `width: infinity` layout crash + mouse_tracker (Keep learning tepkisiz) — düzeltildi (`left`+`right` bound).
 
 ## Sistem hazırlığı (özet)
 
