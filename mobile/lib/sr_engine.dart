@@ -141,6 +141,44 @@ List<String> buildDailyQueue({
   return out.take(targetSize).toList();
 }
 
+/// Dilim oturumu kuyruğu (Prototype v4):
+/// dilimin yeni kelimeleri (max [maxNew]) + bugün due tekrarlar (max [maxReviews]).
+List<String> buildSliceQueue({
+  required List<String> sliceWords,
+  required List<String> allWords,
+  required Map<String, SrEntry> sr,
+  required DateTime today,
+  int maxNew = 6,
+  int maxReviews = 5,
+}) {
+  final fresh = sliceWords.where((w) => sr[w] == null).toList();
+  final due = <String>[];
+  for (final w in allWords) {
+    final e = sr[w];
+    if (e != null && e.isDue(today) && !fresh.contains(w)) {
+      due.add(w);
+    }
+  }
+
+  final out = <String>[
+    ...fresh.take(maxNew),
+    ...due.take(maxReviews),
+  ];
+
+  // Dilimde hâlâ tanıtılmamış yoksa: dilimin due/zayıf kelimeleriyle doldur.
+  if (out.isEmpty) {
+    final sliceDue = sliceWords.where((w) {
+      final e = sr[w];
+      return e != null && e.isDue(today);
+    }).toList();
+    out.addAll(sliceDue.take(maxNew + maxReviews));
+  }
+  if (out.isEmpty) {
+    out.addAll(sliceWords.take(maxNew));
+  }
+  return out;
+}
+
 double masteryFraction(Map<String, SrEntry> sr, int totalVocab) {
   if (totalVocab == 0) return 0;
   final mastered = sr.values.where((e) => e.isMastered).length;

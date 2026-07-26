@@ -3,30 +3,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
+import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
+import '../slice_map.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'exercise_widgets.dart';
-import '../l10n/app_localizations.dart';
 import 'flashcard_widget.dart';
 import 'result_screen.dart';
-
-String _sliceTitle(AppLocalizations l10n, int n) {
-  switch (n) {
-    case 1:
-      return l10n.slice1Title;
-    case 2:
-      return l10n.slice2Title;
-    case 3:
-      return l10n.slice3Title;
-    case 4:
-      return l10n.slice4Title;
-    default:
-      return l10n.slice5Title;
-  }
-}
 
 class _Step {
   final VocabItem? vocab;
@@ -37,7 +23,9 @@ class _Step {
 }
 
 class SessionScreen extends StatefulWidget {
-  const SessionScreen({super.key});
+  /// true = sadece due tekrarlar (Tekrar sekmesi).
+  final bool reviewMode;
+  const SessionScreen({super.key, this.reviewMode = false});
   @override
   State<SessionScreen> createState() => _SessionScreenState();
 }
@@ -46,11 +34,13 @@ class _SessionScreenState extends State<SessionScreen> {
   List<_Step>? _steps;
   List<String> _sessionWords = [];
   List<String> _allWords = [];
+  List<String> _sliceWords = [];
   int _index = 0;
   int _correct = 0;
   int _answerable = 0;
   int _reviewsScheduled = 0;
   int _cardCount = 0;
+  int _slice = 1;
   bool _advancing = false;
 
   @override
@@ -63,8 +53,29 @@ class _SessionScreenState extends State<SessionScreen> {
     final lektion = await contentRepo.loadLektion();
     final exercises = await contentRepo.loadExercises();
     _allWords = lektion.vocab.map((v) => v.wort).toList();
+    _slice = progressStore.activeSlice;
+    final tags = schritteForSlice(_slice);
+    final sliceVocab =
+        lektion.vocab.where((v) => tags.contains(v.schritt)).toList();
+    _sliceWords = sliceVocab.map((v) => v.wort).toList();
 
-    _sessionWords = progressStore.dailyWordQueue(_allWords, size: 15);
+    if (widget.reviewMode) {
+      final today = DateTime.now();
+      final day = DateTime(today.year, today.month, today.day);
+      _sessionWords = _allWords.where((w) {
+        final e = progressStore.srEntries[w];
+        return e != null && e.isDue(day);
+      }).take(12).toList();
+      if (_sessionWords.isEmpty) {
+        _sessionWords = progressStore.weakWords(_allWords, limit: 8);
+      }
+    } else {
+      _sessionWords = progressStore.sliceSessionQueue(
+        sliceWords: _sliceWords,
+        allWords: _allWords,
+      );
+    }
+
     _reviewsScheduled = progressStore.dueReviewCount(_allWords);
 
     final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
@@ -74,15 +85,29 @@ class _SessionScreenState extends State<SessionScreen> {
         .toList();
     _cardCount = cards.length;
 
+    final sliceExercises = widget.reviewMode
+        ? <Exercise>[]
+        : exercises
+            .where((e) => schrittInSlice(e.schritt, _slice))
+            .toList();
+
     final steps = <_Step>[
       ...cards,
-      ...exercises.map((e) => _Step.ex(e)),
+      ...sliceExercises.map((e) => _Step.ex(e)),
     ];
-    _answerable = exercises.length;
+    _answerable = sliceExercises.length;
+    if (steps.isEmpty) {
+      // Güvenlik: boş dilim → eski günlük kuyruk
+      final fallback = progressStore.dailyWordQueue(_allWords, size: 10);
+      steps.addAll(fallback
+          .where(vocabByWord.containsKey)
+          .map((w) => _Step.card(vocabByWord[w]!)));
+      _cardCount = steps.length;
+      _sessionWords = fallback;
+    }
     if (mounted) setState(() => _steps = steps);
   }
 
-  /// UI önce ilerler; SR/disk arka planda — Weiter/X kilitlenmesin.
   void _advance(bool? correct, {Exercise? exercise}) {
     if (_advancing || _steps == null) return;
     _advancing = true;
@@ -174,7 +199,10 @@ class _SessionScreenState extends State<SessionScreen> {
     final alreadyDone = progressStore.dailyGoalDoneToday;
     try {
       await progressStore.addXp(xpGained);
-      await progressStore.completeDailyGoal();
+      if (!widget.reviewMode) {
+        await progressStore.completeDailyGoal();
+        await progressStore.maybeAdvanceSlice(_sliceWords);
+      }
     } catch (e) {
       debugPrint('finish persist: $e');
     }
@@ -183,11 +211,13 @@ class _SessionScreenState extends State<SessionScreen> {
       MaterialPageRoute(
         builder: (_) => ResultScreen(
           correct: _correct,
-          total: _answerable,
+          total: _answerable == 0 ? _cardCount : _answerable,
           xp: xpGained,
           reviewsSaved: _reviewsScheduled + _sessionWords.length,
           streak: progressStore.streak,
-          streakIncreased: !alreadyDone && progressStore.streak >= streakBefore,
+          streakIncreased: !alreadyDone &&
+              !widget.reviewMode &&
+              progressStore.streak >= streakBefore,
         ),
       ),
     );
@@ -196,6 +226,21 @@ class _SessionScreenState extends State<SessionScreen> {
   void _closeSession() {
     AudioService.shared.stopIfPlaying();
     Navigator.of(context).pop();
+  }
+
+  String _sliceTitle(AppLocalizations l10n, int n) {
+    switch (n) {
+      case 1:
+        return l10n.slice1Title;
+      case 2:
+        return l10n.slice2Title;
+      case 3:
+        return l10n.slice3Title;
+      case 4:
+        return l10n.slice4Title;
+      default:
+        return l10n.slice5Title;
+    }
   }
 
   @override
@@ -207,7 +252,6 @@ class _SessionScreenState extends State<SessionScreen> {
     }
     final step = steps[_index];
     final progress = (_index + 1) / steps.length;
-    final slice = progressStore.activeSlice;
     final showTeaser =
         _cardCount > 0 && _index == _cardCount - 1 && step.isCard;
 
@@ -260,7 +304,10 @@ class _SessionScreenState extends State<SessionScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Text(
-                      l10n.sessionSliceChip(slice, _sliceTitle(l10n, slice)),
+                      widget.reviewMode
+                          ? l10n.tabReview
+                          : l10n.sessionSliceChip(
+                              _slice, _sliceTitle(l10n, _slice)),
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w800,

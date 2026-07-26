@@ -406,5 +406,10 @@
   "dayThu": "Jeu",
   "dayFri": "Ven",
   "daySat": "Sam",
-  "daySun": "Dim"
+  "daySun": "Dim",
+  "reminderSoftTitle": "Un rappel une fois par jour ?",
+  "reminderSoftSub": "Un seul rappel à l’heure choisie pour garder ta série. On se tait les jours où tu as déjà fini.",
+  "reminderSoftHint": "Modifiable plus tard dans Profil",
+  "reminderAllow": "Me rappeler",
+  "reminderNotNow": "Pas maintenant"
 }

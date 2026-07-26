@@ -406,5 +406,10 @@
   "dayThu": "Per",
   "dayFri": "Cum",
   "daySat": "Cmt",
-  "daySun": "Paz"
+  "daySun": "Paz",
+  "reminderSoftTitle": "Günde bir kez hatırlatalım mı?",
+  "reminderSoftSub": "Serini korumak için seçtiğin saatte tek bir hatırlatma. Dersi bitirdiğin gün susuyoruz.",
+  "reminderSoftHint": "Sonra Profil’den değişir",
+  "reminderAllow": "Hatırlat",
+  "reminderNotNow": "Şimdi değil"
 }

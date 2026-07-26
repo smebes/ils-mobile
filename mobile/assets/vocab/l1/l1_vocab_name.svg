@@ -1,8 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Name">
-  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="45" y="55" width="110" height="90" rx="12" fill="#2A9D8F"/>
-    <circle cx="75" cy="95" r="16" fill="#E9C46A"/>
-    <path d="M100 80 H140 M100 100 H135 M100 120 H128" stroke="#FAF3E7" stroke-width="5"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<rect width="200" height="200" rx="32" fill="#FAF3E7"></rect>
+<path d="M86 26 h28 v18 h-28 z" fill="#264653" stroke="none"></path>
+<rect x="32" y="42" width="136" height="124" rx="20" fill="#FFFFFF" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></rect>
+<rect x="32" y="42" width="136" height="34" rx="20" fill="#2A9D8F" stroke="none"></rect>
+<path d="M32 76 h136" fill="none" stroke="#264653" stroke-width="5"></path>
+<circle cx="100" cy="106" r="17" fill="#E9C46A" stroke="#264653" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></circle>
+<path d="M64 140 h72 M78 156 h44" fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" opacity=".35"></path>
 </svg>

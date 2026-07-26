@@ -1,8 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Hallo">
-  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="100" cy="70" r="28" fill="#E9C46A"/>
-    <path d="M70 110 Q100 95 130 110 L140 170 H60 Z" fill="#2A9D8F"/>
-    <path d="M130 100 Q160 80 170 110" stroke="#E76F51"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<rect width="200" height="200" rx="32" fill="#FAF3E7"></rect>
+<path d="M48 170 v-30 a32 32 0 0 1 64 0 v30" fill="#2A9D8F" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
+<circle cx="80" cy="74" r="28" fill="#E9C46A" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></circle>
+<circle cx="70" cy="70" r="4.5" fill="#264653"></circle>
+<circle cx="90" cy="70" r="4.5" fill="#264653"></circle>
+<path d="M70 86 q10 9 20 0" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round"></path>
+<path d="M110 142 L134 118 L140 88" fill="none" stroke="#E76F51" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"></path>
+<path d="M158 76 q10 12 0 24" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round"></path>
+<path d="M170 66 q16 20 0 44" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round" opacity=".45"></path>
 </svg>

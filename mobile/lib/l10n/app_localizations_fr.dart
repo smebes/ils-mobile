@@ -605,4 +605,20 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get daySun => 'Dim';
+
+  @override
+  String get reminderSoftTitle => 'Un rappel une fois par jour ?';
+
+  @override
+  String get reminderSoftSub =>
+      'Un seul rappel à l’heure choisie pour garder ta série. On se tait les jours où tu as déjà fini.';
+
+  @override
+  String get reminderSoftHint => 'Modifiable plus tard dans Profil';
+
+  @override
+  String get reminderAllow => 'Me rappeler';
+
+  @override
+  String get reminderNotNow => 'Pas maintenant';
 }

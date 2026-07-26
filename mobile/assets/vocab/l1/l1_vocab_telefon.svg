@@ -1,8 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Telefon">
-  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="70" y="35" width="60" height="120" rx="12" fill="#264653"/>
-    <rect x="78" y="50" width="44" height="70" rx="4" fill="#2A9D8F"/>
-    <circle cx="100" cy="140" r="8" fill="#E9C46A" stroke="none"/>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<rect width="200" height="200" rx="32" fill="#FAF3E7"></rect>
+<rect x="56" y="22" width="88" height="156" rx="22" fill="#FFFFFF" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></rect>
+<rect x="70" y="44" width="60" height="98" rx="10" fill="#2A9D8F" stroke="none"></rect>
+<path d="M88 34 h24" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round"></path>
+<circle cx="100" cy="160" r="8" fill="#E9C46A" stroke="#264653" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></circle>
+<path d="M158 74 q12 26 0 52" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round"></path>
+<path d="M174 60 q18 40 0 80" fill="none" stroke="#264653" stroke-width="5" stroke-linecap="round" opacity=".4"></path>
 </svg>

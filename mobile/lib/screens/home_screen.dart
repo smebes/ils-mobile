@@ -6,6 +6,7 @@ import '../models.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'onboarding_screen.dart';
+import 'reminder_permission_sheet.dart';
 import 'session_screen.dart';
 
 /// L1 dilimleri — (n, deCode); başlık l10n.sliceNTitle ile çözülür.
@@ -86,9 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _startSession() {
+  void _startSession({bool reviewMode = false}) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const SessionScreen()),
+      MaterialPageRoute(
+          builder: (_) => SessionScreen(reviewMode: reviewMode)),
     );
   }
 
@@ -167,7 +169,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 _ReviewTab(
                   dueCount: due,
                   vocab: l.vocab,
-                  onStartReview: _startSession,
+                  onStartReview: () => _startSession(reviewMode: true),
                   onStartLesson: () {
                     setState(() => _tab = 0);
                     _startSession();
@@ -1020,9 +1022,9 @@ class _ReviewTab extends StatelessWidget {
                     color: AppColors.cream,
                     borderRadius: BorderRadius.circular(30),
                   ),
-                  child: Icon(Icons.inbox_outlined,
-                      size: 40,
-                      color: AppColors.navy.withValues(alpha: 0.35)),
+                  clipBehavior: Clip.antiAlias,
+                  child: const MediaImage('assets/img/empty_review.svg',
+                      height: 100, width: 100),
                 ),
                 const SizedBox(height: 16),
                 Text(l10n.noReviewYet,
@@ -1418,6 +1420,7 @@ class _ProfileTab extends StatelessWidget {
       (8, '08:00'),
       (12, '12:00'),
       (18, '18:00'),
+      (19, '19:00'),
       (20, '20:00'),
     ];
     showModalBottomSheet<void>(
@@ -1464,8 +1467,17 @@ class _ProfileTab extends StatelessWidget {
                       selected: progressStore.reminderHour == o.$1,
                       selectedColor: AppColors.teal.withValues(alpha: 0.18),
                       onSelected: (_) async {
-                        await progressStore.setReminderHour(o.$1);
-                        if (ctx.mounted) Navigator.pop(ctx);
+                        Navigator.pop(ctx);
+                        if (o.$1 == null) {
+                          await progressStore.setReminderHour(null);
+                          return;
+                        }
+                        final ok = await ReminderPermissionSheet.show(
+                            context,
+                            hour: o.$1!);
+                        if (ok) {
+                          await progressStore.setReminderHour(o.$1);
+                        }
                       },
                     ),
                 ],

@@ -1143,6 +1143,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sun'**
   String get daySun;
+
+  /// No description provided for @reminderSoftTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind you once a day?'**
+  String get reminderSoftTitle;
+
+  /// No description provided for @reminderSoftSub.
+  ///
+  /// In en, this message translates to:
+  /// **'One reminder at your chosen time to keep your streak. We stay quiet on days you already finished.'**
+  String get reminderSoftSub;
+
+  /// No description provided for @reminderSoftHint.
+  ///
+  /// In en, this message translates to:
+  /// **'You can change this later in Profile'**
+  String get reminderSoftHint;
+
+  /// No description provided for @reminderAllow.
+  ///
+  /// In en, this message translates to:
+  /// **'Remind me'**
+  String get reminderAllow;
+
+  /// No description provided for @reminderNotNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Not now'**
+  String get reminderNotNow;
 }
 
 class _AppLocalizationsDelegate

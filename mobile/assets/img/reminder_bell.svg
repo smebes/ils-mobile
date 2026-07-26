@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Hat1rlatma">
+  <rect x="0" y="0" width="96" height="96" rx="28" fill="#FAF3E7"/>
+  <rect x="30" y="24" width="36" height="42" rx="16" fill="#2A9D8F"/>
+  <circle cx="48" cy="72" r="6" fill="#264653"/>
+  <circle cx="68" cy="30" r="9" fill="#E76F51"/>
+</svg>

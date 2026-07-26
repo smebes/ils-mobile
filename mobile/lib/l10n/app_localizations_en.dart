@@ -601,4 +601,20 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get daySun => 'Sun';
+
+  @override
+  String get reminderSoftTitle => 'Remind you once a day?';
+
+  @override
+  String get reminderSoftSub =>
+      'One reminder at your chosen time to keep your streak. We stay quiet on days you already finished.';
+
+  @override
+  String get reminderSoftHint => 'You can change this later in Profile';
+
+  @override
+  String get reminderAllow => 'Remind me';
+
+  @override
+  String get reminderNotNow => 'Not now';
 }

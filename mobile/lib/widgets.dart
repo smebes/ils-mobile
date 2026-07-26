@@ -15,14 +15,17 @@ class MediaImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (assetPath.endsWith('.svg')) {
-      return SvgPicture(
-        SvgAssetLoader(assetPath),
+      return SvgPicture.asset(
+        assetPath,
         height: height,
         width: width,
         fit: fit,
         allowDrawingOutsideViewBox: true,
         placeholderBuilder: (_) => _placeholder(),
-        errorBuilder: (context, error, stackTrace) => _placeholder(),
+        errorBuilder: (context, error, stackTrace) {
+          debugPrint('SVG load failed: $assetPath → $error');
+          return _placeholder();
+        },
       );
     }
     return Image.asset(

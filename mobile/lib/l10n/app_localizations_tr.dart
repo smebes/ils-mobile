@@ -603,4 +603,20 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get daySun => 'Paz';
+
+  @override
+  String get reminderSoftTitle => 'Günde bir kez hatırlatalım mı?';
+
+  @override
+  String get reminderSoftSub =>
+      'Serini korumak için seçtiğin saatte tek bir hatırlatma. Dersi bitirdiğin gün susuyoruz.';
+
+  @override
+  String get reminderSoftHint => 'Sonra Profil’den değişir';
+
+  @override
+  String get reminderAllow => 'Hatırlat';
+
+  @override
+  String get reminderNotNow => 'Şimdi değil';
 }

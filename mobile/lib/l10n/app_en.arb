@@ -340,5 +340,10 @@
   "dayThu": "Thu",
   "dayFri": "Fri",
   "daySat": "Sat",
-  "daySun": "Sun"
+  "daySun": "Sun",
+  "reminderSoftTitle": "Remind you once a day?",
+  "reminderSoftSub": "One reminder at your chosen time to keep your streak. We stay quiet on days you already finished.",
+  "reminderSoftHint": "You can change this later in Profile",
+  "reminderAllow": "Remind me",
+  "reminderNotNow": "Not now"
 }

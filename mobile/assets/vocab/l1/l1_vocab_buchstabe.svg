@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Buchstabe">
-  <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <rect x="50" y="40" width="100" height="120" rx="10" fill="#E9C46A" stroke="#264653" stroke-width="6"/>
-  <line x1="75" y1="70" x2="125" y2="70" stroke="#264653" stroke-width="10" stroke-linecap="round"/>
-  <line x1="100" y1="70" x2="100" y2="145" stroke="#264653" stroke-width="10" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<rect width="200" height="200" rx="32" fill="#FAF3E7"></rect>
+<rect x="46" y="30" width="108" height="116" rx="20" fill="#E9C46A" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></rect>
+<text x="100" y="116" font-family="Verdana, DejaVu Sans, sans-serif" font-size="72" font-weight="bold" fill="#264653" text-anchor="middle">A</text>
+<path d="M60 164 h80" fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"></path>
 </svg>

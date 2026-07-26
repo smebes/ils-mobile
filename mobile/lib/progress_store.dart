@@ -202,6 +202,32 @@ class ProgressStore extends ChangeNotifier {
   List<String> dailyWordQueue(List<String> allWords, {int size = 15}) =>
       buildDailyQueue(allWords: allWords, sr: _sr, today: _today(), targetSize: size);
 
+  /// Aktif dilim için kısa oturum kuyruğu (v4).
+  List<String> sliceSessionQueue({
+    required List<String> sliceWords,
+    required List<String> allWords,
+    int maxNew = 6,
+    int maxReviews = 5,
+  }) =>
+      buildSliceQueue(
+        sliceWords: sliceWords,
+        allWords: allWords,
+        sr: _sr,
+        today: _today(),
+        maxNew: maxNew,
+        maxReviews: maxReviews,
+      );
+
+  /// Dilim kelimelerinin hepsi tanıtıldıysa sıradaki dilime geç (bugün zorlamaz).
+  Future<void> maybeAdvanceSlice(List<String> sliceWords) async {
+    if (sliceWords.isEmpty) return;
+    final allSeen = sliceWords.every((w) => _sr.containsKey(w));
+    if (!allSeen) return;
+    final next = (activeSlice + 1).clamp(1, 5);
+    if (next == activeSlice) return;
+    await setActiveSlice(next);
+  }
+
   /// Zayıf kelimeler (ilerleme ekranı için).
   List<String> weakWords(List<String> allWords, {int limit = 5}) {
     final list = allWords
