@@ -619,4 +619,14 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get reminderNotNow => 'Şimdi değil';
+
+  @override
+  String get reviewWordBadge => 'Tekrar';
+
+  @override
+  String get reviewCaughtUp => 'Bugünlük tekrar bitti';
+
+  @override
+  String get reviewCaughtUpHint =>
+      'Harika — yarın yeni kelimeler burada olacak. İstersen derse devam edebilirsin.';
 }

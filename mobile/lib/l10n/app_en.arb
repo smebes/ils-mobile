@@ -345,5 +345,8 @@
   "reminderSoftSub": "One reminder at your chosen time to keep your streak. We stay quiet on days you already finished.",
   "reminderSoftHint": "You can change this later in Profile",
   "reminderAllow": "Remind me",
-  "reminderNotNow": "Not now"
+  "reminderNotNow": "Not now",
+  "reviewWordBadge": "Review",
+  "reviewCaughtUp": "You’re caught up for today",
+  "reviewCaughtUpHint": "Nice — new review words will show up tomorrow. You can keep learning a lesson if you like."
 }

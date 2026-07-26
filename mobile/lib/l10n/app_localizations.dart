@@ -1173,6 +1173,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Not now'**
   String get reminderNotNow;
+
+  /// No description provided for @reviewWordBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Review'**
+  String get reviewWordBadge;
+
+  /// No description provided for @reviewCaughtUp.
+  ///
+  /// In en, this message translates to:
+  /// **'You’re caught up for today'**
+  String get reviewCaughtUp;
+
+  /// No description provided for @reviewCaughtUpHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Nice — new review words will show up tomorrow. You can keep learning a lesson if you like.'**
+  String get reviewCaughtUpHint;
 }
 
 class _AppLocalizationsDelegate

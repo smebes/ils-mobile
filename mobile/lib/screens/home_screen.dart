@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../audio_service.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
@@ -75,6 +76,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _load();
+    // Web: olası <audio> katmanını temizle (sessiz pointer kilidi).
+    AudioService.shared.stopIfPlaying();
   }
 
   Future<void> _load() async {
@@ -151,40 +154,47 @@ class _HomeScreenState extends State<HomeScreen> {
         final mastery = progressStore.masteryPct(l.vocab.length);
         final mastered = progressStore.masteredCount(l.vocab.length);
 
-        return Scaffold(
-          body: SafeArea(
-            child: IndexedStack(
-              index: _tab,
-              children: [
-                _LearnTab(
-                  lektion: l,
-                  greeting: _greeting(l10n),
-                  dueCount: due,
-                  mastery: mastery,
-                  mastered: mastered,
-                  onStart: _startSession,
-                  onLockedLesson: (n) =>
-                      _showLockSheet(n, mastery, mastered),
-                ),
-                _ReviewTab(
-                  dueCount: due,
-                  vocab: l.vocab,
-                  onStartReview: () => _startSession(reviewMode: true),
-                  onStartLesson: () {
-                    setState(() => _tab = 0);
-                    _startSession();
-                  },
-                ),
-                _ProfileTab(
-                  mastery: mastery,
-                  onEditGoal: _editGoal,
-                ),
-              ],
+        return Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) => AudioService.shared.stopIfPlaying(),
+          child: Scaffold(
+            body: SafeArea(
+              child: IndexedStack(
+                index: _tab,
+                children: [
+                  _LearnTab(
+                    lektion: l,
+                    greeting: _greeting(l10n),
+                    dueCount: due,
+                    mastery: mastery,
+                    mastered: mastered,
+                    onStart: _startSession,
+                    onLockedLesson: (n) =>
+                        _showLockSheet(n, mastery, mastered),
+                  ),
+                  _ReviewTab(
+                    dueCount: due,
+                    vocab: l.vocab,
+                    onStartReview: () => _startSession(reviewMode: true),
+                    onStartLesson: () {
+                      setState(() => _tab = 0);
+                      _startSession();
+                    },
+                  ),
+                  _ProfileTab(
+                    mastery: mastery,
+                    onEditGoal: _editGoal,
+                  ),
+                ],
+              ),
             ),
-          ),
-          bottomNavigationBar: _BottomNav(
-            index: _tab,
-            onChanged: (i) => setState(() => _tab = i),
+            bottomNavigationBar: _BottomNav(
+              index: _tab,
+              onChanged: (i) {
+                AudioService.shared.stopIfPlaying();
+                setState(() => _tab = i);
+              },
+            ),
           ),
         );
       },
@@ -430,6 +440,62 @@ class _BottomNav extends StatelessWidget {
   }
 }
 
+/// Kilitli/sıradaki dilim — SnackBar yerine sheet (web'de sessiz kilit riskini azaltır).
+void _showSliceBlockedSheet(
+  BuildContext context, {
+  required bool done,
+  required VoidCallback onStartLesson,
+}) {
+  final l10n = context.l10n;
+  showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+    ),
+    builder: (ctx) {
+      return Padding(
+        padding: const EdgeInsets.fromLTRB(22, 12, 22, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Center(
+              child: Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.navy.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+              ),
+            ),
+            const SizedBox(height: 18),
+            Text(
+              done ? l10n.sliceDoneSnack : l10n.finishTodayFirst,
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.w800, height: 1.3),
+            ),
+            const SizedBox(height: 16),
+            if (!done)
+              FilledButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  onStartLesson();
+                },
+                child: Text(l10n.startTodaysLesson),
+              ),
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.ok),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
 class _LearnTab extends StatelessWidget {
   final Lektion lektion;
   final String greeting;
@@ -517,10 +583,11 @@ class _LearnTab extends StatelessWidget {
           const SizedBox(height: 8),
           OutlinedButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text(l10n.tomorrowQueued),
-                    duration: const Duration(seconds: 2)),
+              AudioService.shared.stopIfPlaying();
+              _showSliceBlockedSheet(
+                context,
+                done: true,
+                onStartLesson: onStart,
               );
             },
             style: OutlinedButton.styleFrom(
@@ -567,18 +634,17 @@ class _LearnTab extends StatelessWidget {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () {
+                // Web pointer kilidi: snack yerine sheet (Messenger route takılmasını önler).
+                AudioService.shared.stopIfPlaying();
                 if (st == 'active') {
                   onStart();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(st == 'done'
-                          ? l10n.sliceDoneSnack
-                          : l10n.finishTodayFirst),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
+                  return;
                 }
+                _showSliceBlockedSheet(
+                  context,
+                  done: st == 'done',
+                  onStartLesson: onStart,
+                );
               },
               child: Opacity(
                 opacity: locked ? 0.55 : 1,
@@ -963,6 +1029,7 @@ class _ReviewTab extends StatelessWidget {
     final l10n = context.l10n;
     final words = vocab.map((v) => v.wort).toList();
     final hasReview = dueCount > 0;
+    final hasHistory = progressStore.srEntries.isNotEmpty;
     final mistakes = progressStore.mistakeWords(words);
     final weak = progressStore.weakWords(words);
     final upcoming = progressStore.upcomingReviews(words);
@@ -1027,12 +1094,13 @@ class _ReviewTab extends StatelessWidget {
                       height: 100, width: 100),
                 ),
                 const SizedBox(height: 16),
-                Text(l10n.noReviewYet,
+                Text(
+                    hasHistory ? l10n.reviewCaughtUp : l10n.noReviewYet,
                     style: const TextStyle(
                         fontSize: 19, fontWeight: FontWeight.w800)),
                 const SizedBox(height: 6),
                 Text(
-                  l10n.noReviewHint,
+                  hasHistory ? l10n.reviewCaughtUpHint : l10n.noReviewHint,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 14,
@@ -1052,7 +1120,10 @@ class _ReviewTab extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),
                     ),
-                    child: Text(l10n.startTodaysLesson,
+                    child: Text(
+                        hasHistory
+                            ? l10n.keepLearning
+                            : l10n.startTodaysLesson,
                         style: const TextStyle(fontWeight: FontWeight.w800)),
                   ),
                 ),
@@ -1735,6 +1806,7 @@ class _ProfileTab extends StatelessWidget {
           decoration: cardDecoration(),
           child: Column(
             children: [
+              _settingsRow(l10n.editName, name, () => _editName(context)),
               _settingsRow(
                   l10n.dailyGoalDuration,
                   l10n.minutesShort(progressStore.dailyGoalMinutes),

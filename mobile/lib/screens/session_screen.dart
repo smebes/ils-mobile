@@ -66,6 +66,7 @@ class _SessionScreenState extends State<SessionScreen> {
         final e = progressStore.srEntries[w];
         return e != null && e.isDue(day);
       }).take(12).toList();
+      // Due yoksa zayıf kelimelerle kısa tekrar — ama egzersiz ekleme.
       if (_sessionWords.isEmpty) {
         _sessionWords = progressStore.weakWords(_allWords, limit: 8);
       }
@@ -76,7 +77,9 @@ class _SessionScreenState extends State<SessionScreen> {
       );
     }
 
-    _reviewsScheduled = progressStore.dueReviewCount(_allWords);
+    _reviewsScheduled = widget.reviewMode
+        ? _sessionWords.length
+        : progressStore.dueReviewCount(_allWords);
 
     final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
     final cards = _sessionWords
@@ -152,11 +155,20 @@ class _SessionScreenState extends State<SessionScreen> {
     if (_advancing || _steps == null) return;
     _advancing = true;
 
-    unawaited(
-      progressStore.introduceWord(v.wort).catchError((e) {
-        debugPrint('introduceWord: $e');
-      }),
-    );
+    if (widget.reviewMode) {
+      // Tekrar kartı: doğru pratik say → vade ileri gider.
+      unawaited(
+        progressStore.recordAnswer(v.wort, true).catchError((e) {
+          debugPrint('review recordAnswer: $e');
+        }),
+      );
+    } else {
+      unawaited(
+        progressStore.introduceWord(v.wort).catchError((e) {
+          debugPrint('introduceWord: $e');
+        }),
+      );
+    }
 
     if (_index + 1 >= _steps!.length) {
       unawaited(() async {
@@ -350,6 +362,7 @@ class _SessionScreenState extends State<SessionScreen> {
       return FlashcardWidget(
         key: ValueKey('card_${step.vocab!.wort}'),
         vocab: step.vocab!,
+        isReview: widget.reviewMode,
         onNext: () => _onFlashcardNext(step.vocab!),
       );
     }

@@ -422,7 +422,7 @@
       "vocab_domain": "Personalien",
       "payload": {
         "instruction": "Was ist richtig?",
-        "question": "Welche Satz ist eine W-Frage?",
+        "question": "Welcher Satz ist eine W-Frage?",
         "options": [
           {
             "id": "o1",

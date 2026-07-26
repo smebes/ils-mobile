@@ -8,12 +8,18 @@ import '../theme.dart';
 import '../tts_service.dart';
 import '../widgets.dart';
 
-/// Tanıtım kartı: görsel + artikel renk kodu + kelime + çeviri (tap ile).
+/// Tanıtım / tekrar kartı: görsel + artikel renk kodu + kelime + çeviri.
 class FlashcardWidget extends StatefulWidget {
   final VocabItem vocab;
   final VoidCallback onNext;
-  const FlashcardWidget(
-      {super.key, required this.vocab, required this.onNext});
+  /// true → "Tekrar" etiketi; SR güncellemesi session tarafında.
+  final bool isReview;
+  const FlashcardWidget({
+    super.key,
+    required this.vocab,
+    required this.onNext,
+    this.isReview = false,
+  });
 
   @override
   State<FlashcardWidget> createState() => _FlashcardWidgetState();
@@ -60,7 +66,8 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
             padding: const EdgeInsets.fromLTRB(20, 6, 20, 12),
             children: [
               Text(
-                l10n.newWord.toUpperCase(),
+                (widget.isReview ? l10n.reviewWordBadge : l10n.newWord)
+                    .toUpperCase(),
                 style: const TextStyle(
                   fontSize: 12,
                   letterSpacing: 1.2,

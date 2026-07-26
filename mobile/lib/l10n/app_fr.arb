@@ -411,5 +411,8 @@
   "reminderSoftSub": "Un seul rappel à l’heure choisie pour garder ta série. On se tait les jours où tu as déjà fini.",
   "reminderSoftHint": "Modifiable plus tard dans Profil",
   "reminderAllow": "Me rappeler",
-  "reminderNotNow": "Pas maintenant"
+  "reminderNotNow": "Pas maintenant",
+  "reviewWordBadge": "Révision",
+  "reviewCaughtUp": "Révisions du jour terminées",
+  "reviewCaughtUpHint": "Super — de nouveaux mots arriveront demain. Tu peux continuer une leçon si tu veux."
 }

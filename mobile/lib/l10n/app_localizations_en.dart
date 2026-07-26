@@ -617,4 +617,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reminderNotNow => 'Not now';
+
+  @override
+  String get reviewWordBadge => 'Review';
+
+  @override
+  String get reviewCaughtUp => 'You’re caught up for today';
+
+  @override
+  String get reviewCaughtUpHint =>
+      'Nice — new review words will show up tomorrow. You can keep learning a lesson if you like.';
 }

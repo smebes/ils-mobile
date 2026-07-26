@@ -411,5 +411,8 @@
   "reminderSoftSub": "Serini korumak için seçtiğin saatte tek bir hatırlatma. Dersi bitirdiğin gün susuyoruz.",
   "reminderSoftHint": "Sonra Profil’den değişir",
   "reminderAllow": "Hatırlat",
-  "reminderNotNow": "Şimdi değil"
+  "reminderNotNow": "Şimdi değil",
+  "reviewWordBadge": "Tekrar",
+  "reviewCaughtUp": "Bugünlük tekrar bitti",
+  "reviewCaughtUpHint": "Harika — yarın yeni kelimeler burada olacak. İstersen derse devam edebilirsin."
 }
