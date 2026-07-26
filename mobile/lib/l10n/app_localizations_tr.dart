@@ -674,8 +674,13 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String mapBandSliceWords(int slice, int seen, int total) {
-    return 'Dilim $slice · $seen / $total kelime';
+  String mapBandSliceWords(int slice, int seen, int total, int left) {
+    return 'Dilim $slice · $seen/$total kelime · ~$left ders kaldı';
+  }
+
+  @override
+  String mapBandSliceAlmost(int slice, int seen, int total) {
+    return 'Dilim $slice · $seen/$total kelime · son ders';
   }
 
   @override

@@ -440,8 +440,17 @@
       "done": { "type": "int" }
     }
   },
-  "mapBandSliceWords": "Dilim {slice} · {seen} / {total} kelime",
+  "mapBandSliceWords": "Dilim {slice} · {seen}/{total} kelime · ~{left} ders kaldı",
   "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": { "type": "int" },
+      "seen": { "type": "int" },
+      "total": { "type": "int" },
+      "left": { "type": "int" }
+    }
+  },
+  "mapBandSliceAlmost": "Dilim {slice} · {seen}/{total} kelime · son ders",
+  "@mapBandSliceAlmost": {
     "placeholders": {
       "slice": { "type": "int" },
       "seen": { "type": "int" },

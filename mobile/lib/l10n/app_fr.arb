@@ -440,8 +440,17 @@
       "done": { "type": "int" }
     }
   },
-  "mapBandSliceWords": "Tranche {slice} · {seen} / {total} mots",
+  "mapBandSliceWords": "Tranche {slice} · {seen}/{total} mots · ~{left} leçons",
   "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": { "type": "int" },
+      "seen": { "type": "int" },
+      "total": { "type": "int" },
+      "left": { "type": "int" }
+    }
+  },
+  "mapBandSliceAlmost": "Tranche {slice} · {seen}/{total} mots · dernière leçon",
+  "@mapBandSliceAlmost": {
     "placeholders": {
       "slice": { "type": "int" },
       "seen": { "type": "int" },

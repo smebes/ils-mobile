@@ -672,8 +672,13 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String mapBandSliceWords(int slice, int seen, int total) {
-    return 'Slice $slice · $seen / $total words';
+  String mapBandSliceWords(int slice, int seen, int total, int left) {
+    return 'Slice $slice · $seen/$total words · ~$left lessons left';
+  }
+
+  @override
+  String mapBandSliceAlmost(int slice, int seen, int total) {
+    return 'Slice $slice · $seen/$total words · last lesson';
   }
 
   @override

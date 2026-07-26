@@ -1273,8 +1273,14 @@ abstract class AppLocalizations {
   /// No description provided for @mapBandSliceWords.
   ///
   /// In en, this message translates to:
-  /// **'Slice {slice} · {seen} / {total} words'**
-  String mapBandSliceWords(int slice, int seen, int total);
+  /// **'Slice {slice} · {seen}/{total} words · ~{left} lessons left'**
+  String mapBandSliceWords(int slice, int seen, int total, int left);
+
+  /// No description provided for @mapBandSliceAlmost.
+  ///
+  /// In en, this message translates to:
+  /// **'Slice {slice} · {seen}/{total} words · last lesson'**
+  String mapBandSliceAlmost(int slice, int seen, int total);
 
   /// No description provided for @mapSectionReward.
   ///

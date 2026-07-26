@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../curriculum.dart';
+import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
@@ -391,8 +392,7 @@ class _BandSection extends StatelessWidget {
                 : l10n.mapPillSoon));
     final sub = active
         ? (info.activeTotal > 0
-            ? l10n.mapBandSliceWords(
-                info.activeSliceN, info.activeSeen, info.activeTotal)
+            ? _activeBandSub(l10n, info)
             : l10n.mapBandProgress(info.slicesDone * 20, info.slicesDone))
         : (info.state == LektionMapState.next
             ? l10n.pathL2Note
@@ -485,6 +485,21 @@ class _BandSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  /// ~6 yeni kelime / ders varsayımıyla kalan oturum tahmini.
+  String _activeBandSub(AppLocalizations l10n, LektionMapInfo info) {
+    final remaining = (info.activeTotal - info.activeSeen).clamp(0, 999);
+    if (remaining <= 0) {
+      return l10n.mapBandProgress(info.slicesDone * 20, info.slicesDone);
+    }
+    final leftSessions = ((remaining + 5) ~/ 6).clamp(1, 99);
+    if (leftSessions <= 1) {
+      return l10n.mapBandSliceAlmost(
+          info.activeSliceN, info.activeSeen, info.activeTotal);
+    }
+    return l10n.mapBandSliceWords(
+        info.activeSliceN, info.activeSeen, info.activeTotal, leftSessions);
   }
 }
 

@@ -374,8 +374,17 @@
       "done": {"type": "int"}
     }
   },
-  "mapBandSliceWords": "Slice {slice} · {seen} / {total} words",
+  "mapBandSliceWords": "Slice {slice} · {seen}/{total} words · ~{left} lessons left",
   "@mapBandSliceWords": {
+    "placeholders": {
+      "slice": {"type": "int"},
+      "seen": {"type": "int"},
+      "total": {"type": "int"},
+      "left": {"type": "int"}
+    }
+  },
+  "mapBandSliceAlmost": "Slice {slice} · {seen}/{total} words · last lesson",
+  "@mapBandSliceAlmost": {
     "placeholders": {
       "slice": {"type": "int"},
       "seen": {"type": "int"},
