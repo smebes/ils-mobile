@@ -39,7 +39,7 @@ mixin CheckFlow<T extends StatefulWidget> on State<T> {
       return FeedbackBar(
         correct: correct,
         message: feedbackMessage,
-        cta: 'Weiter',
+        cta: 'Devam',
         onNext: () => onComplete(correct),
       );
     }
@@ -49,7 +49,7 @@ mixin CheckFlow<T extends StatefulWidget> on State<T> {
         width: double.infinity,
         child: FilledButton(
           onPressed: canCheck ? doCheck : null,
-          child: const Text('Prüfen'),
+          child: const Text('Kontrol et'),
         ),
       ),
     );
@@ -431,7 +431,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
     if (!canCheck) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Bitte alle Fragen beantworten.'),
+          content: Text('Lütfen tüm soruları cevapla.'),
           duration: Duration(seconds: 2),
         ),
       );
@@ -446,7 +446,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
       return FeedbackBar(
         correct: correct,
         message: feedbackMessage,
-        cta: 'Weiter',
+        cta: 'Devam',
         onNext: () {
           _audio.stopIfPlaying();
           onComplete(correct);
@@ -459,7 +459,7 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
         width: double.infinity,
         child: FilledButton(
           onPressed: doCheck,
-          child: const Text('Prüfen'),
+          child: const Text('Kontrol et'),
         ),
       ),
     );

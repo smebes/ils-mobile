@@ -165,10 +165,22 @@ class FeedbackBar extends StatelessWidget {
               Icon(correct ? Icons.check_circle : Icons.info,
                   color: color, size: 26),
               const SizedBox(width: 8),
-              Text(
-                correct ? 'Richtig!' : 'Fast!',
-                style: TextStyle(
-                    color: color, fontSize: 18, fontWeight: FontWeight.w700),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    correct ? 'Richtig!' : 'Fast!',
+                    style: TextStyle(
+                        color: color, fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                  Text(
+                    correct ? 'Doğru' : 'Neredeyse',
+                    style: TextStyle(
+                        color: color.withValues(alpha: 0.85),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
             ],
           ),

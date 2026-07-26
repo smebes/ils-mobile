@@ -55,25 +55,25 @@ class _ResultScreenState extends State<ResultScreen> {
                       children: [
                         const Text('🎉', style: TextStyle(fontSize: 72)),
                         const SizedBox(height: 12),
-                        const Text('Geschafft!',
+                        const Text('Tebrikler!',
                             style: TextStyle(
                                 fontSize: 30, fontWeight: FontWeight.w800)),
                         const SizedBox(height: 8),
-                        Text('Tägliches Ziel erreicht',
+                        Text('Günlük hedef tamamlandı',
                             style: TextStyle(
                                 fontSize: 16,
                                 color: AppColors.navy.withValues(alpha: 0.6))),
                         const SizedBox(height: 32),
-                        _statRow('Übungen', '${widget.correct} / ${widget.total}'),
+                        _statRow('Alıştırmalar', '${widget.correct} / ${widget.total}'),
                         const SizedBox(height: 12),
-                        _statRow('Erfolg', '${(pct * 100).round()}%'),
+                        _statRow('Başarı', '${(pct * 100).round()}%'),
                         const SizedBox(height: 12),
                         _statRow('XP', '+${widget.xp}'),
                         if (widget.reviewsSaved > 0) ...[
                           const SizedBox(height: 20),
                           Text(
-                            'Wörter zur Wiederholung gespeichert 📚\n'
-                            '(${widget.reviewsSaved} im SR-Plan)',
+                            'Tekrar için kelimeler kaydedildi 📚\n'
+                            '(${widget.reviewsSaved} kelime planında)',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 14,
@@ -86,7 +86,7 @@ class _ResultScreenState extends State<ResultScreen> {
                           child: FilledButton(
                             onPressed: () => Navigator.of(context)
                                 .popUntil((route) => route.isFirst),
-                            child: const Text('Weiter lernen'),
+                            child: const Text('Öğrenmeye devam'),
                           ),
                         ),
                       ],

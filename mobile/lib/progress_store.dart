@@ -9,6 +9,10 @@ class ProgressStore extends ChangeNotifier {
   static const _kLastDay = 'last_active_day';
   static const _kXp = 'xp';
   static const _kSr = 'sr_entries_v2';
+  static const _kUserName = 'user_name';
+  static const _kDailyGoalMin = 'daily_goal_min';
+  static const _kOnboarding = 'onboarding_done';
+  static const _kActiveSlice = 'active_slice';
 
   SharedPreferences? _p;
   final Map<String, SrEntry> _sr = {};
@@ -34,6 +38,55 @@ class ProgressStore extends ChangeNotifier {
   int get streak => _p?.getInt(_kStreak) ?? 0;
   int get xp => _p?.getInt(_kXp) ?? 0;
   int get level => 1 + xp ~/ 100;
+
+  String? get userName {
+    final n = _p?.getString(_kUserName);
+    if (n == null || n.trim().isEmpty) return null;
+    return n.trim();
+  }
+
+  int get dailyGoalMinutes => _p?.getInt(_kDailyGoalMin) ?? 10;
+
+  bool get onboardingDone => _p?.getBool(_kOnboarding) ?? false;
+
+  /// 1..5 — L1 Schritt dilimi (Folge+A = 1 … E = 5)
+  int get activeSlice => (_p?.getInt(_kActiveSlice) ?? 1).clamp(1, 5);
+
+  bool get dailyGoalDoneToday {
+    final last = _p?.getString(_kLastDay);
+    return last == _dayKey(_today());
+  }
+
+  /// Home CTA fazı: new | progress | done
+  String get homePhase {
+    if (dailyGoalDoneToday) return 'done';
+    if (_sr.isNotEmpty || xp > 0) return 'progress';
+    return 'new';
+  }
+
+  Future<void> setUserName(String? name) async {
+    if (name == null || name.trim().isEmpty) {
+      await _p?.remove(_kUserName);
+    } else {
+      await _p?.setString(_kUserName, name.trim());
+    }
+    notifyListeners();
+  }
+
+  Future<void> setDailyGoalMinutes(int minutes) async {
+    await _p?.setInt(_kDailyGoalMin, minutes);
+    notifyListeners();
+  }
+
+  Future<void> setOnboardingDone(bool v) async {
+    await _p?.setBool(_kOnboarding, v);
+    notifyListeners();
+  }
+
+  Future<void> setActiveSlice(int slice) async {
+    await _p?.setInt(_kActiveSlice, slice.clamp(1, 5));
+    notifyListeners();
+  }
 
   Map<String, SrEntry> get srEntries => Map.unmodifiable(_sr);
 

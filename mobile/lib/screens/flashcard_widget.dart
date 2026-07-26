@@ -52,7 +52,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
           padding: EdgeInsets.fromLTRB(20, 8, 20, 4),
           child: Align(
             alignment: Alignment.centerLeft,
-            child: Text('Neues Wort',
+            child: Text('Yeni kelime',
                 style: TextStyle(fontSize: 15, color: AppColors.teal,
                     fontWeight: FontWeight.w700)),
           ),
@@ -161,7 +161,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
             width: double.infinity,
             child: FilledButton(
               onPressed: _goNext,
-              child: const Text('Weiter'),
+              child: const Text('Devam'),
             ),
           ),
         ),
