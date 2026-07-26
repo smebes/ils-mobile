@@ -203,15 +203,16 @@ class ProgressStore extends ChangeNotifier {
       buildDailyQueue(allWords: allWords, sr: _sr, today: _today(), targetSize: size);
 
   /// Aktif dilim için kısa oturum kuyruğu (v4).
+  /// [reviewPool] açık dilimlerin kelimeleri — ileri Schritt sızmasın.
   List<String> sliceSessionQueue({
     required List<String> sliceWords,
-    required List<String> allWords,
+    required List<String> reviewPool,
     int maxNew = 6,
     int maxReviews = 5,
   }) =>
       buildSliceQueue(
         sliceWords: sliceWords,
-        allWords: allWords,
+        reviewPool: reviewPool,
         sr: _sr,
         today: _today(),
         maxNew: maxNew,

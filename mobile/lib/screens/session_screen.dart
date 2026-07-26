@@ -56,9 +56,13 @@ class _SessionScreenState extends State<SessionScreen> {
     _allWords = lektion.vocab.map((v) => v.wort).toList();
     _slice = progressStore.activeSlice;
     final tags = schritteForSlice(_slice);
+    final unlocked = schritteThroughSlice(_slice);
     final sliceVocab =
         lektion.vocab.where((v) => tags.contains(v.schritt)).toList();
+    final reviewVocab =
+        lektion.vocab.where((v) => unlocked.contains(v.schritt)).toList();
     _sliceWords = sliceVocab.map((v) => v.wort).toList();
+    final reviewPool = reviewVocab.map((v) => v.wort).toList();
 
     if (widget.reviewMode) {
       final today = DateTime.now();
@@ -74,13 +78,13 @@ class _SessionScreenState extends State<SessionScreen> {
     } else {
       _sessionWords = progressStore.sliceSessionQueue(
         sliceWords: _sliceWords,
-        allWords: _allWords,
+        reviewPool: reviewPool,
       );
     }
 
     _reviewsScheduled = widget.reviewMode
         ? _sessionWords.length
-        : progressStore.dueReviewCount(_allWords);
+        : progressStore.dueReviewCount(reviewPool);
 
     final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
     final cards = _sessionWords
@@ -91,9 +95,10 @@ class _SessionScreenState extends State<SessionScreen> {
 
     final sliceExercises = widget.reviewMode
         ? <Exercise>[]
-        : exercises
-            .where((e) => schrittInSlice(e.schritt, _slice))
-            .toList();
+        : _pickDailyExercises(
+            exercises.where((e) => schrittInSlice(e.schritt, _slice)).toList(),
+            max: 4,
+          );
 
     final steps = <_Step>[
       ...cards,
@@ -101,8 +106,8 @@ class _SessionScreenState extends State<SessionScreen> {
     ];
     _answerable = sliceExercises.length;
     if (steps.isEmpty) {
-      // Güvenlik: boş dilim → eski günlük kuyruk
-      final fallback = progressStore.dailyWordQueue(_allWords, size: 10);
+      // Güvenlik: boş dilim → dilim kelimelerinden kısa kart seti
+      final fallback = _sliceWords.take(8).toList();
       steps.addAll(fallback
           .where(vocabByWord.containsKey)
           .map((w) => _Step.card(vocabByWord[w]!)));
@@ -112,9 +117,31 @@ class _SessionScreenState extends State<SessionScreen> {
     if (mounted) setState(() => _steps = steps);
   }
 
+  /// Günde en fazla [max] egzersiz; mekanik çeşitliliği koru.
+  List<Exercise> _pickDailyExercises(List<Exercise> pool, {int max = 4}) {
+    if (pool.length <= max) return pool;
+    final byMech = <Mechanic, List<Exercise>>{};
+    for (final e in pool) {
+      byMech.putIfAbsent(e.mechanic, () => []).add(e);
+    }
+    final picked = <Exercise>[];
+    // Her mekanikten birer tane (mümkünse)
+    for (final list in byMech.values) {
+      if (picked.length >= max) break;
+      picked.add(list.first);
+    }
+    // Kalan slotları doldur
+    for (final e in pool) {
+      if (picked.length >= max) break;
+      if (!picked.contains(e)) picked.add(e);
+    }
+    return picked;
+  }
+
   void _advance(bool? correct, {Exercise? exercise}) {
     if (_advancing || _steps == null) return;
     _advancing = true;
+    AudioService.shared.stopIfPlaying();
 
     if (correct == true) _correct++;
 
@@ -122,18 +149,22 @@ class _SessionScreenState extends State<SessionScreen> {
         ? _wordsTouchedByExercise(exercise)
         : const <String>[];
 
-    if (_index + 1 >= _steps!.length) {
+    final isLast = _index + 1 >= _steps!.length;
+    if (isLast) {
       unawaited(() async {
-        if (words.isNotEmpty && correct != null) {
-          try {
-            await progressStore.recordAnswersBatch(words, correct);
-          } catch (e) {
-            debugPrint('SR batch: $e');
+        try {
+          if (words.isNotEmpty && correct != null) {
+            try {
+              await progressStore.recordAnswersBatch(words, correct);
+            } catch (e) {
+              debugPrint('SR batch: $e');
+            }
           }
+          if (!mounted) return;
+          await _finish();
+        } finally {
+          _advancing = false;
         }
-        if (!mounted) return;
-        await _finish();
-        _advancing = false;
       }());
       return;
     }
@@ -155,9 +186,9 @@ class _SessionScreenState extends State<SessionScreen> {
   void _onFlashcardNext(VocabItem v) {
     if (_advancing || _steps == null) return;
     _advancing = true;
+    AudioService.shared.stopIfPlaying();
 
     if (widget.reviewMode) {
-      // Tekrar kartı: doğru pratik say → vade ileri gider.
       unawaited(
         progressStore.recordAnswer(v.wort, true).catchError((e) {
           debugPrint('review recordAnswer: $e');
@@ -173,9 +204,12 @@ class _SessionScreenState extends State<SessionScreen> {
 
     if (_index + 1 >= _steps!.length) {
       unawaited(() async {
-        if (!mounted) return;
-        await _finish();
-        _advancing = false;
+        try {
+          if (!mounted) return;
+          await _finish();
+        } finally {
+          _advancing = false;
+        }
       }());
       return;
     }
@@ -186,21 +220,24 @@ class _SessionScreenState extends State<SessionScreen> {
     });
   }
 
+  /// Sadece bu oturum / aktif dilim kelimeleri — ileri Schritt sızmasın.
   List<String> _wordsTouchedByExercise(Exercise ex) {
     final blob = json.encode(ex.payload).toLowerCase();
-    final candidates = _allWords.isNotEmpty ? _allWords : _sessionWords;
-    final sorted = [...candidates]
+    final candidates = <String>{
+      ..._sliceWords,
+      ..._sessionWords,
+    }.toList()
       ..sort((a, b) => b.length.compareTo(a.length));
 
     final hit = <String>[];
-    for (final w in sorted) {
+    for (final w in candidates) {
       final wl = w.toLowerCase().trim();
       if (wl.length <= 2) continue;
       final escaped = RegExp.escape(wl);
       final re = RegExp('(?<![a-zäöüß])$escaped(?![a-zäöüß])');
       if (re.hasMatch(blob)) {
         hit.add(w);
-        if (hit.length >= 12) break;
+        if (hit.length >= 8) break;
       }
     }
     return hit;
@@ -269,98 +306,102 @@ class _SessionScreenState extends State<SessionScreen> {
         _cardCount > 0 && _index == _cardCount - 1 && step.isCard;
 
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 6, 18, 6),
-              child: Row(
-                children: [
-                  IconButton(
-                    icon: Container(
-                      width: 32,
-                      height: 32,
-                      decoration: BoxDecoration(
-                        color: AppColors.navy.withValues(alpha: 0.07),
-                        shape: BoxShape.circle,
+      body: Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerDown: (_) => AudioService.shared.stopIfPlaying(),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 6, 18, 6),
+                child: Row(
+                  children: [
+                    IconButton(
+                      icon: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: AppColors.navy.withValues(alpha: 0.07),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.close, size: 18),
                       ),
-                      child: const Icon(Icons.close, size: 18),
+                      onPressed: _closeSession,
                     ),
-                    onPressed: _closeSession,
-                  ),
-                  Expanded(child: SessionProgressBar(progress)),
-                  const SizedBox(width: 10),
-                  SizedBox(
-                    width: 40,
-                    child: Text(
-                      '${_index + 1}/${steps.length}',
-                      textAlign: TextAlign.right,
+                    Expanded(child: SessionProgressBar(progress)),
+                    const SizedBox(width: 10),
+                    SizedBox(
+                      width: 40,
+                      child: Text(
+                        '${_index + 1}/${steps.length}',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.navy.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: AppColors.teal.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Text(
+                        widget.reviewMode
+                            ? l10n.tabReview
+                            : l10n.sessionSliceChip(
+                                _slice, _sliceTitle(l10n, _slice)),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w800,
+                          color: Color(0xFF1F7268),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      l10n.sessionStepLabel(_index + 1, steps.length),
                       style: TextStyle(
                         fontSize: 12.5,
                         fontWeight: FontWeight.w700,
                         color: AppColors.navy.withValues(alpha: 0.5),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-              child: Row(
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: AppColors.teal.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      widget.reviewMode
-                          ? l10n.tabReview
-                          : l10n.sessionSliceChip(
-                              _slice, _sliceTitle(l10n, _slice)),
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF1F7268),
+                    if (showTeaser) ...[
+                      const Spacer(),
+                      Text(
+                        l10n.sessionTeaserDialog,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFFC1502F),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    l10n.sessionStepLabel(_index + 1, steps.length),
-                    style: TextStyle(
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.navy.withValues(alpha: 0.5),
-                    ),
-                  ),
-                  if (showTeaser) ...[
-                    const Spacer(),
-                    Text(
-                      l10n.sessionTeaserDialog,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFFC1502F),
-                      ),
-                    ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            Expanded(
-              child: sessionStepSwitcher(
-                context: context,
-                switchKey: step.isCard
-                    ? 'card_${step.vocab!.wort}'
-                    : 'ex_${step.exercise!.id}',
-                child: _buildStep(step),
+              Expanded(
+                child: sessionStepSwitcher(
+                  context: context,
+                  switchKey: step.isCard
+                      ? 'card_${step.vocab!.wort}'
+                      : 'ex_${step.exercise!.id}',
+                  child: _buildStep(step),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

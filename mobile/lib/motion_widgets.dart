@@ -230,6 +230,7 @@ class StreakBurst extends StatelessWidget {
 }
 
 /// Adım geçişi: fade + hafif yatay kayma.
+/// Outgoing child IgnorePointer — web'de görünmez katman tıklamayı yutmasın.
 Widget sessionStepSwitcher({
   required BuildContext context,
   required Object? switchKey,
@@ -242,6 +243,19 @@ Widget sessionStepSwitcher({
     reverseDuration: AppMotion.transitionOut,
     switchInCurve: AppMotion.curve,
     switchOutCurve: const Cubic(0.4, 0, 1, 1),
+    layoutBuilder: (current, previous) {
+      return Stack(
+        alignment: Alignment.topCenter,
+        fit: StackFit.passthrough,
+        children: [
+            for (final p in previous)
+              Positioned.fill(
+                child: IgnorePointer(child: p),
+              ),
+            ?current,
+        ],
+      );
+    },
     transitionBuilder: (c, anim) {
       final slide = Tween<Offset>(
         begin: const Offset(0.06, 0),

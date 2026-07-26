@@ -447,10 +447,14 @@ class _ReviewTab extends StatelessWidget {
     final l10n = context.l10n;
     final words = vocab.map((v) => v.wort).toList();
     final hasReview = dueCount > 0;
-    final hasHistory = progressStore.srEntries.isNotEmpty;
+    final upcoming = progressStore.upcomingReviews(words);
+    final hasHistory = progressStore.srEntries.isNotEmpty ||
+        progressStore.xp > 0 ||
+        progressStore.dailyGoalDoneToday ||
+        progressStore.activeSlice > 1 ||
+        upcoming.isNotEmpty;
     final mistakes = progressStore.mistakeWords(words);
     final weak = progressStore.weakWords(words);
-    final upcoming = progressStore.upcomingReviews(words);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),

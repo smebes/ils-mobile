@@ -56,4 +56,21 @@ void main() {
     expect(q.length, 3);
     expect(q, contains('Apfel'));
   });
+
+  test('dilim kuyruğu ileri Schritt due kelimelerini almaz', () {
+    final sr = {
+      'Hallo': SrEntry(box: 2, nextReview: today), // dilim 1
+      'Frankreich': SrEntry(box: 2, nextReview: today), // dilim 3 — sızmamalı
+    };
+    final q = buildSliceQueue(
+      sliceWords: ['Hallo', 'Guten Tag', 'Name'],
+      reviewPool: ['Hallo', 'Guten Tag', 'Name'], // sadece açık dilimler
+      sr: sr,
+      today: today,
+      maxNew: 6,
+      maxReviews: 5,
+    );
+    expect(q, isNot(contains('Frankreich')));
+    expect(q, contains('Hallo'));
+  });
 }

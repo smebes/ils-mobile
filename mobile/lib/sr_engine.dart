@@ -142,10 +142,11 @@ List<String> buildDailyQueue({
 }
 
 /// Dilim oturumu kuyruğu (Prototype v4):
-/// dilimin yeni kelimeleri (max [maxNew]) + bugün due tekrarlar (max [maxReviews]).
+/// dilimin yeni kelimeleri (max [maxNew]) + açık dilimlerden due tekrarlar (max [maxReviews]).
+/// [reviewPool] = aktif dilim + önceki dilimlerin kelimeleri (ileri dilim sızmasın).
 List<String> buildSliceQueue({
   required List<String> sliceWords,
-  required List<String> allWords,
+  required List<String> reviewPool,
   required Map<String, SrEntry> sr,
   required DateTime today,
   int maxNew = 6,
@@ -153,7 +154,7 @@ List<String> buildSliceQueue({
 }) {
   final fresh = sliceWords.where((w) => sr[w] == null).toList();
   final due = <String>[];
-  for (final w in allWords) {
+  for (final w in reviewPool) {
     final e = sr[w];
     if (e != null && e.isDue(today) && !fresh.contains(w)) {
       due.add(w);

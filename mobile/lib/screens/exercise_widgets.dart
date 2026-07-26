@@ -247,13 +247,43 @@ class _FillBlankWidgetState extends State<FillBlankWidget> with CheckFlow {
                     runSpacing: 10,
                     children: opts.map((o) {
                       final sel = answers[id] == o;
-                      return ChoiceChip(
-                        label: Text(o),
-                        selected: sel,
-                        onSelected: checked
-                            ? null
-                            : (_) => setState(() => answers[id] = o),
-                        selectedColor: AppColors.teal.withValues(alpha: 0.25),
+                      return Material(
+                        color: sel
+                            ? AppColors.teal.withValues(alpha: 0.18)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: checked
+                              ? null
+                              : () {
+                                  AudioService.shared.stopIfPlaying();
+                                  setState(() => answers[id] = o);
+                                },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 11),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: sel
+                                    ? AppColors.teal
+                                    : AppColors.navy.withValues(alpha: 0.14),
+                                width: sel ? 2 : 1,
+                              ),
+                            ),
+                            child: Text(
+                              o,
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                                color: sel
+                                    ? const Color(0xFF1F7268)
+                                    : AppColors.navy,
+                              ),
+                            ),
+                          ),
+                        ),
                       );
                     }).toList(),
                   ),
@@ -585,7 +615,10 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
                                 : (answers[id] == oid ? false : null),
                         onTap: checked
                             ? null
-                            : () => setState(() => answers[id] = oid),
+                            : () {
+                                AudioService.shared.stopIfPlaying();
+                                setState(() => answers[id] = oid);
+                              },
                       );
                     }),
                   ],

@@ -4,8 +4,8 @@
 **Build:** `mobile/` → `flutter run` (cihaz veya simülatör).  
 **Temiz başlangıç:** uygulama verisini sil / yeniden yükle (SharedPreferences sıfırlansın).
 
-> **2026-07-26:** Öğren sekmesi → öğrenme haritası (1c özet şerit + 1a yılan yol, 7×5=35 node). Home kilit dilim SnackBar → sheet; tekrar etiketi; Welche→Welcher; profil “İsmini düzenle”.  
-> Test öncesi **hard restart / `flutter run` yeniden** şart.
+> **2026-07-26 (yeniden test turu):** Dilim oturumu sıkılaştırıldı (max ~6 yeni + 5 tekrar kartı + max 4 egzersiz); ileri Schritt SR sızıntısı kesildi; Tekrar caught-up sinyali güçlendirildi; fill chip highlight; session AnimatedSwitcher pointer fix; web audio guard genişletildi.  
+> **Kritik:** `localhost:5281` eski build kalabiliyor — her turda **hard restart** (`flutter run` yeniden) şart. Tarayıcıda hard refresh (Cmd+Shift+R).
 
 ## Sistem hazırlığı (özet)
 

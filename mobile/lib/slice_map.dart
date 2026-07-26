@@ -15,7 +15,21 @@ List<String> schritteForSlice(int slice) {
   }
 }
 
+/// Dilim 1..[slice] dahil tüm Schritt etiketleri (tekrar havuzu).
+List<String> schritteThroughSlice(int slice) {
+  final out = <String>[];
+  for (var i = 1; i <= slice.clamp(1, 5); i++) {
+    out.addAll(schritteForSlice(i));
+  }
+  return out;
+}
+
 bool schrittInSlice(String? schritt, int slice) {
   if (schritt == null) return false;
   return schritteForSlice(slice).contains(schritt);
+}
+
+bool schrittUnlocked(String? schritt, int activeSlice) {
+  if (schritt == null) return false;
+  return schritteThroughSlice(activeSlice).contains(schritt);
 }
