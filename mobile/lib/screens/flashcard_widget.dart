@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
 import '../models.dart';
@@ -23,10 +25,18 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
   void _speak() {
     final v = widget.vocab;
     if (v.audio != null) {
-      _audio.playOne(v.audio!);
+      unawaited(_audio.playOne(v.audio!));
     } else {
       TtsService.speak(v.display);
     }
+  }
+
+  Future<void> _goNext() async {
+    try {
+      await _audio.stop();
+    } catch (_) {}
+    if (!mounted) return;
+    widget.onNext();
   }
 
   @override
@@ -152,7 +162,7 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
           child: SizedBox(
             width: double.infinity,
             child: FilledButton(
-              onPressed: widget.onNext,
+              onPressed: () => unawaited(_goNext()),
               child: const Text('Weiter'),
             ),
           ),

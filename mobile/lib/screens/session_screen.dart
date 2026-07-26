@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import '../audio_service.dart';
 import '../main.dart';
 import '../models.dart';
 import '../widgets.dart';
@@ -121,7 +122,10 @@ class _SessionScreenState extends State<SessionScreen> {
           children: [
             IconButton(
               icon: const Icon(Icons.close),
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                AudioService.shared.dispose();
+                Navigator.of(context).pop();
+              },
             ),
             Expanded(child: SessionProgressBar(progress)),
           ],

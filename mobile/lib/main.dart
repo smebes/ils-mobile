@@ -13,18 +13,15 @@ Future<void> main() async {
     FlutterError.presentError(details);
     debugPrint('FlutterError: ${details.exceptionAsString()}');
   };
+  // Kompakt tut — eski tam ekran ErrorWidget tıklamaları yutuyordu.
   ErrorWidget.builder = (details) {
-    return Material(
-      color: Colors.white,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Text(
-            'UI-Fehler:\n${details.exception}',
-            textAlign: TextAlign.center,
-            style: const TextStyle(color: Colors.red, fontSize: 14),
-          ),
-        ),
+    debugPrint('ErrorWidget: ${details.exceptionAsString()}');
+    return const SizedBox(
+      height: 72,
+      width: 72,
+      child: ColoredBox(
+        color: Color(0xFFFAF3E7),
+        child: Icon(Icons.broken_image_outlined, color: Color(0xFF264653)),
       ),
     );
   };

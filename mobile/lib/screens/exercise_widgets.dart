@@ -419,8 +419,61 @@ class _ListeningWidgetState extends State<ListeningWidget> with CheckFlow {
         );
       }
     } finally {
+      // Ses bitince player'ı bırak + web audio katmanını etkisizleştir
+      try {
+        await _audio.stop();
+      } catch (_) {}
       if (mounted) setState(() => _playing = false);
     }
+  }
+
+  Future<void> _stopAudioQuietly() async {
+    try {
+      await _audio.stop();
+    } catch (_) {}
+    if (mounted && _playing) setState(() => _playing = false);
+  }
+
+  @override
+  void doCheck() {
+    // stop'u bekleme — asılı kalırsa Prüfen yine çalışsın
+    unawaited(_stopAudioQuietly());
+    if (!canCheck) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Bitte alle Fragen beantworten.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
+    super.doCheck();
+  }
+
+  @override
+  Widget buildBottom(ExerciseDone onComplete) {
+    if (checked) {
+      return FeedbackBar(
+        correct: correct,
+        message: feedbackMessage,
+        cta: 'Weiter',
+        onNext: () {
+          unawaited(_stopAudioQuietly());
+          onComplete(correct);
+        },
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          // canCheck false olsa bile tap yakala (feedback için)
+          onPressed: doCheck,
+          child: const Text('Prüfen'),
+        ),
+      ),
+    );
   }
 
   @override

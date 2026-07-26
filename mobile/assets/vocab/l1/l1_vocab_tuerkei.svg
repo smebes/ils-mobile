@@ -1,9 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="Türkei">
   <rect width="200" height="200" rx="32" fill="#FAF3E7"/>
-  <g fill="none" stroke="#264653" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
-    <rect x="40" y="50" width="120" height="100" rx="6" fill="#E63946" stroke="none"/>
-    <circle cx="85" cy="100" r="22" fill="#FFFFFF" stroke="none"/>
-    <circle cx="92" cy="100" r="17" fill="#E63946" stroke="none"/>
-    <rect x="40" y="50" width="120" height="100" rx="6"/>
-  </g>
+  <rect x="40" y="50" width="120" height="100" rx="6" fill="#E63946"/>
+  <circle cx="86" cy="100" r="24" fill="#FFFFFF"/>
+  <circle cx="94" cy="100" r="18" fill="#E63946"/>
+  <polygon points="118,88 124,100 136,100 126,108 130,120 118,112 106,120 110,108 100,100 112,100" fill="#FFFFFF"/>
+  <rect x="40" y="50" width="120" height="100" rx="6" fill="none" stroke="#264653" stroke-width="6"/>
 </svg>

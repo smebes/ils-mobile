@@ -32,6 +32,17 @@
 
   <title>SprachApp</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    /* audioplayers web: görünmez <audio> tıklama yutmasın */
+    audio {
+      pointer-events: none !important;
+      position: fixed !important;
+      width: 0 !important;
+      height: 0 !important;
+      opacity: 0 !important;
+      z-index: -1 !important;
+    }
+  </style>
 </head>
 <body>
   <script src="flutter_bootstrap.js" async></script>

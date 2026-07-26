@@ -14,13 +14,14 @@ class MediaImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (assetPath.endsWith('.svg')) {
-      return SvgPicture.asset(
-        assetPath,
+      return SvgPicture(
+        SvgAssetLoader(assetPath),
         height: height,
-        width: width ?? (height == null ? double.infinity : null),
+        width: width,
         fit: fit,
         allowDrawingOutsideViewBox: true,
         placeholderBuilder: (_) => _placeholder(),
+        errorBuilder: (context, error, stackTrace) => _placeholder(),
       );
     }
     return Image.asset(
@@ -35,9 +36,14 @@ class MediaImage extends StatelessWidget {
   Widget _placeholder() => SizedBox(
         height: height ?? 80,
         width: width,
-        child: const Center(
-          child: Icon(Icons.image_not_supported_outlined,
-              size: 40, color: AppColors.navy),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.cream,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: const Center(
+            child: Icon(Icons.image_outlined, size: 36, color: AppColors.navy),
+          ),
         ),
       );
 }
