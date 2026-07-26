@@ -192,6 +192,7 @@
   },
   "pathL2Note": "S’ouvre à 80 % de progression en L1",
   "pathSoon": "Bientôt",
+  "pathTitleL1": "Guten Tag · Bonjour",
   "pathTitleL2": "Meine Familie · Ma famille",
   "pathTitleL3": "Einkaufen · Courses",
   "pathTitleL4": "Meine Wohnung · Chez moi",
@@ -414,5 +415,30 @@
   "reminderNotNow": "Pas maintenant",
   "reviewWordBadge": "Révision",
   "reviewCaughtUp": "Révisions du jour terminées",
-  "reviewCaughtUpHint": "Super — de nouveaux mots arriveront demain. Tu peux continuer une leçon si tu veux."
+  "reviewCaughtUpHint": "Super — de nouveaux mots arriveront demain. Tu peux continuer une leçon si tu veux.",
+  "mapTitle": "Carte d’apprentissage",
+  "mapOverallProgress": "{done} / {total} tranches",
+  "@mapOverallProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "mapContinueCta": "Continuer la leçon du jour",
+  "mapOverviewLabel": "TOUT LE PARCOURS · 7 UNITÉS · 35 TRANCHES",
+  "mapLegendDone": "terminé",
+  "mapLegendNext": "suivant",
+  "mapLegendLocked": "verrouillé",
+  "mapPillContinue": "Continuer",
+  "mapPillDone": "Terminé",
+  "mapPillLocked": "Verrouillé",
+  "mapPillSoon": "Bientôt",
+  "mapBandProgress": "{pct} % · {done} / 5 tranches",
+  "@mapBandProgress": {
+    "placeholders": {
+      "pct": { "type": "int" },
+      "done": { "type": "int" }
+    }
+  },
+  "mapSectionReward": "Récompense d’unité"
 }

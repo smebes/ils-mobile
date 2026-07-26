@@ -4,15 +4,15 @@
 **Build:** `mobile/` → `flutter run` (cihaz veya simülatör).  
 **Temiz başlangıç:** uygulama verisini sil / yeniden yükle (SharedPreferences sıfırlansın).
 
-> **2026-07-26 fix turu:** Home kilit dilim SnackBar → sheet (web sessiz donma riski); tekrar etiketi/caught-up metni; Welche→Welcher; profil “İsmini düzenle” satırı.  
-> Test öncesi **hard restart / `flutter run` yeniden** şart — eski web build (15 kelime + 22 egzersiz) geçersiz.
+> **2026-07-26:** Öğren sekmesi → öğrenme haritası (1c özet şerit + 1a yılan yol, 7×5=35 node). Home kilit dilim SnackBar → sheet; tekrar etiketi; Welche→Welcher; profil “İsmini düzenle”.  
+> Test öncesi **hard restart / `flutter run` yeniden** şart.
 
 ## Sistem hazırlığı (özet)
 
 | Alan | Durum |
 |------|--------|
 | Onboarding (4 adım) | Hazır |
-| Home + 3 tab (Öğren / Tekrar / Profil) | Hazır |
+| Home + öğrenme haritası (Öğren / Tekrar / Profil) | Hazır |
 | Dilim-sınırlı ders oturumu | Hazır |
 | Flashcard / Quiz / Fill / Listening / Matching | Hazır |
 | Result + seri | Hazır |
@@ -63,16 +63,17 @@
 
 ---
 
-## T2 — Home (Öğren)
+## T2 — Öğrenme haritası (Öğren)
 
 | # | Adım | Beklenen |
 |---|------|----------|
-| T2.1 | Selamlama | İsim varsa isimli; yoksa genel |
-| T2.2 | Günlük hedef kartı | Boş / devam / tamamlandı fazlarından biri |
-| T2.3 | Bugünkü ders CTA | Teal birincil buton |
-| T2.4 | Öğrenme yolu dilimleri | Dilim 1 aktif; sonrakiler kilit/sırada |
-| T2.5 | Kilitli Lektion 2’ye dokun | Bottom sheet: kilit açıklaması + ilerleme |
-| T2.6 | CTA ile ders başlat | Session açılır |
+| T2.1 | Selamlama + streak | İsimli/genel selam; streak rozeti |
+| T2.2 | Üst CTA | “Bugünkü derse devam” (veya dil karşılığı) |
+| T2.3 | Sabit özet şerit | 7 bölüm × 5 sütun (35 hücre); aktif dilim daha yüksek |
+| T2.4 | Yılan yol L1 | 5 dilim node + bölüm sonu yıldız; aktif node büyük + halkalı |
+| T2.5 | L2–L7 bantları | Soluk ama görünür; kilit ikonu |
+| T2.6 | Aktif node / CTA | Session açılır |
+| T2.7 | Kilitli Lektion 2+ | Bottom sheet: kilit açıklaması + ilerleme |
 
 ---
 

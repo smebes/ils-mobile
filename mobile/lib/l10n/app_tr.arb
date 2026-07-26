@@ -192,6 +192,7 @@
   },
   "pathL2Note": "L1 ilerlemen %80 olunca açılır",
   "pathSoon": "Yakında",
+  "pathTitleL1": "Guten Tag · Merhaba",
   "pathTitleL2": "Meine Familie · Ailem",
   "pathTitleL3": "Einkaufen · Alışveriş",
   "pathTitleL4": "Meine Wohnung · Evim",
@@ -414,5 +415,30 @@
   "reminderNotNow": "Şimdi değil",
   "reviewWordBadge": "Tekrar",
   "reviewCaughtUp": "Bugünlük tekrar bitti",
-  "reviewCaughtUpHint": "Harika — yarın yeni kelimeler burada olacak. İstersen derse devam edebilirsin."
+  "reviewCaughtUpHint": "Harika — yarın yeni kelimeler burada olacak. İstersen derse devam edebilirsin.",
+  "mapTitle": "Öğrenme haritası",
+  "mapOverallProgress": "{done} / {total} dilim",
+  "@mapOverallProgress": {
+    "placeholders": {
+      "done": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "mapContinueCta": "Bugünkü derse devam",
+  "mapOverviewLabel": "TÜM YOL · 7 BÖLÜM · 35 DİLİM",
+  "mapLegendDone": "tamamlandı",
+  "mapLegendNext": "sıradaki",
+  "mapLegendLocked": "kilitli",
+  "mapPillContinue": "Devam",
+  "mapPillDone": "Bitti",
+  "mapPillLocked": "Kilitli",
+  "mapPillSoon": "Yakında",
+  "mapBandProgress": "%{pct} · {done} / 5 dilim",
+  "@mapBandProgress": {
+    "placeholders": {
+      "pct": { "type": "int" },
+      "done": { "type": "int" }
+    }
+  },
+  "mapSectionReward": "Bölüm ödülü"
 }

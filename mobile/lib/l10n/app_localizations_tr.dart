@@ -199,6 +199,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get pathSoon => 'Yakında';
 
   @override
+  String get pathTitleL1 => 'Guten Tag · Merhaba';
+
+  @override
   String get pathTitleL2 => 'Meine Familie · Ailem';
 
   @override
@@ -629,4 +632,47 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get reviewCaughtUpHint =>
       'Harika — yarın yeni kelimeler burada olacak. İstersen derse devam edebilirsin.';
+
+  @override
+  String get mapTitle => 'Öğrenme haritası';
+
+  @override
+  String mapOverallProgress(int done, int total) {
+    return '$done / $total dilim';
+  }
+
+  @override
+  String get mapContinueCta => 'Bugünkü derse devam';
+
+  @override
+  String get mapOverviewLabel => 'TÜM YOL · 7 BÖLÜM · 35 DİLİM';
+
+  @override
+  String get mapLegendDone => 'tamamlandı';
+
+  @override
+  String get mapLegendNext => 'sıradaki';
+
+  @override
+  String get mapLegendLocked => 'kilitli';
+
+  @override
+  String get mapPillContinue => 'Devam';
+
+  @override
+  String get mapPillDone => 'Bitti';
+
+  @override
+  String get mapPillLocked => 'Kilitli';
+
+  @override
+  String get mapPillSoon => 'Yakında';
+
+  @override
+  String mapBandProgress(int pct, int done) {
+    return '%$pct · $done / 5 dilim';
+  }
+
+  @override
+  String get mapSectionReward => 'Bölüm ödülü';
 }

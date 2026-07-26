@@ -406,6 +406,12 @@ abstract class AppLocalizations {
   /// **'Coming soon'**
   String get pathSoon;
 
+  /// No description provided for @pathTitleL1.
+  ///
+  /// In en, this message translates to:
+  /// **'Guten Tag · Hello'**
+  String get pathTitleL1;
+
   /// No description provided for @pathTitleL2.
   ///
   /// In en, this message translates to:
@@ -1191,6 +1197,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Nice — new review words will show up tomorrow. You can keep learning a lesson if you like.'**
   String get reviewCaughtUpHint;
+
+  /// No description provided for @mapTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning map'**
+  String get mapTitle;
+
+  /// No description provided for @mapOverallProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{done} / {total} slices'**
+  String mapOverallProgress(int done, int total);
+
+  /// No description provided for @mapContinueCta.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue today’s lesson'**
+  String get mapContinueCta;
+
+  /// No description provided for @mapOverviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'FULL PATH · 7 UNITS · 35 SLICES'**
+  String get mapOverviewLabel;
+
+  /// No description provided for @mapLegendDone.
+  ///
+  /// In en, this message translates to:
+  /// **'done'**
+  String get mapLegendDone;
+
+  /// No description provided for @mapLegendNext.
+  ///
+  /// In en, this message translates to:
+  /// **'next'**
+  String get mapLegendNext;
+
+  /// No description provided for @mapLegendLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'locked'**
+  String get mapLegendLocked;
+
+  /// No description provided for @mapPillContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue'**
+  String get mapPillContinue;
+
+  /// No description provided for @mapPillDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get mapPillDone;
+
+  /// No description provided for @mapPillLocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Locked'**
+  String get mapPillLocked;
+
+  /// No description provided for @mapPillSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Soon'**
+  String get mapPillSoon;
+
+  /// No description provided for @mapBandProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{pct}% · {done} / 5 slices'**
+  String mapBandProgress(int pct, int done);
+
+  /// No description provided for @mapSectionReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Unit reward'**
+  String get mapSectionReward;
 }
 
 class _AppLocalizationsDelegate

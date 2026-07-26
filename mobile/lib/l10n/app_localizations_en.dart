@@ -199,6 +199,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pathSoon => 'Coming soon';
 
   @override
+  String get pathTitleL1 => 'Guten Tag · Hello';
+
+  @override
   String get pathTitleL2 => 'Meine Familie · My family';
 
   @override
@@ -627,4 +630,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get reviewCaughtUpHint =>
       'Nice — new review words will show up tomorrow. You can keep learning a lesson if you like.';
+
+  @override
+  String get mapTitle => 'Learning map';
+
+  @override
+  String mapOverallProgress(int done, int total) {
+    return '$done / $total slices';
+  }
+
+  @override
+  String get mapContinueCta => 'Continue today’s lesson';
+
+  @override
+  String get mapOverviewLabel => 'FULL PATH · 7 UNITS · 35 SLICES';
+
+  @override
+  String get mapLegendDone => 'done';
+
+  @override
+  String get mapLegendNext => 'next';
+
+  @override
+  String get mapLegendLocked => 'locked';
+
+  @override
+  String get mapPillContinue => 'Continue';
+
+  @override
+  String get mapPillDone => 'Done';
+
+  @override
+  String get mapPillLocked => 'Locked';
+
+  @override
+  String get mapPillSoon => 'Soon';
+
+  @override
+  String mapBandProgress(int pct, int done) {
+    return '$pct% · $done / 5 slices';
+  }
+
+  @override
+  String get mapSectionReward => 'Unit reward';
 }
