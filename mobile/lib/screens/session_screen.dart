@@ -7,6 +7,7 @@ import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
+import '../motion_widgets.dart';
 import '../slice_map.dart';
 import '../theme.dart';
 import '../widgets.dart';
@@ -350,7 +351,15 @@ class _SessionScreenState extends State<SessionScreen> {
                 ],
               ),
             ),
-            Expanded(child: _buildStep(step)),
+            Expanded(
+              child: sessionStepSwitcher(
+                context: context,
+                switchKey: step.isCard
+                    ? 'card_${step.vocab!.wort}'
+                    : 'ex_${step.exercise!.id}',
+                child: _buildStep(step),
+              ),
+            ),
           ],
         ),
       ),

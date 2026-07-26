@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../curriculum.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
+import '../motion_widgets.dart';
 import '../theme.dart';
 
 /// Öğren sekmesi: 1c özet şerit (sabit) + 1a yılan yol haritası.
@@ -501,23 +502,7 @@ class _SnakeNode extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 150),
               child: Column(
                 children: [
-                  Container(
-                    width: style.size,
-                    height: style.size,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: style.bg,
-                      border: Border.all(
-                          color: style.borderColor, width: style.borderW),
-                      boxShadow: style.shadows,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(style.mark,
-                        style: TextStyle(
-                            fontSize: style.markSize,
-                            fontWeight: FontWeight.w800,
-                            color: style.fg)),
-                  ),
+                  _nodeCircle(style),
                   const SizedBox(height: 5),
                   Text(
                     node.label,
@@ -537,6 +522,36 @@ class _SnakeNode extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _nodeCircle(_NodeVisual style) {
+    final circle = Container(
+      width: style.size,
+      height: style.size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: style.bg,
+        border: Border.all(color: style.borderColor, width: style.borderW),
+        boxShadow: style.shadows,
+      ),
+      alignment: Alignment.center,
+      child: Text(style.mark,
+          style: TextStyle(
+              fontSize: style.markSize,
+              fontWeight: FontWeight.w800,
+              color: style.fg)),
+    );
+    if (node.kind == MapNodeKind.active) {
+      return PulseRing(
+        size: style.size,
+        color: AppColors.teal,
+        child: circle,
+      );
+    }
+    if (node.kind == MapNodeKind.reward && node.celebrate) {
+      return StampStar(size: style.size);
+    }
+    return circle;
   }
 
   _NodeVisual _style(MapNodeKind kind) {

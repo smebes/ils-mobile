@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'l10n/l10n_ext.dart';
+import 'motion.dart';
 import 'theme.dart';
 
 /// Vocab (SVG) veya sahne (webp) görselini yol uzantısına göre render eder.
@@ -117,20 +118,41 @@ class SpeedButtons extends StatelessWidget {
       );
 }
 
-/// İlerleme çubuğu (oturum içinde).
-class SessionProgressBar extends StatelessWidget {
+/// İlerleme çubuğu (oturum içinde) — değer animasyonlu dolar.
+class SessionProgressBar extends StatefulWidget {
   final double value;
   const SessionProgressBar(this.value, {super.key});
 
   @override
+  State<SessionProgressBar> createState() => _SessionProgressBarState();
+}
+
+class _SessionProgressBarState extends State<SessionProgressBar> {
+  double _from = 0;
+
+  @override
+  void didUpdateWidget(covariant SessionProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value) {
+      _from = oldWidget.value;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final to = widget.value.clamp(0.0, 1.0);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8),
-      child: LinearProgressIndicator(
-        value: value,
-        minHeight: 10,
-        backgroundColor: Colors.white,
-        valueColor: const AlwaysStoppedAnimation(AppColors.teal),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: _from.clamp(0.0, 1.0), end: to),
+        duration: AppMotion.d(context, AppMotion.bar),
+        curve: AppMotion.curve,
+        builder: (context, anim, _) => LinearProgressIndicator(
+          value: anim,
+          minHeight: 10,
+          backgroundColor: Colors.white,
+          valueColor: const AlwaysStoppedAnimation(AppColors.teal),
+        ),
       ),
     );
   }
@@ -154,7 +176,7 @@ class FeedbackBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final color = correct ? AppColors.das : AppColors.coral;
-    return Container(
+    final bar = Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 18, 20, 28),
       decoration: BoxDecoration(
@@ -208,6 +230,20 @@ class FeedbackBar extends StatelessWidget {
           ),
         ],
       ),
+    );
+    if (AppMotion.reduce(context)) return bar;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: AppMotion.rise,
+      curve: AppMotion.curve,
+      builder: (context, t, child) => Opacity(
+        opacity: t,
+        child: Transform.translate(
+          offset: Offset(0, 16 * (1 - t)),
+          child: child,
+        ),
+      ),
+      child: bar,
     );
   }
 }

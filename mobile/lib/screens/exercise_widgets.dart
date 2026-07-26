@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../l10n/l10n_ext.dart';
 import '../models.dart';
+import '../motion_widgets.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import '../audio_service.dart';
@@ -859,17 +860,19 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = artikelAccentFromText(text) ?? AppColors.das;
     Color border = AppColors.navy.withValues(alpha: 0.1);
     Color bg = Colors.white;
     Color dot = AppColors.navy.withValues(alpha: 0.25);
     String mark = '';
     double borderW = 1;
     Color textColor = AppColors.navy;
+    Color fillAccent = accent;
 
     if (state == true) {
-      border = AppColors.das;
-      bg = AppColors.das.withValues(alpha: 0.14);
-      dot = AppColors.das;
+      border = accent;
+      bg = accent.withValues(alpha: 0.14);
+      dot = accent;
       mark = '✓';
       borderW = 2;
     } else if (state == false) {
@@ -878,6 +881,7 @@ class _OptionTile extends StatelessWidget {
       dot = AppColors.coral;
       mark = '✕';
       borderW = 2;
+      fillAccent = AppColors.coral;
     } else if (selected) {
       border = AppColors.teal;
       bg = AppColors.teal.withValues(alpha: 0.1);
@@ -889,46 +893,55 @@ class _OptionTile extends StatelessWidget {
       dot = AppColors.navy.withValues(alpha: 0.18);
     }
 
+    final tile = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: border, width: borderW),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 22,
+            height: 22,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: state == true ? accent : Colors.transparent,
+              border: Border.all(
+                  color: state == true ? accent : dot, width: 2),
+            ),
+            alignment: Alignment.center,
+            child: Text(mark,
+                style: TextStyle(
+                    fontSize: 11,
+                    height: 1,
+                    color: state == true ? Colors.white : dot,
+                    fontWeight: FontWeight.w800)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(text,
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: textColor)),
+          ),
+        ],
+      ),
+    );
+
+    Widget body = tile;
+    if (state == true) {
+      body = ArtikelWaveFill(color: fillAccent, play: true, child: tile);
+      body = BreatheScale(play: true, child: body);
+    } else if (state == false) {
+      body = ShakeX(play: true, child: tile);
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: border, width: borderW),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 22,
-                height: 22,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: dot, width: 2),
-                ),
-                alignment: Alignment.center,
-                child: Text(mark,
-                    style: TextStyle(
-                        fontSize: 11,
-                        height: 1,
-                        color: dot,
-                        fontWeight: FontWeight.w800)),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(text,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: textColor)),
-              ),
-            ],
-          ),
-        ),
-      ),
+      child: GestureDetector(onTap: onTap, child: body),
     );
   }
 }

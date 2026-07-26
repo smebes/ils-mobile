@@ -43,6 +43,7 @@ class MapNode {
   final String label;
   final double x;
   final bool isReward;
+  final bool celebrate;
   final int? sliceIndex; // 1..5, null = reward
   final int lektionN;
   const MapNode({
@@ -51,6 +52,7 @@ class MapNode {
     required this.x,
     required this.lektionN,
     this.isReward = false,
+    this.celebrate = false,
     this.sliceIndex,
   });
 }
@@ -186,7 +188,9 @@ List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
         sliceIndex: sliceN,
       ));
     }
-    final rewardKind = (l.state == LektionMapState.complete || l.slicesDone >= 5)
+    final rewardDone =
+        l.state == LektionMapState.complete || l.slicesDone >= 5;
+    final rewardKind = rewardDone
         ? MapNodeKind.reward
         : (l.state == LektionMapState.active
             ? MapNodeKind.reward
@@ -197,6 +201,7 @@ List<MapBand> buildMapBands(AppLocalizations l10n, List<LektionMapInfo> leks) {
       x: kMapZigzag[5],
       lektionN: l.n,
       isReward: true,
+      celebrate: rewardDone,
     ));
     return MapBand(info: l, nodes: nodes);
   }).toList();

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../audio_service.dart';
 import '../l10n/l10n_ext.dart';
 import '../models.dart';
+import '../motion_widgets.dart';
 import '../theme.dart';
 import '../tts_service.dart';
 import '../widgets.dart';
@@ -176,29 +177,9 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                         height: 1,
                         color: AppColors.navy.withValues(alpha: 0.08)),
                     const SizedBox(height: 16),
-                    if (revealed)
-                      Column(
-                        children: [
-                          Text(
-                            _langTag(context),
-                            style: TextStyle(
-                              fontSize: 10.5,
-                              letterSpacing: 0.5,
-                              fontWeight: FontWeight.w500,
-                              color: AppColors.navy.withValues(alpha: 0.45),
-                              fontFamily: 'IBMPlexMono',
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            v.uebersetzungTr,
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w800),
-                          ),
-                        ],
-                      )
-                    else
-                      OutlinedButton(
+                    TranslationRevealSlot(
+                      revealed: revealed,
+                      button: OutlinedButton(
                         onPressed: () => setState(() => revealed = true),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF1F7268),
@@ -219,6 +200,28 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                         ),
                         child: Text(l10n.showTranslation),
                       ),
+                      translation: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _langTag(context),
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.navy.withValues(alpha: 0.45),
+                              fontFamily: 'IBMPlexMono',
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            v.uebersetzungTr,
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
