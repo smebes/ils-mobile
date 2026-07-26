@@ -15,9 +15,12 @@ class ProgressStore extends ChangeNotifier {
   static const _kOnboarding = 'onboarding_done';
   static const _kActiveSlice = 'active_slice';
   static const _kUiLocale = 'ui_locale';
+  static const _kActiveDays = 'active_days_v1';
+  static const _kReminderHour = 'reminder_hour';
 
   SharedPreferences? _p;
   final Map<String, SrEntry> _sr = {};
+  final Set<String> _activeDays = {};
 
   bool get isReady => _p != null;
 
@@ -34,6 +37,14 @@ class ProgressStore extends ChangeNotifier {
     } catch (e) {
       debugPrint('SR data load error: $e');
       _sr.clear();
+    }
+    try {
+      final days = _p!.getStringList(_kActiveDays);
+      if (days != null) _activeDays.addAll(days);
+      final last = _p!.getString(_kLastDay);
+      if (last != null) _activeDays.add(last);
+    } catch (e) {
+      debugPrint('active days load error: $e');
     }
   }
 
@@ -71,6 +82,21 @@ class ProgressStore extends ChangeNotifier {
 
   /// 1..5 — L1 Schritt dilimi (Folge+A = 1 … E = 5)
   int get activeSlice => (_p?.getInt(_kActiveSlice) ?? 1).clamp(1, 5);
+
+  /// Günlük hatırlatma saati (0–23). null = kapalı.
+  int? get reminderHour {
+    if (_p == null || !_p!.containsKey(_kReminderHour)) return null;
+    return _p!.getInt(_kReminderHour);
+  }
+
+  Future<void> setReminderHour(int? hour) async {
+    if (hour == null) {
+      await _p?.remove(_kReminderHour);
+    } else {
+      await _p?.setInt(_kReminderHour, hour.clamp(0, 23));
+    }
+    notifyListeners();
+  }
 
   bool get dailyGoalDoneToday {
     final last = _p?.getString(_kLastDay);
@@ -179,10 +205,63 @@ class ProgressStore extends ChangeNotifier {
   /// Zayıf kelimeler (ilerleme ekranı için).
   List<String> weakWords(List<String> allWords, {int limit = 5}) {
     final list = allWords
-        .where((w) => _sr[w] != null && _sr[w]!.wrongCount > 0)
+        .where((w) => _sr[w] != null && !_sr[w]!.isMastered)
+        .toList();
+    list.sort((a, b) {
+      final wa = _sr[a]!;
+      final wb = _sr[b]!;
+      final byWrong = wb.wrongCount.compareTo(wa.wrongCount);
+      if (byWrong != 0) return byWrong;
+      return wa.box.compareTo(wb.box);
+    });
+    return list.take(limit).toList();
+  }
+
+  /// En çok yanlış yapılan kelimeler (Hatalarım).
+  List<String> mistakeWords(List<String> allWords, {int limit = 3}) {
+    final list = allWords
+        .where((w) => (_sr[w]?.wrongCount ?? 0) > 0)
         .toList();
     list.sort((a, b) => _sr[b]!.wrongCount.compareTo(_sr[a]!.wrongCount));
     return list.take(limit).toList();
+  }
+
+  int wrongCountFor(String wort) => _sr[wort]?.wrongCount ?? 0;
+
+  int boxFor(String wort) => _sr[wort]?.box ?? 1;
+
+  /// Zayıf güç çubuğu % — kutu yükseldikçe artar.
+  int strengthPct(String wort) {
+    final e = _sr[wort];
+    if (e == null) return 0;
+    return ((e.box / 5.0) * 100).round().clamp(0, 100);
+  }
+
+  /// Yaklaşan (bugün dışı) tekrarlar — en yakın vadeler.
+  List<({String wort, DateTime when})> upcomingReviews(
+    List<String> allWords, {
+    int limit = 3,
+  }) {
+    final today = _today();
+    final list = <({String wort, DateTime when})>[];
+    for (final w in allWords) {
+      final e = _sr[w];
+      if (e == null) continue;
+      if (!e.nextReview.isAfter(today)) continue;
+      list.add((wort: w, when: e.nextReview));
+    }
+    list.sort((a, b) => a.when.compareTo(b.when));
+    return list.take(limit).toList();
+  }
+
+  /// Bu haftanın 7 günü (Pzt→Paz): aktif mi?
+  List<({DateTime day, bool done})> weekActivity() {
+    final today = _today();
+    final monday = today.subtract(Duration(days: today.weekday - 1));
+    return List.generate(7, (i) {
+      final d = monday.add(Duration(days: i));
+      return (day: d, done: _activeDays.contains(_dayKey(d)));
+    });
   }
 
   Future<void> completeDailyGoal() async {
@@ -195,6 +274,20 @@ class ProgressStore extends ChangeNotifier {
     final newStreak = (last == yesterday) ? streak + 1 : 1;
     await p.setInt(_kStreak, newStreak);
     await p.setString(_kLastDay, todayKey);
+    _activeDays.add(todayKey);
+    // Son ~60 gün tut — SharedPreferences şişmesin.
+    final cutoff = _today().subtract(const Duration(days: 60));
+    _activeDays.removeWhere((k) {
+      try {
+        final parts = k.split('-');
+        final d = DateTime(
+            int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+        return d.isBefore(cutoff);
+      } catch (_) {
+        return true;
+      }
+    });
+    await p.setStringList(_kActiveDays, _activeDays.toList());
     notifyListeners();
   }
 

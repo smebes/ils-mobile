@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// SprachApp tasarım sistemi — gorsel_prompt_yonetimi.md paletiyle hizalı.
 class AppColors {
@@ -29,6 +30,23 @@ class AppColors {
 }
 
 ThemeData buildTheme() {
+  final textTheme = GoogleFonts.nunitoSansTextTheme().apply(
+    bodyColor: AppColors.navy,
+    displayColor: AppColors.navy,
+  );
+  final display = GoogleFonts.nunitoTextTheme(textTheme);
+  final merged = textTheme.copyWith(
+    displayLarge: display.displayLarge?.copyWith(fontWeight: FontWeight.w800),
+    displayMedium: display.displayMedium?.copyWith(fontWeight: FontWeight.w800),
+    displaySmall: display.displaySmall?.copyWith(fontWeight: FontWeight.w800),
+    headlineLarge: display.headlineLarge?.copyWith(fontWeight: FontWeight.w800),
+    headlineMedium:
+        display.headlineMedium?.copyWith(fontWeight: FontWeight.w800),
+    headlineSmall: display.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
+    titleLarge: display.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+    titleMedium: display.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+    titleSmall: display.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+  );
   final base = ThemeData(
     useMaterial3: true,
     scaffoldBackgroundColor: AppColors.bg,
@@ -38,12 +56,9 @@ ThemeData buildTheme() {
       secondary: AppColors.coral,
       surface: Colors.white,
     ),
+    textTheme: merged,
   );
   return base.copyWith(
-    textTheme: base.textTheme.apply(
-      bodyColor: AppColors.navy,
-      displayColor: AppColors.navy,
-    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -57,7 +72,10 @@ ThemeData buildTheme() {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(18),
         ),
-        textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+        textStyle: GoogleFonts.nunito(
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
+        ),
       ),
     ),
   );

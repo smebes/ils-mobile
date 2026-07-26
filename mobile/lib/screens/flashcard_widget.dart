@@ -44,62 +44,71 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
     super.dispose();
   }
 
+  String _langTag(BuildContext context) {
+    final code = Localizations.localeOf(context).languageCode;
+    return code.toUpperCase();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final v = widget.vocab;
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(l10n.newWord,
-                style: const TextStyle(fontSize: 15, color: AppColors.teal,
-                    fontWeight: FontWeight.w700)),
-          ),
-        ),
         Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Container(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 6, 20, 12),
+            children: [
+              Text(
+                l10n.newWord.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 12,
+                  letterSpacing: 1.2,
+                  color: AppColors.teal,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
                 decoration: cardDecoration(),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (v.image != null)
-                      MediaImage(v.image!, height: 160)
-                    else
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.cream,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          v.beispiel ?? v.display,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
+                    Container(
+                      width: 160,
+                      height: 160,
+                      decoration: BoxDecoration(
+                        color: AppColors.cream,
+                        borderRadius: BorderRadius.circular(32),
                       ),
+                      clipBehavior: Clip.antiAlias,
+                      child: v.image != null
+                          ? MediaImage(v.image!, height: 160, fit: BoxFit.contain)
+                          : Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Text(
+                                  v.beispiel ?? v.display,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FontStyle.italic,
+                                    color: AppColors.navy.withValues(alpha: 0.7),
+                                  ),
+                                ),
+                              ),
+                            ),
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: ArtikelDot(v.artikel),
-                        ),
-                        const SizedBox(width: 8),
+                        if (v.artikel != null) ...[
+                          ArtikelDot(v.artikel),
+                          const SizedBox(width: 8),
+                        ],
                         Flexible(
                           child: Text(
                             v.display,
@@ -107,54 +116,106 @@ class _FlashcardWidgetState extends State<FlashcardWidget> {
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.w800,
+                              height: 1.1,
                               color: AppColors.artikel(v.artikel),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 8),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 6),
-                          child: IconButton(
-                            icon: const Icon(Icons.volume_up,
-                                color: AppColors.teal, size: 28),
-                            onPressed: _speak,
-                            tooltip: l10n.listenTooltip,
-                          ),
-                        ),
                       ],
                     ),
-                    if (v.beispiel != null && v.image != null) ...[
-                      const SizedBox(height: 8),
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      onPressed: _speak,
+                      icon: const Icon(Icons.volume_up_outlined, size: 18),
+                      label: Text(l10n.listenTooltip),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.navy,
+                        side: BorderSide(
+                            color: AppColors.navy.withValues(alpha: 0.12)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 7),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        textStyle: const TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                    if (v.beispiel != null) ...[
+                      const SizedBox(height: 16),
                       Text(
                         v.beispiel!,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.navy.withValues(alpha: 0.55),
+                          fontSize: 15.5,
+                          height: 1.5,
+                          color: AppColors.navy.withValues(alpha: 0.75),
                           fontStyle: FontStyle.italic,
                         ),
                       ),
                     ],
                     if (v.plural != null) ...[
-                      const SizedBox(height: 4),
-                      Text(l10n.pluralLabel(v.plural!),
-                          style: TextStyle(
-                              color: AppColors.navy.withValues(alpha: 0.5))),
+                      const SizedBox(height: 6),
+                      Text(
+                        l10n.pluralLabel(v.plural!),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.navy.withValues(alpha: 0.5),
+                        ),
+                      ),
                     ],
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 18),
+                    Divider(
+                        height: 1,
+                        color: AppColors.navy.withValues(alpha: 0.08)),
+                    const SizedBox(height: 16),
                     if (revealed)
-                      Text(v.uebersetzungTr,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w600))
+                      Column(
+                        children: [
+                          Text(
+                            _langTag(context),
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              letterSpacing: 0.5,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.navy.withValues(alpha: 0.45),
+                              fontFamily: 'IBMPlexMono',
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            v.uebersetzungTr,
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.w800),
+                          ),
+                        ],
+                      )
                     else
-                      TextButton(
+                      OutlinedButton(
                         onPressed: () => setState(() => revealed = true),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF1F7268),
+                          backgroundColor:
+                              AppColors.teal.withValues(alpha: 0.06),
+                          side: BorderSide(
+                            color: AppColors.teal.withValues(alpha: 0.5),
+                            width: 1.5,
+                            style: BorderStyle.solid,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 18, vertical: 9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          textStyle: const TextStyle(
+                              fontSize: 13.5, fontWeight: FontWeight.w700),
+                        ),
                         child: Text(l10n.showTranslation),
                       ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
         ),
         Padding(

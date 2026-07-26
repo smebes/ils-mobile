@@ -330,8 +330,8 @@
   "feedbackAlmostDe": "Fast!",
   "feedbackCorrectLocal": "Correct",
   "feedbackAlmostLocal": "Presque",
-  "resultTitle": "Bravo !",
-  "resultDailyDone": "Objectif du jour atteint",
+  "resultTitle": "Super !",
+  "resultDailyDone": "Tu as atteint l’objectif du jour",
   "resultExercises": "Exercices",
   "resultSuccess": "Réussite",
   "resultReviewsSaved": "Mots enregistrés pour révision 📚\n({count} dans ton plan)",
@@ -342,7 +342,69 @@
       }
     }
   },
+  "resultReviewsSavedTitle": "Mots ajoutés au plan de révision 📚",
+  "resultReviewsSavedHint": "{count} mots prêts pour demain",
+  "@resultReviewsSavedHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultStreakKept": "Série conservée · jour {days}",
+  "@resultStreakKept": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "keepLearning": "Continuer à apprendre",
   "audioFailed": "Audio échoué — réessaie.",
-  "audioCouldNotLoad": "Impossible de charger l’audio."
+  "audioCouldNotLoad": "Impossible de charger l’audio.",
+  "sessionSliceChip": "Tranche {n}/5 · {title}",
+  "@sessionSliceChip": {
+    "placeholders": {
+      "n": { "type": "int" },
+      "title": { "type": "String" }
+    }
+  },
+  "sessionStepLabel": "{current} / {total} étapes",
+  "@sessionStepLabel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "sessionTeaserDialog": "Bientôt : court dialogue",
+  "wordCount": "{count} mots",
+  "@wordCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "practiceMistakesOnly": "Travailler seulement mes erreurs",
+  "upcomingReviews": "Révisions à venir",
+  "noUpcomingReviews": "Pas encore de révisions planifiées.",
+  "reviewTomorrow": "demain",
+  "reviewInDays": "dans {days} jours",
+  "@reviewInDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "thisWeek": "Cette semaine",
+  "reminderTime": "Heure de rappel",
+  "reminderHint": "Notifications bientôt — on enregistre ta préférence pour l’instant.",
+  "reminderOff": "Désactivé",
+  "editName": "Modifier ton prénom",
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "dayMon": "Lun",
+  "dayTue": "Mar",
+  "dayWed": "Mer",
+  "dayThu": "Jeu",
+  "dayFri": "Ven",
+  "daySat": "Sam",
+  "daySun": "Dim"
 }

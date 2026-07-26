@@ -330,8 +330,8 @@
   "feedbackAlmostDe": "Fast!",
   "feedbackCorrectLocal": "Doğru",
   "feedbackAlmostLocal": "Neredeyse",
-  "resultTitle": "Tebrikler!",
-  "resultDailyDone": "Günlük hedef tamamlandı",
+  "resultTitle": "Harika!",
+  "resultDailyDone": "Günlük hedefini tamamladın",
   "resultExercises": "Alıştırmalar",
   "resultSuccess": "Başarı",
   "resultReviewsSaved": "Tekrar için kelimeler kaydedildi 📚\n({count} kelime planında)",
@@ -342,7 +342,69 @@
       }
     }
   },
+  "resultReviewsSavedTitle": "Kelimeler tekrar planına eklendi 📚",
+  "resultReviewsSavedHint": "{count} kelime yarın tekrar için hazır",
+  "@resultReviewsSavedHint": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "resultStreakKept": "Seri korundu · {days}. gün",
+  "@resultStreakKept": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   "keepLearning": "Öğrenmeye devam",
   "audioFailed": "Ses başarısız — lütfen tekrar dene.",
-  "audioCouldNotLoad": "Ses yüklenemedi."
+  "audioCouldNotLoad": "Ses yüklenemedi.",
+  "sessionSliceChip": "Dilim {n}/5 · {title}",
+  "@sessionSliceChip": {
+    "placeholders": {
+      "n": { "type": "int" },
+      "title": { "type": "String" }
+    }
+  },
+  "sessionStepLabel": "{current} / {total} adım",
+  "@sessionStepLabel": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "sessionTeaserDialog": "Birazdan: kısa diyalog",
+  "wordCount": "{count} kelime",
+  "@wordCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "practiceMistakesOnly": "Sadece hatalarımı çalış",
+  "upcomingReviews": "Yaklaşan tekrarlar",
+  "noUpcomingReviews": "Henüz planlanmış tekrar yok.",
+  "reviewTomorrow": "yarın",
+  "reviewInDays": "{days} gün sonra",
+  "@reviewInDays": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "thisWeek": "Bu hafta",
+  "reminderTime": "Hatırlatma saati",
+  "reminderHint": "Bildirimler yakında — şimdilik tercihini kaydediyoruz.",
+  "reminderOff": "Kapalı",
+  "editName": "İsmini düzenle",
+  "save": "Kaydet",
+  "cancel": "Vazgeç",
+  "dayMon": "Pzt",
+  "dayTue": "Sal",
+  "dayWed": "Çar",
+  "dayThu": "Per",
+  "dayFri": "Cum",
+  "daySat": "Cmt",
+  "daySun": "Paz"
 }

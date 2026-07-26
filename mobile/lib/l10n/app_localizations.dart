@@ -943,13 +943,13 @@ abstract class AppLocalizations {
   /// No description provided for @resultTitle.
   ///
   /// In en, this message translates to:
-  /// **'Well done!'**
+  /// **'Awesome!'**
   String get resultTitle;
 
   /// No description provided for @resultDailyDone.
   ///
   /// In en, this message translates to:
-  /// **'Daily goal completed'**
+  /// **'You completed today’s goal'**
   String get resultDailyDone;
 
   /// No description provided for @resultExercises.
@@ -970,6 +970,24 @@ abstract class AppLocalizations {
   /// **'Words saved for review 📚\n({count} in your plan)'**
   String resultReviewsSaved(int count);
 
+  /// No description provided for @resultReviewsSavedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Words added to your review plan 📚'**
+  String get resultReviewsSavedTitle;
+
+  /// No description provided for @resultReviewsSavedHint.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words ready for tomorrow'**
+  String resultReviewsSavedHint(int count);
+
+  /// No description provided for @resultStreakKept.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak kept · day {days}'**
+  String resultStreakKept(int days);
+
   /// No description provided for @keepLearning.
   ///
   /// In en, this message translates to:
@@ -987,6 +1005,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Audio could not be loaded.'**
   String get audioCouldNotLoad;
+
+  /// No description provided for @sessionSliceChip.
+  ///
+  /// In en, this message translates to:
+  /// **'Slice {n}/5 · {title}'**
+  String sessionSliceChip(int n, String title);
+
+  /// No description provided for @sessionStepLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{current} / {total} steps'**
+  String sessionStepLabel(int current, int total);
+
+  /// No description provided for @sessionTeaserDialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Up next: short dialogue'**
+  String get sessionTeaserDialog;
+
+  /// No description provided for @wordCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} words'**
+  String wordCount(int count);
+
+  /// No description provided for @practiceMistakesOnly.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice my mistakes only'**
+  String get practiceMistakesOnly;
+
+  /// No description provided for @upcomingReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming reviews'**
+  String get upcomingReviews;
+
+  /// No description provided for @noUpcomingReviews.
+  ///
+  /// In en, this message translates to:
+  /// **'No upcoming reviews yet.'**
+  String get noUpcomingReviews;
+
+  /// No description provided for @reviewTomorrow.
+  ///
+  /// In en, this message translates to:
+  /// **'tomorrow'**
+  String get reviewTomorrow;
+
+  /// No description provided for @reviewInDays.
+  ///
+  /// In en, this message translates to:
+  /// **'in {days} days'**
+  String reviewInDays(int days);
+
+  /// No description provided for @thisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get thisWeek;
+
+  /// No description provided for @reminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Reminder time'**
+  String get reminderTime;
+
+  /// No description provided for @reminderHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications soon — we save your preference for now.'**
+  String get reminderHint;
+
+  /// No description provided for @reminderOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get reminderOff;
+
+  /// No description provided for @editName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit your name'**
+  String get editName;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @dayMon.
+  ///
+  /// In en, this message translates to:
+  /// **'Mon'**
+  String get dayMon;
+
+  /// No description provided for @dayTue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tue'**
+  String get dayTue;
+
+  /// No description provided for @dayWed.
+  ///
+  /// In en, this message translates to:
+  /// **'Wed'**
+  String get dayWed;
+
+  /// No description provided for @dayThu.
+  ///
+  /// In en, this message translates to:
+  /// **'Thu'**
+  String get dayThu;
+
+  /// No description provided for @dayFri.
+  ///
+  /// In en, this message translates to:
+  /// **'Fri'**
+  String get dayFri;
+
+  /// No description provided for @daySat.
+  ///
+  /// In en, this message translates to:
+  /// **'Sat'**
+  String get daySat;
+
+  /// No description provided for @daySun.
+  ///
+  /// In en, this message translates to:
+  /// **'Sun'**
+  String get daySun;
 }
 
 class _AppLocalizationsDelegate

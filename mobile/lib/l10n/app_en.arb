@@ -270,8 +270,8 @@
   "feedbackAlmostDe": "Fast!",
   "feedbackCorrectLocal": "Correct",
   "feedbackAlmostLocal": "Almost",
-  "resultTitle": "Well done!",
-  "resultDailyDone": "Daily goal completed",
+  "resultTitle": "Awesome!",
+  "resultDailyDone": "You completed today’s goal",
   "resultExercises": "Exercises",
   "resultSuccess": "Accuracy",
   "resultReviewsSaved": "Words saved for review 📚\n({count} in your plan)",
@@ -280,7 +280,65 @@
       "count": {"type": "int"}
     }
   },
+  "resultReviewsSavedTitle": "Words added to your review plan 📚",
+  "resultReviewsSavedHint": "{count} words ready for tomorrow",
+  "@resultReviewsSavedHint": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "resultStreakKept": "Streak kept · day {days}",
+  "@resultStreakKept": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
   "keepLearning": "Keep learning",
   "audioFailed": "Audio failed — please try again.",
-  "audioCouldNotLoad": "Audio could not be loaded."
+  "audioCouldNotLoad": "Audio could not be loaded.",
+  "sessionSliceChip": "Slice {n}/5 · {title}",
+  "@sessionSliceChip": {
+    "placeholders": {
+      "n": {"type": "int"},
+      "title": {"type": "String"}
+    }
+  },
+  "sessionStepLabel": "{current} / {total} steps",
+  "@sessionStepLabel": {
+    "placeholders": {
+      "current": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "sessionTeaserDialog": "Up next: short dialogue",
+  "wordCount": "{count} words",
+  "@wordCount": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "practiceMistakesOnly": "Practice my mistakes only",
+  "upcomingReviews": "Upcoming reviews",
+  "noUpcomingReviews": "No upcoming reviews yet.",
+  "reviewTomorrow": "tomorrow",
+  "reviewInDays": "in {days} days",
+  "@reviewInDays": {
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "thisWeek": "This week",
+  "reminderTime": "Reminder time",
+  "reminderHint": "Notifications soon — we save your preference for now.",
+  "reminderOff": "Off",
+  "editName": "Edit your name",
+  "save": "Save",
+  "cancel": "Cancel",
+  "dayMon": "Mon",
+  "dayTue": "Tue",
+  "dayWed": "Wed",
+  "dayThu": "Thu",
+  "dayFri": "Fri",
+  "daySat": "Sat",
+  "daySun": "Sun"
 }

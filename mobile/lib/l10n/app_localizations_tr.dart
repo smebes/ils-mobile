@@ -488,10 +488,10 @@ class AppLocalizationsTr extends AppLocalizations {
   String get feedbackAlmostLocal => 'Neredeyse';
 
   @override
-  String get resultTitle => 'Tebrikler!';
+  String get resultTitle => 'Harika!';
 
   @override
-  String get resultDailyDone => 'Günlük hedef tamamlandı';
+  String get resultDailyDone => 'Günlük hedefini tamamladın';
 
   @override
   String get resultExercises => 'Alıştırmalar';
@@ -505,6 +505,19 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
+  String get resultReviewsSavedTitle => 'Kelimeler tekrar planına eklendi 📚';
+
+  @override
+  String resultReviewsSavedHint(int count) {
+    return '$count kelime yarın tekrar için hazır';
+  }
+
+  @override
+  String resultStreakKept(int days) {
+    return 'Seri korundu · $days. gün';
+  }
+
+  @override
   String get keepLearning => 'Öğrenmeye devam';
 
   @override
@@ -512,4 +525,82 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get audioCouldNotLoad => 'Ses yüklenemedi.';
+
+  @override
+  String sessionSliceChip(int n, String title) {
+    return 'Dilim $n/5 · $title';
+  }
+
+  @override
+  String sessionStepLabel(int current, int total) {
+    return '$current / $total adım';
+  }
+
+  @override
+  String get sessionTeaserDialog => 'Birazdan: kısa diyalog';
+
+  @override
+  String wordCount(int count) {
+    return '$count kelime';
+  }
+
+  @override
+  String get practiceMistakesOnly => 'Sadece hatalarımı çalış';
+
+  @override
+  String get upcomingReviews => 'Yaklaşan tekrarlar';
+
+  @override
+  String get noUpcomingReviews => 'Henüz planlanmış tekrar yok.';
+
+  @override
+  String get reviewTomorrow => 'yarın';
+
+  @override
+  String reviewInDays(int days) {
+    return '$days gün sonra';
+  }
+
+  @override
+  String get thisWeek => 'Bu hafta';
+
+  @override
+  String get reminderTime => 'Hatırlatma saati';
+
+  @override
+  String get reminderHint =>
+      'Bildirimler yakında — şimdilik tercihini kaydediyoruz.';
+
+  @override
+  String get reminderOff => 'Kapalı';
+
+  @override
+  String get editName => 'İsmini düzenle';
+
+  @override
+  String get save => 'Kaydet';
+
+  @override
+  String get cancel => 'Vazgeç';
+
+  @override
+  String get dayMon => 'Pzt';
+
+  @override
+  String get dayTue => 'Sal';
+
+  @override
+  String get dayWed => 'Çar';
+
+  @override
+  String get dayThu => 'Per';
+
+  @override
+  String get dayFri => 'Cum';
+
+  @override
+  String get daySat => 'Cmt';
+
+  @override
+  String get daySun => 'Paz';
 }

@@ -859,34 +859,74 @@ class _OptionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color border = Colors.transparent;
+    Color border = AppColors.navy.withValues(alpha: 0.1);
     Color bg = Colors.white;
+    Color dot = AppColors.navy.withValues(alpha: 0.25);
+    String mark = '';
+    double borderW = 1;
+    Color textColor = AppColors.navy;
+
     if (state == true) {
       border = AppColors.das;
-      bg = AppColors.das.withValues(alpha: 0.1);
+      bg = AppColors.das.withValues(alpha: 0.14);
+      dot = AppColors.das;
+      mark = '✓';
+      borderW = 2;
     } else if (state == false) {
       border = AppColors.coral;
-      bg = AppColors.coral.withValues(alpha: 0.1);
+      bg = AppColors.coral.withValues(alpha: 0.14);
+      dot = AppColors.coral;
+      mark = '✕';
+      borderW = 2;
     } else if (selected) {
       border = AppColors.teal;
-      bg = AppColors.teal.withValues(alpha: 0.08);
+      bg = AppColors.teal.withValues(alpha: 0.1);
+      dot = AppColors.teal;
+      mark = '●';
+      borderW = 2.5;
+    } else if (onTap == null && state == null) {
+      textColor = AppColors.navy.withValues(alpha: 0.45);
+      dot = AppColors.navy.withValues(alpha: 0.18);
     }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
           decoration: BoxDecoration(
             color: bg,
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-                color: border == Colors.transparent
-                    ? AppColors.navy.withValues(alpha: 0.12)
-                    : border,
-                width: 2),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: border, width: borderW),
           ),
-          child: Text(text, style: const TextStyle(fontSize: 16)),
+          child: Row(
+            children: [
+              Container(
+                width: 22,
+                height: 22,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: dot, width: 2),
+                ),
+                alignment: Alignment.center,
+                child: Text(mark,
+                    style: TextStyle(
+                        fontSize: 11,
+                        height: 1,
+                        color: dot,
+                        fontWeight: FontWeight.w800)),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(text,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: textColor)),
+              ),
+            ],
+          ),
         ),
       ),
     );

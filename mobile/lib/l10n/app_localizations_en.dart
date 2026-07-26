@@ -486,10 +486,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get feedbackAlmostLocal => 'Almost';
 
   @override
-  String get resultTitle => 'Well done!';
+  String get resultTitle => 'Awesome!';
 
   @override
-  String get resultDailyDone => 'Daily goal completed';
+  String get resultDailyDone => 'You completed today’s goal';
 
   @override
   String get resultExercises => 'Exercises';
@@ -503,6 +503,19 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get resultReviewsSavedTitle => 'Words added to your review plan 📚';
+
+  @override
+  String resultReviewsSavedHint(int count) {
+    return '$count words ready for tomorrow';
+  }
+
+  @override
+  String resultStreakKept(int days) {
+    return 'Streak kept · day $days';
+  }
+
+  @override
   String get keepLearning => 'Keep learning';
 
   @override
@@ -510,4 +523,82 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get audioCouldNotLoad => 'Audio could not be loaded.';
+
+  @override
+  String sessionSliceChip(int n, String title) {
+    return 'Slice $n/5 · $title';
+  }
+
+  @override
+  String sessionStepLabel(int current, int total) {
+    return '$current / $total steps';
+  }
+
+  @override
+  String get sessionTeaserDialog => 'Up next: short dialogue';
+
+  @override
+  String wordCount(int count) {
+    return '$count words';
+  }
+
+  @override
+  String get practiceMistakesOnly => 'Practice my mistakes only';
+
+  @override
+  String get upcomingReviews => 'Upcoming reviews';
+
+  @override
+  String get noUpcomingReviews => 'No upcoming reviews yet.';
+
+  @override
+  String get reviewTomorrow => 'tomorrow';
+
+  @override
+  String reviewInDays(int days) {
+    return 'in $days days';
+  }
+
+  @override
+  String get thisWeek => 'This week';
+
+  @override
+  String get reminderTime => 'Reminder time';
+
+  @override
+  String get reminderHint =>
+      'Notifications soon — we save your preference for now.';
+
+  @override
+  String get reminderOff => 'Off';
+
+  @override
+  String get editName => 'Edit your name';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get dayMon => 'Mon';
+
+  @override
+  String get dayTue => 'Tue';
+
+  @override
+  String get dayWed => 'Wed';
+
+  @override
+  String get dayThu => 'Thu';
+
+  @override
+  String get dayFri => 'Fri';
+
+  @override
+  String get daySat => 'Sat';
+
+  @override
+  String get daySun => 'Sun';
 }

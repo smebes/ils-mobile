@@ -3,12 +3,30 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import '../audio_service.dart';
+import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
+import '../theme.dart';
 import '../widgets.dart';
 import 'exercise_widgets.dart';
+import '../l10n/app_localizations.dart';
 import 'flashcard_widget.dart';
 import 'result_screen.dart';
+
+String _sliceTitle(AppLocalizations l10n, int n) {
+  switch (n) {
+    case 1:
+      return l10n.slice1Title;
+    case 2:
+      return l10n.slice2Title;
+    case 3:
+      return l10n.slice3Title;
+    case 4:
+      return l10n.slice4Title;
+    default:
+      return l10n.slice5Title;
+  }
+}
 
 class _Step {
   final VocabItem? vocab;
@@ -32,6 +50,7 @@ class _SessionScreenState extends State<SessionScreen> {
   int _correct = 0;
   int _answerable = 0;
   int _reviewsScheduled = 0;
+  int _cardCount = 0;
   bool _advancing = false;
 
   @override
@@ -51,7 +70,9 @@ class _SessionScreenState extends State<SessionScreen> {
     final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
     final cards = _sessionWords
         .where(vocabByWord.containsKey)
-        .map((w) => _Step.card(vocabByWord[w]!));
+        .map((w) => _Step.card(vocabByWord[w]!))
+        .toList();
+    _cardCount = cards.length;
 
     final steps = <_Step>[
       ...cards,
@@ -73,7 +94,6 @@ class _SessionScreenState extends State<SessionScreen> {
         : const <String>[];
 
     if (_index + 1 >= _steps!.length) {
-      // Son adım: SR'yi beklemeden finish'e gitme riski düşük; batch hızlı.
       unawaited(() async {
         if (words.isNotEmpty && correct != null) {
           try {
@@ -107,7 +127,6 @@ class _SessionScreenState extends State<SessionScreen> {
     if (_advancing || _steps == null) return;
     _advancing = true;
 
-    // Persist beklenmez — web SharedPreferences Weiter'ı dondurabiliyordu.
     unawaited(
       progressStore.introduceWord(v.wort).catchError((e) {
         debugPrint('introduceWord: $e');
@@ -129,8 +148,6 @@ class _SessionScreenState extends State<SessionScreen> {
     });
   }
 
-  /// Kelime sınırı ile eşle — "kommen" ⊂ "willkommen" olmasın.
-  /// Çok kısa token'lar (≤2) atlanır; en fazla 12 kelime.
   List<String> _wordsTouchedByExercise(Exercise ex) {
     final blob = json.encode(ex.payload).toLowerCase();
     final candidates = _allWords.isNotEmpty ? _allWords : _sessionWords;
@@ -153,6 +170,8 @@ class _SessionScreenState extends State<SessionScreen> {
 
   Future<void> _finish() async {
     final xpGained = _correct * 10;
+    final streakBefore = progressStore.streak;
+    final alreadyDone = progressStore.dailyGoalDoneToday;
     try {
       await progressStore.addXp(xpGained);
       await progressStore.completeDailyGoal();
@@ -167,6 +186,8 @@ class _SessionScreenState extends State<SessionScreen> {
           total: _answerable,
           xp: xpGained,
           reviewsSaved: _reviewsScheduled + _sessionWords.length,
+          streak: progressStore.streak,
+          streakIncreased: !alreadyDone && progressStore.streak >= streakBefore,
         ),
       ),
     );
@@ -179,26 +200,101 @@ class _SessionScreenState extends State<SessionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final steps = _steps;
     if (steps == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
     final step = steps[_index];
     final progress = (_index + 1) / steps.length;
+    final slice = progressStore.activeSlice;
+    final showTeaser =
+        _cardCount > 0 && _index == _cardCount - 1 && step.isCard;
+
     return Scaffold(
-      appBar: AppBar(
-        titleSpacing: 16,
-        title: Row(
+      body: SafeArea(
+        child: Column(
           children: [
-            IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: _closeSession,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 6, 18, 6),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Container(
+                      width: 32,
+                      height: 32,
+                      decoration: BoxDecoration(
+                        color: AppColors.navy.withValues(alpha: 0.07),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.close, size: 18),
+                    ),
+                    onPressed: _closeSession,
+                  ),
+                  Expanded(child: SessionProgressBar(progress)),
+                  const SizedBox(width: 10),
+                  SizedBox(
+                    width: 40,
+                    child: Text(
+                      '${_index + 1}/${steps.length}',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.navy.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            Expanded(child: SessionProgressBar(progress)),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: AppColors.teal.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Text(
+                      l10n.sessionSliceChip(slice, _sliceTitle(l10n, slice)),
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF1F7268),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    l10n.sessionStepLabel(_index + 1, steps.length),
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.navy.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  if (showTeaser) ...[
+                    const Spacer(),
+                    Text(
+                      l10n.sessionTeaserDialog,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFFC1502F),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            Expanded(child: _buildStep(step)),
           ],
         ),
       ),
-      body: SafeArea(top: false, child: _buildStep(step)),
     );
   }
 

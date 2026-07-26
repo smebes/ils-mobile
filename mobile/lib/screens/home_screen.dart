@@ -166,6 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 _ReviewTab(
                   dueCount: due,
+                  vocab: l.vocab,
                   onStartReview: _startSession,
                   onStartLesson: () {
                     setState(() => _tab = 0);
@@ -928,18 +929,42 @@ class _LearnTab extends StatelessWidget {
 
 class _ReviewTab extends StatelessWidget {
   final int dueCount;
+  final List<VocabItem> vocab;
   final VoidCallback onStartReview;
   final VoidCallback onStartLesson;
   const _ReviewTab({
     required this.dueCount,
+    required this.vocab,
     required this.onStartReview,
     required this.onStartLesson,
   });
 
+  VocabItem? _byWort(String w) {
+    for (final v in vocab) {
+      if (v.wort == w) return v;
+    }
+    return null;
+  }
+
+  String _whenLabel(BuildContext context, DateTime when) {
+    final l10n = context.l10n;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final d = DateTime(when.year, when.month, when.day);
+    final diff = d.difference(today).inDays;
+    if (diff <= 1) return l10n.reviewTomorrow;
+    return l10n.reviewInDays(diff);
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final words = vocab.map((v) => v.wort).toList();
     final hasReview = dueCount > 0;
+    final mistakes = progressStore.mistakeWords(words);
+    final weak = progressStore.weakWords(words);
+    final upcoming = progressStore.upcomingReviews(words);
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       children: [
@@ -1037,20 +1062,10 @@ class _ReviewTab extends StatelessWidget {
           decoration: cardDecoration(),
           child: Column(
             children: [
-              _row(l10n.myMistakes, l10n.comingSoon, AppColors.coral, () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(l10n.mistakesSoon),
-                      duration: const Duration(seconds: 2)),
-                );
-              }),
-              _row(l10n.weakWords, l10n.comingSoon, AppColors.teal, () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                      content: Text(l10n.weakSoon),
-                      duration: const Duration(seconds: 2)),
-                );
-              }),
+              _row(l10n.myMistakes, l10n.wordCount(mistakes.length),
+                  AppColors.coral, onStartReview),
+              _row(l10n.weakWords, l10n.wordCount(weak.length), AppColors.teal,
+                  onStartReview),
               _row(l10n.listeningPractice, l10n.comingSoon,
                   AppColors.navy.withValues(alpha: 0.45), () {}),
               _row(l10n.pronunciation, l10n.comingSoon,
@@ -1059,7 +1074,246 @@ class _ReviewTab extends StatelessWidget {
             ],
           ),
         ),
+        if (mistakes.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: cardDecoration(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(l10n.myMistakes,
+                          style: const TextStyle(
+                              fontSize: 14.5, fontWeight: FontWeight.w800)),
+                    ),
+                    Text(l10n.wordCount(mistakes.length),
+                        style: const TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xFFC1502F))),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                for (final w in mistakes)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: _mistakeRow(_byWort(w), w),
+                  ),
+                const SizedBox(height: 6),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton(
+                    onPressed: onStartReview,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(0xFFC1502F),
+                      side: BorderSide(
+                          color: AppColors.coral.withValues(alpha: 0.5)),
+                      padding: const EdgeInsets.symmetric(vertical: 13),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18)),
+                    ),
+                    child: Text(l10n.practiceMistakesOnly,
+                        style: const TextStyle(fontWeight: FontWeight.w800)),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+        if (weak.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(18),
+            decoration: cardDecoration(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(l10n.weakWords,
+                          style: const TextStyle(
+                              fontSize: 14.5, fontWeight: FontWeight.w800)),
+                    ),
+                    Text(l10n.wordCount(weak.length),
+                        style: TextStyle(
+                            fontSize: 12.5,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.navy.withValues(alpha: 0.5))),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                for (final w in weak) _weakRow(_byWort(w), w),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: cardDecoration(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.upcomingReviews,
+                  style: const TextStyle(
+                      fontSize: 14.5, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 14),
+              if (upcoming.isEmpty)
+                Text(l10n.noUpcomingReviews,
+                    style: TextStyle(
+                        fontSize: 13.5,
+                        color: AppColors.navy.withValues(alpha: 0.5)))
+              else
+                for (final u in upcoming)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Row(
+                      children: [
+                        ArtikelDot(_byWort(u.wort)?.artikel),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _byWort(u.wort)?.display ?? u.wort,
+                            style: TextStyle(
+                              fontSize: 14.5,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.artikel(
+                                  _byWort(u.wort)?.artikel),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          _whenLabel(context, u.when),
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.navy.withValues(alpha: 0.5)),
+                        ),
+                      ],
+                    ),
+                  ),
+            ],
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget _mistakeRow(VocabItem? v, String wort) {
+    final color = AppColors.artikel(v?.artikel);
+    final wrong = progressStore.wrongCountFor(wort);
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: v?.image != null
+                ? MediaImage(v!.image!, height: 44)
+                : Icon(Icons.menu_book_outlined,
+                    size: 22, color: AppColors.navy.withValues(alpha: 0.35)),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    ArtikelDot(v?.artikel),
+                    const SizedBox(width: 7),
+                    Flexible(
+                      child: Text(
+                        v?.display ?? wort,
+                        style: TextStyle(
+                            fontSize: 15.5,
+                            fontWeight: FontWeight.w800,
+                            color: color),
+                      ),
+                    ),
+                  ],
+                ),
+                if (v != null && v.uebersetzungTr.isNotEmpty)
+                  Text(v.uebersetzungTr,
+                      style: TextStyle(
+                          fontSize: 12.5,
+                          color: AppColors.navy.withValues(alpha: 0.55))),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: AppColors.coral.withValues(alpha: 0.14),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Text('$wrong×',
+                style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFFC1502F))),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _weakRow(VocabItem? v, String wort) {
+    final pct = progressStore.strengthPct(wort);
+    final color = AppColors.artikel(v?.artikel);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          ArtikelDot(v?.artikel),
+          const SizedBox(width: 10),
+          SizedBox(
+            width: 112,
+            child: Text(
+              v?.display ?? wort,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                  fontSize: 14.5, fontWeight: FontWeight.w800, color: color),
+            ),
+          ),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: pct / 100,
+                minHeight: 8,
+                backgroundColor: AppColors.navy.withValues(alpha: 0.08),
+                valueColor: AlwaysStoppedAnimation(
+                    pct >= 60 ? AppColors.teal : AppColors.mustard),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          SizedBox(
+            width: 34,
+            child: Text('$pct%',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.navy.withValues(alpha: 0.5))),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1157,44 +1411,230 @@ class _ProfileTab extends StatelessWidget {
     );
   }
 
+  void _pickReminder(BuildContext context) {
+    final l10n = context.l10n;
+    final options = <(int?, String)>[
+      (null, l10n.reminderOff),
+      (8, '08:00'),
+      (12, '12:00'),
+      (18, '18:00'),
+      (20, '20:00'),
+    ];
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(22, 12, 22, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: AppColors.navy.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(l10n.reminderTime,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 6),
+              Text(l10n.reminderHint,
+                  style: TextStyle(
+                      fontSize: 13.5,
+                      color: AppColors.navy.withValues(alpha: 0.55))),
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final o in options)
+                    ChoiceChip(
+                      label: Text(o.$2,
+                          style: const TextStyle(fontWeight: FontWeight.w800)),
+                      selected: progressStore.reminderHour == o.$1,
+                      selectedColor: AppColors.teal.withValues(alpha: 0.18),
+                      onSelected: (_) async {
+                        await progressStore.setReminderHour(o.$1);
+                        if (ctx.mounted) Navigator.pop(ctx);
+                      },
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _editName(BuildContext context) {
+    final l10n = context.l10n;
+    final controller =
+        TextEditingController(text: progressStore.userName ?? '');
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.fromLTRB(
+              22, 12, 22, 28 + MediaQuery.viewInsetsOf(ctx).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: AppColors.navy.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(l10n.editName,
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 14),
+              TextField(
+                controller: controller,
+                autofocus: true,
+                textCapitalization: TextCapitalization.words,
+                decoration: InputDecoration(
+                  hintText: l10n.nameHint,
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: const BorderSide(
+                        color: AppColors.teal, width: 2.5),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide(
+                        color: AppColors.navy.withValues(alpha: 0.12)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide: const BorderSide(
+                        color: AppColors.teal, width: 2.5),
+                  ),
+                ),
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.w800),
+              ),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () async {
+                  await progressStore.setUserName(controller.text);
+                  if (ctx.mounted) Navigator.pop(ctx);
+                },
+                child: Text(l10n.save),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancel,
+                    style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.navy.withValues(alpha: 0.5))),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  String _reminderLabel(AppLocalizations l10n) {
+    final h = progressStore.reminderHour;
+    if (h == null) return l10n.reminderOff;
+    return '${h.toString().padLeft(2, '0')}:00';
+  }
+
+  String _weekdayShort(AppLocalizations l10n, int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return l10n.dayMon;
+      case DateTime.tuesday:
+        return l10n.dayTue;
+      case DateTime.wednesday:
+        return l10n.dayWed;
+      case DateTime.thursday:
+        return l10n.dayThu;
+      case DateTime.friday:
+        return l10n.dayFri;
+      case DateTime.saturday:
+        return l10n.daySat;
+      default:
+        return l10n.daySun;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final name = progressStore.userName ?? l10n.studentFallback;
     final initial = name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?';
+    final week = progressStore.weekActivity();
+    final today = DateTime.now();
+    final todayKey = DateTime(today.year, today.month, today.day);
+
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
       children: [
         Row(
           children: [
-            Container(
-              width: 56,
-              height: 56,
-              decoration: const BoxDecoration(
-                color: AppColors.cream,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Text(initial,
-                    style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.w800)),
+            GestureDetector(
+              onTap: () => _editName(context),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: const BoxDecoration(
+                  color: AppColors.cream,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(
+                  child: Text(initial,
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.w800)),
+                ),
               ),
             ),
             const SizedBox(width: 14),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(name,
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.w800)),
-                  Text(
-                    l10n.profileA1Streak(progressStore.streak),
-                    style: TextStyle(
-                        fontSize: 13.5,
-                        color: AppColors.navy.withValues(alpha: 0.55)),
-                  ),
-                ],
+              child: GestureDetector(
+                onTap: () => _editName(context),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(name,
+                        style: const TextStyle(
+                            fontSize: 24, fontWeight: FontWeight.w800)),
+                    Text(
+                      l10n.profileA1Streak(progressStore.streak),
+                      style: TextStyle(
+                          fontSize: 13.5,
+                          color: AppColors.navy.withValues(alpha: 0.55)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -1217,6 +1657,69 @@ class _ProfileTab extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Container(
+          padding: const EdgeInsets.all(16),
+          decoration: cardDecoration(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.thisWeek,
+                  style: const TextStyle(
+                      fontSize: 14.5, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  for (final d in week)
+                    Builder(builder: (_) {
+                      final isToday = d.day.year == todayKey.year &&
+                          d.day.month == todayKey.month &&
+                          d.day.day == todayKey.day;
+                      final bg = d.done
+                          ? AppColors.teal
+                          : (isToday
+                              ? AppColors.teal.withValues(alpha: 0.15)
+                              : AppColors.navy.withValues(alpha: 0.06));
+                      final fg = d.done
+                          ? Colors.white
+                          : (isToday
+                              ? const Color(0xFF1F7268)
+                              : AppColors.navy.withValues(alpha: 0.45));
+                      return Column(
+                        children: [
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: bg,
+                              shape: BoxShape.circle,
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              d.done ? '✓' : '${d.day.day}',
+                              style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w800,
+                                  color: fg),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _weekdayShort(l10n, d.day.weekday),
+                            style: TextStyle(
+                                fontSize: 10.5,
+                                color:
+                                    AppColors.navy.withValues(alpha: 0.45)),
+                          ),
+                        ],
+                      );
+                    }),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
           decoration: cardDecoration(),
           child: Column(
             children: [
@@ -1224,8 +1727,10 @@ class _ProfileTab extends StatelessWidget {
                   l10n.dailyGoalDuration,
                   l10n.minutesShort(progressStore.dailyGoalMinutes),
                   onEditGoal),
-              _settingsRow(
-                  l10n.appLanguage, _uiLangLabel(l10n), () => _pickLanguage(context)),
+              _settingsRow(l10n.reminderTime, _reminderLabel(l10n),
+                  () => _pickReminder(context)),
+              _settingsRow(l10n.appLanguage, _uiLangLabel(l10n),
+                  () => _pickLanguage(context)),
               _settingsRow(
                   l10n.learningLanguage, l10n.learningLanguageValue, () {}),
               _settingsRow(

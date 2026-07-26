@@ -490,10 +490,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get feedbackAlmostLocal => 'Presque';
 
   @override
-  String get resultTitle => 'Bravo !';
+  String get resultTitle => 'Super !';
 
   @override
-  String get resultDailyDone => 'Objectif du jour atteint';
+  String get resultDailyDone => 'Tu as atteint l’objectif du jour';
 
   @override
   String get resultExercises => 'Exercices';
@@ -507,6 +507,19 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get resultReviewsSavedTitle => 'Mots ajoutés au plan de révision 📚';
+
+  @override
+  String resultReviewsSavedHint(int count) {
+    return '$count mots prêts pour demain';
+  }
+
+  @override
+  String resultStreakKept(int days) {
+    return 'Série conservée · jour $days';
+  }
+
+  @override
   String get keepLearning => 'Continuer à apprendre';
 
   @override
@@ -514,4 +527,82 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get audioCouldNotLoad => 'Impossible de charger l’audio.';
+
+  @override
+  String sessionSliceChip(int n, String title) {
+    return 'Tranche $n/5 · $title';
+  }
+
+  @override
+  String sessionStepLabel(int current, int total) {
+    return '$current / $total étapes';
+  }
+
+  @override
+  String get sessionTeaserDialog => 'Bientôt : court dialogue';
+
+  @override
+  String wordCount(int count) {
+    return '$count mots';
+  }
+
+  @override
+  String get practiceMistakesOnly => 'Travailler seulement mes erreurs';
+
+  @override
+  String get upcomingReviews => 'Révisions à venir';
+
+  @override
+  String get noUpcomingReviews => 'Pas encore de révisions planifiées.';
+
+  @override
+  String get reviewTomorrow => 'demain';
+
+  @override
+  String reviewInDays(int days) {
+    return 'dans $days jours';
+  }
+
+  @override
+  String get thisWeek => 'Cette semaine';
+
+  @override
+  String get reminderTime => 'Heure de rappel';
+
+  @override
+  String get reminderHint =>
+      'Notifications bientôt — on enregistre ta préférence pour l’instant.';
+
+  @override
+  String get reminderOff => 'Désactivé';
+
+  @override
+  String get editName => 'Modifier ton prénom';
+
+  @override
+  String get save => 'Enregistrer';
+
+  @override
+  String get cancel => 'Annuler';
+
+  @override
+  String get dayMon => 'Lun';
+
+  @override
+  String get dayTue => 'Mar';
+
+  @override
+  String get dayWed => 'Mer';
+
+  @override
+  String get dayThu => 'Jeu';
+
+  @override
+  String get dayFri => 'Ven';
+
+  @override
+  String get daySat => 'Sam';
+
+  @override
+  String get daySun => 'Dim';
 }
