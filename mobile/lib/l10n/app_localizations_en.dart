@@ -625,6 +625,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get reviewWordBadge => 'Review';
 
   @override
+  String get rateWordPrompt => 'How well do you know this word?';
+
+  @override
+  String get rateUnknown => 'Don\'t know';
+
+  @override
+  String get rateUnsure => 'Not sure';
+
+  @override
+  String get rateKnown => 'Learned';
+
+  @override
+  String get myListTitle => 'My list';
+
+  @override
+  String get myListHint => 'Grouped by how you rated cards.';
+
+  @override
+  String get myListEmpty => 'No words in this list yet. Finish a lesson first.';
+
+  @override
   String get reviewCaughtUp => 'You’re caught up for today';
 
   @override

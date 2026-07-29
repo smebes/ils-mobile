@@ -627,6 +627,27 @@ class AppLocalizationsTr extends AppLocalizations {
   String get reviewWordBadge => 'Tekrar';
 
   @override
+  String get rateWordPrompt => 'Bu kelimeyi ne kadar biliyorsun?';
+
+  @override
+  String get rateUnknown => 'Bilmiyorum';
+
+  @override
+  String get rateUnsure => 'Emin değilim';
+
+  @override
+  String get rateKnown => 'Öğrendim';
+
+  @override
+  String get myListTitle => 'Benim listem';
+
+  @override
+  String get myListHint => 'Kartlarda verdiğin yanıtlara göre gruplanır.';
+
+  @override
+  String get myListEmpty => 'Bu listede henüz kelime yok. Önce bir ders bitir.';
+
+  @override
   String get reviewCaughtUp => 'Bugünlük tekrar bitti';
 
   @override

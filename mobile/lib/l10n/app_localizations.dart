@@ -1186,6 +1186,48 @@ abstract class AppLocalizations {
   /// **'Review'**
   String get reviewWordBadge;
 
+  /// No description provided for @rateWordPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'How well do you know this word?'**
+  String get rateWordPrompt;
+
+  /// No description provided for @rateUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t know'**
+  String get rateUnknown;
+
+  /// No description provided for @rateUnsure.
+  ///
+  /// In en, this message translates to:
+  /// **'Not sure'**
+  String get rateUnsure;
+
+  /// No description provided for @rateKnown.
+  ///
+  /// In en, this message translates to:
+  /// **'Learned'**
+  String get rateKnown;
+
+  /// No description provided for @myListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'My list'**
+  String get myListTitle;
+
+  /// No description provided for @myListHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Grouped by how you rated cards.'**
+  String get myListHint;
+
+  /// No description provided for @myListEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No words in this list yet. Finish a lesson first.'**
+  String get myListEmpty;
+
   /// No description provided for @reviewCaughtUp.
   ///
   /// In en, this message translates to:

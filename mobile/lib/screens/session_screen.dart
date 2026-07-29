@@ -9,6 +9,7 @@ import '../main.dart';
 import '../models.dart';
 import '../motion_widgets.dart';
 import '../slice_map.dart';
+import '../sr_engine.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'exercise_widgets.dart';
@@ -28,10 +29,13 @@ class SessionScreen extends StatefulWidget {
   final bool reviewMode;
   /// 1 = L1, 2 = L2 …
   final int lektionId;
+  /// Benim listem kovası — sadece bu rating'teki kelimeler.
+  final SelfRating? reviewFilter;
   const SessionScreen({
     super.key,
     this.reviewMode = false,
     this.lektionId = 1,
+    this.reviewFilter,
   });
   @override
   State<SessionScreen> createState() => _SessionScreenState();
@@ -61,7 +65,19 @@ class _SessionScreenState extends State<SessionScreen> {
     final maxSlice = maxSlicesForLektion(lektionId);
     final lektion = await contentRepo.loadLektion(id: lektionId);
     final exercises = await contentRepo.loadExercises(id: lektionId);
-    _allWords = lektion.vocab.map((v) => v.wort).toList();
+    var vocabPool = List<VocabItem>.from(lektion.vocab);
+    // Benim listem: L1+L2 birleşik havuz (filtre kovası).
+    if (widget.reviewMode && widget.reviewFilter != null) {
+      try {
+        final otherId = lektionId == 1 ? 2 : 1;
+        final other = await contentRepo.loadLektion(id: otherId);
+        final seen = {for (final v in vocabPool) v.wort};
+        for (final v in other.vocab) {
+          if (!seen.contains(v.wort)) vocabPool.add(v);
+        }
+      } catch (_) {}
+    }
+    _allWords = vocabPool.map((v) => v.wort).toList();
     if (!widget.reviewMode) {
       if (progressStore.activeLektionId != lektionId) {
         await progressStore.setActiveLektion(lektionId);
@@ -94,15 +110,22 @@ class _SessionScreenState extends State<SessionScreen> {
     final reviewPool = reviewVocab.map((v) => v.wort).toList();
 
     if (widget.reviewMode) {
-      final today = DateTime.now();
-      final day = DateTime(today.year, today.month, today.day);
-      _sessionWords = _allWords.where((w) {
-        final e = progressStore.srEntries[w];
-        return e != null && e.isDue(day);
-      }).take(12).toList();
-      // Due yoksa zayıf kelimelerle kısa tekrar — ama egzersiz ekleme.
-      if (_sessionWords.isEmpty) {
-        _sessionWords = progressStore.weakWords(_allWords, limit: 8);
+      if (widget.reviewFilter != null) {
+        _sessionWords = progressStore
+            .wordsWithRating(_allWords, widget.reviewFilter!)
+            .take(12)
+            .toList();
+      } else {
+        final today = DateTime.now();
+        final day = DateTime(today.year, today.month, today.day);
+        _sessionWords = _allWords.where((w) {
+          final e = progressStore.srEntries[w];
+          return e != null && e.isDue(day);
+        }).take(12).toList();
+        // Due yoksa zayıf kelimelerle kısa tekrar — ama egzersiz ekleme.
+        if (_sessionWords.isEmpty) {
+          _sessionWords = progressStore.weakWords(_allWords, limit: 8);
+        }
       }
     } else {
       _sessionWords = progressStore.sliceSessionQueue(
@@ -115,7 +138,7 @@ class _SessionScreenState extends State<SessionScreen> {
         ? _sessionWords.length
         : progressStore.dueReviewCount(reviewPool);
 
-    final vocabByWord = {for (final v in lektion.vocab) v.wort: v};
+    final vocabByWord = {for (final v in vocabPool) v.wort: v};
     final cards = _sessionWords
         .where(vocabByWord.containsKey)
         .map((w) => _Step.card(vocabByWord[w]!))
@@ -138,6 +161,11 @@ class _SessionScreenState extends State<SessionScreen> {
     ];
     _answerable = sliceExercises.length;
     if (steps.isEmpty) {
+      if (widget.reviewMode && widget.reviewFilter != null) {
+        // Kova boş — fallback yok; UI snackbar ile zaten engellenir.
+        if (mounted) setState(() => _steps = steps);
+        return;
+      }
       // Güvenlik: boş dilim → dilim kelimelerinden kısa kart seti
       final fallback = _sliceWords.take(8).toList();
       steps.addAll(fallback
@@ -215,24 +243,16 @@ class _SessionScreenState extends State<SessionScreen> {
     }
   }
 
-  void _onFlashcardNext(VocabItem v) {
+  void _onFlashcardRate(VocabItem v, SelfRating rating) {
     if (_advancing || _steps == null) return;
     _advancing = true;
     AudioService.shared.stopIfPlaying();
 
-    if (widget.reviewMode) {
-      unawaited(
-        progressStore.recordAnswer(v.wort, true).catchError((e) {
-          debugPrint('review recordAnswer: $e');
-        }),
-      );
-    } else {
-      unawaited(
-        progressStore.introduceWord(v.wort).catchError((e) {
-          debugPrint('introduceWord: $e');
-        }),
-      );
-    }
+    unawaited(
+      progressStore.rateWord(v.wort, rating).catchError((e) {
+        debugPrint('rateWord: $e');
+      }),
+    );
 
     if (_index + 1 >= _steps!.length) {
       unawaited(() async {
@@ -334,6 +354,26 @@ class _SessionScreenState extends State<SessionScreen> {
     final steps = _steps;
     if (steps == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    if (steps.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: _closeSession,
+          ),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(
+              context.l10n.myListEmpty,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
+      );
     }
     final step = steps[_index];
     final progress = (_index + 1) / steps.length;
@@ -462,7 +502,7 @@ class _SessionScreenState extends State<SessionScreen> {
         key: ValueKey('card_${step.vocab!.wort}'),
         vocab: step.vocab!,
         isReview: widget.reviewMode,
-        onNext: () => _onFlashcardNext(step.vocab!),
+        onRate: (r) => _onFlashcardRate(step.vocab!, r),
       );
     }
     final ex = step.exercise!;

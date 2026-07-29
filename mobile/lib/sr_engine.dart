@@ -4,6 +4,55 @@ const kBoxIntervals = [1, 3, 7, 14, 30];
 /// Kutu 4–5 = "hakim" sayılır (görünmez bilim, görünür metrik).
 const kMasteredMinBox = 4;
 
+/// WordBit tarzı görünür öz-değerlendirme (SR kutularına map edilir).
+enum SelfRating {
+  /// Bilmiyorum — kutu 1, hemen tekrar
+  unknown,
+  /// Emin değilim — kutu 2, yarın
+  unsure,
+  /// Öğrendim — bir kutu yüksel (aynı gün kilidi yok)
+  known,
+}
+
+/// Görünür kova: sadece SR'de kayıtlı kelimeler.
+SelfRating? selfRatingOf(SrEntry? e) {
+  if (e == null) return null;
+  if (e.isMastered) return SelfRating.known;
+  if (e.box <= 1) return SelfRating.unknown;
+  return SelfRating.unsure;
+}
+
+/// Flashcard öz-değerlendirmesi → Leitner güncellemesi.
+SrEntry applySelfRating(SrEntry? current, SelfRating rating, DateTime today) {
+  final base = current ?? SrEntry.introduced(today);
+  final attempts = base.totalAttempts + 1;
+  switch (rating) {
+    case SelfRating.unknown:
+      return base.copyWith(
+        box: 1,
+        nextReview: today,
+        correctStreak: 0,
+        totalAttempts: attempts,
+        wrongCount: base.wrongCount + 1,
+      );
+    case SelfRating.unsure:
+      return base.copyWith(
+        box: 2,
+        nextReview: today.add(const Duration(days: 1)),
+        totalAttempts: attempts,
+      );
+    case SelfRating.known:
+      // Explicit "öğrendim": aynı gün kilidini atla, bir kutu yüksel.
+      final newBox = (base.box + 1).clamp(1, 5);
+      return base.copyWith(
+        box: newBox,
+        nextReview: today.add(Duration(days: kBoxIntervals[newBox - 1])),
+        correctStreak: base.correctStreak + 1,
+        totalAttempts: attempts,
+      );
+  }
+}
+
 class SrEntry {
   final int box; // 1..5
   final DateTime nextReview;

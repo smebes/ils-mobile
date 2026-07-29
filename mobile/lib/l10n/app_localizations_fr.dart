@@ -629,6 +629,28 @@ class AppLocalizationsFr extends AppLocalizations {
   String get reviewWordBadge => 'Révision';
 
   @override
+  String get rateWordPrompt => 'Tu connais bien ce mot ?';
+
+  @override
+  String get rateUnknown => 'Je ne sais pas';
+
+  @override
+  String get rateUnsure => 'Pas sûr';
+
+  @override
+  String get rateKnown => 'Appris';
+
+  @override
+  String get myListTitle => 'Ma liste';
+
+  @override
+  String get myListHint => 'Classés selon tes réponses sur les cartes.';
+
+  @override
+  String get myListEmpty =>
+      'Pas encore de mots ici. Termine d\'abord une leçon.';
+
+  @override
   String get reviewCaughtUp => 'Révisions du jour terminées';
 
   @override

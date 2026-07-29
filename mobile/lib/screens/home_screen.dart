@@ -5,6 +5,7 @@ import '../l10n/app_localizations.dart';
 import '../l10n/l10n_ext.dart';
 import '../main.dart';
 import '../models.dart';
+import '../sr_engine.dart';
 import '../theme.dart';
 import '../widgets.dart';
 import 'learning_map_tab.dart';
@@ -79,12 +80,16 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  void _startSession({bool reviewMode = false, int? lektionId}) {
+  void _startSession({
+    bool reviewMode = false,
+    int? lektionId,
+    SelfRating? ratingFilter,
+  }) {
     final id = lektionId ??
-        (reviewMode ? 1 : progressStore.activeLektionId);
+        (reviewMode ? progressStore.activeLektionId : progressStore.activeLektionId);
     // L1 bitince ve L2 açıksa CTA L2'ye gitsin
     final resolved = () {
-      if (reviewMode) return 1;
+      if (reviewMode) return lektionId ?? progressStore.activeLektionId;
       if (lektionId != null) return lektionId;
       final l1 = _lektion;
       if (l1 == null) return id;
@@ -98,11 +103,24 @@ class _HomeScreenState extends State<HomeScreen> {
       }
       return progressStore.activeLektionId;
     }();
+    if (reviewMode && ratingFilter != null) {
+      final pool = <String>{
+        ...?_lektion?.vocab.map((v) => v.wort),
+        ...?_l2?.vocab.map((v) => v.wort),
+      }.toList();
+      if (progressStore.wordsWithRating(pool, ratingFilter).isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.myListEmpty)),
+        );
+        return;
+      }
+    }
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => SessionScreen(
           reviewMode: reviewMode,
           lektionId: resolved,
+          reviewFilter: ratingFilter,
         ),
       ),
     );
@@ -185,8 +203,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   _ReviewTab(
                     dueCount: due,
-                    vocab: l.vocab,
-                    onStartReview: () => _startSession(reviewMode: true),
+                    vocab: [
+                      ...l.vocab,
+                      ...?_l2?.vocab,
+                    ],
+                    onStartReview: ({SelfRating? filter}) => _startSession(
+                      reviewMode: true,
+                      ratingFilter: filter,
+                    ),
                     onStartLesson: () {
                       setState(() => _tab = 0);
                       _startSession();
@@ -459,7 +483,7 @@ class _BottomNav extends StatelessWidget {
 class _ReviewTab extends StatelessWidget {
   final int dueCount;
   final List<VocabItem> vocab;
-  final VoidCallback onStartReview;
+  final void Function({SelfRating? filter}) onStartReview;
   final VoidCallback onStartLesson;
   const _ReviewTab({
     required this.dueCount,
@@ -498,6 +522,10 @@ class _ReviewTab extends StatelessWidget {
         upcoming.isNotEmpty;
     final mistakes = progressStore.mistakeWords(words);
     final weak = progressStore.weakWords(words);
+    final nUnknown =
+        progressStore.countWithRating(words, SelfRating.unknown);
+    final nUnsure = progressStore.countWithRating(words, SelfRating.unsure);
+    final nKnown = progressStore.countWithRating(words, SelfRating.known);
 
     return ListView(
       padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
@@ -511,6 +539,51 @@ class _ReviewTab extends StatelessWidget {
               fontSize: 14.5, color: AppColors.navy.withValues(alpha: 0.6)),
         ),
         const SizedBox(height: 18),
+        // Benim listem — WordBit tarzı 3 kova
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: cardDecoration(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(l10n.myListTitle,
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w800)),
+              const SizedBox(height: 4),
+              Text(
+                l10n.myListHint,
+                style: TextStyle(
+                    fontSize: 13,
+                    color: AppColors.navy.withValues(alpha: 0.55)),
+              ),
+              const SizedBox(height: 14),
+              _MyListRow(
+                icon: Icons.help_outline_rounded,
+                color: AppColors.coral,
+                label: l10n.rateUnknown,
+                count: nUnknown,
+                onTap: () => onStartReview(filter: SelfRating.unknown),
+              ),
+              const SizedBox(height: 8),
+              _MyListRow(
+                icon: Icons.priority_high_rounded,
+                color: AppColors.mustard,
+                label: l10n.rateUnsure,
+                count: nUnsure,
+                onTap: () => onStartReview(filter: SelfRating.unsure),
+              ),
+              const SizedBox(height: 8),
+              _MyListRow(
+                icon: Icons.check_rounded,
+                color: AppColors.teal,
+                label: l10n.rateKnown,
+                count: nKnown,
+                onTap: () => onStartReview(filter: SelfRating.known),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
         if (hasReview)
           Container(
             padding: const EdgeInsets.all(20),
@@ -534,7 +607,7 @@ class _ReviewTab extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: FilledButton(
-                    onPressed: onStartReview,
+                    onPressed: () => onStartReview(),
                     child: Text(l10n.startReview),
                   ),
                 ),
@@ -601,9 +674,9 @@ class _ReviewTab extends StatelessWidget {
           child: Column(
             children: [
               _row(l10n.myMistakes, l10n.wordCount(mistakes.length),
-                  AppColors.coral, onStartReview),
+                  AppColors.coral, () => onStartReview()),
               _row(l10n.weakWords, l10n.wordCount(weak.length), AppColors.teal,
-                  onStartReview),
+                  () => onStartReview()),
               _row(l10n.listeningPractice, l10n.comingSoon,
                   AppColors.navy.withValues(alpha: 0.45), () {}),
               _row(l10n.pronunciation, l10n.comingSoon,
@@ -644,7 +717,7 @@ class _ReviewTab extends StatelessWidget {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton(
-                    onPressed: onStartReview,
+                    onPressed: () => onStartReview(),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: const Color(0xFFC1502F),
                       side: BorderSide(
@@ -727,7 +800,8 @@ class _ReviewTab extends StatelessWidget {
                         Text(
                           _whenLabel(context, u.when),
                           style: TextStyle(
-                              fontSize: 13,
+                              fontSize: 12.5,
+                              fontWeight: FontWeight.w700,
                               color: AppColors.navy.withValues(alpha: 0.5)),
                         ),
                       ],
@@ -881,6 +955,66 @@ class _ReviewTab extends StatelessWidget {
             Icon(Icons.chevron_right,
                 size: 18, color: AppColors.navy.withValues(alpha: 0.3)),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MyListRow extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final String label;
+  final int count;
+  final VoidCallback onTap;
+  const _MyListRow({
+    required this.icon,
+    required this.color,
+    required this.label,
+    required this.count,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.22),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: color, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(label,
+                    style: const TextStyle(
+                        fontSize: 14.5, fontWeight: FontWeight.w800)),
+              ),
+              Text(
+                '($count)',
+                style: TextStyle(
+                  fontSize: 13.5,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.navy.withValues(alpha: 0.55),
+                ),
+              ),
+              const SizedBox(width: 4),
+              Icon(Icons.chevron_right,
+                  size: 18, color: AppColors.navy.withValues(alpha: 0.3)),
+            ],
+          ),
         ),
       ),
     );

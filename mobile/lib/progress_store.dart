@@ -163,6 +163,31 @@ class ProgressStore extends ChangeNotifier {
     await _persistSr();
   }
 
+  /// WordBit tarzı öz-değerlendirme — flashcard feedback butonları.
+  Future<void> rateWord(String wort, SelfRating rating) async {
+    final today = _today();
+    _sr[wort] = applySelfRating(_sr[wort], rating, today);
+    await _persistSr();
+  }
+
+  /// Belirli kovadaki kelimeler (Benim listem).
+  List<String> wordsWithRating(List<String> allWords, SelfRating rating) {
+    final list = allWords
+        .where((w) => selfRatingOf(_sr[w]) == rating)
+        .toList();
+    list.sort((a, b) {
+      final wa = _sr[a]!;
+      final wb = _sr[b]!;
+      final byWrong = wb.wrongCount.compareTo(wa.wrongCount);
+      if (byWrong != 0) return byWrong;
+      return wa.nextReview.compareTo(wb.nextReview);
+    });
+    return list;
+  }
+
+  int countWithRating(List<String> allWords, SelfRating rating) =>
+      wordsWithRating(allWords, rating).length;
+
   /// Egzersiz/cevap sonucu — Leitner güncelle.
   Future<void> recordAnswer(String wort, bool correct) async {
     final today = _today();

@@ -57,6 +57,35 @@ void main() {
     expect(q, contains('Apfel'));
   });
 
+  test('self-rating: bilmiyorum kutuyu 1 yapar ve bugün due', () {
+    final e = SrEntry(box: 3, nextReview: today.add(const Duration(days: 7)));
+    final down = applySelfRating(e, SelfRating.unknown, today);
+    expect(down.box, 1);
+    expect(down.nextReview, today);
+    expect(down.wrongCount, 1);
+  });
+
+  test('self-rating: emin değilim kutu 2 ve yarın', () {
+    final e = applySelfRating(null, SelfRating.unsure, today);
+    expect(e.box, 2);
+    expect(e.nextReview, today.add(const Duration(days: 1)));
+  });
+
+  test('self-rating: öğrendim aynı gün de terfi eder', () {
+    final e = SrEntry.introduced(today);
+    final up = applySelfRating(e, SelfRating.known, today);
+    expect(up.box, 2);
+    final again = applySelfRating(up, SelfRating.known, today);
+    expect(again.box, 3); // aynı gün kilidi yok
+  });
+
+  test('selfRatingOf kovaları doğru', () {
+    expect(selfRatingOf(null), isNull);
+    expect(selfRatingOf(SrEntry(box: 1, nextReview: today)), SelfRating.unknown);
+    expect(selfRatingOf(SrEntry(box: 3, nextReview: today)), SelfRating.unsure);
+    expect(selfRatingOf(SrEntry(box: 4, nextReview: today)), SelfRating.known);
+  });
+
   test('dilim kuyruğu ileri Schritt due kelimelerini almaz', () {
     final sr = {
       'Hallo': SrEntry(box: 2, nextReview: today), // dilim 1
